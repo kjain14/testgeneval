@@ -159,23 +159,3 @@ cython_debug/
 
 # VS Code
 /.vscode
-
-creation/repos
-creation/repos_full
-creation/swebench.txt
-creation/swebench_full.txt
-
-dataset
-
-results
-
-*.stamp
-.env
-
-codegen_ds
-slurm_logs
-temp_sbatch_script.sh
-swebench_baseline.txt
-test.tgz
-
-inference/huggingface/bigcode.jsonl
