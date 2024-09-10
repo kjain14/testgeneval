@@ -1,7 +1,7 @@
 # TestGenEval: A Large Scale Test Generation Benchmark
 
 
-TestGenEval consists of 1,210 code test file pairs from 11 large, well-maintained repositories (3,523-78,287 stars). We use these file pairs to construct two testing tasks: 1) unit test completion for the first, last and additional tests and 2) full file unit test generation. Our benchmark is easy to run and extend, as we have docker containers for each version of each repository with coverage and mutation testing dependencies installed. For both task we use execution based metrics, including pass@1, pass@5 along with code coverage improvement, and mutation score improvement compared to the gold (human written) tests. Code and test files in \benchmark are long in length (on average 782 LOC per code file and 677 LOC per test file) and high coverage (median coverage of 60.4\%). 
+TestGenEval consists of 1,210 code test file pairs from 11 large, well-maintained repositories (3,523-78,287 stars). We use these file pairs to construct two testing tasks: 1) unit test completion for the first, last and additional tests and 2) full file unit test generation. Our benchmark is easy to run and extend, as we have docker containers for each version of each repository with coverage and mutation testing dependencies installed. For both task we use execution based metrics, including pass@1, pass@5 along with code coverage improvement, and mutation score improvement compared to the gold (human written) tests. Code and test files in \benchmark are long in length (on average 782 LOC per code file and 677 LOC per test file) and high coverage (median coverage of 60.4\%).
 
 We measure the following metrics for the test completion task:
 - pass@k (k = 1, 5)
@@ -56,8 +56,8 @@ There is a python script that will run both prediction and inference.
 ```
 python run_pipeline.py \
 --results_dir results
---dataset_dir dataset/unittest1
---model gold
+--dataset_dir dataset/tesgenevallite
+--model meta-llama/Meta-Llama-3.1-8B-Instruct
 ```
 
 ## Adding a new model to TestGenEval
