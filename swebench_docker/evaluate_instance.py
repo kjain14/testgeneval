@@ -34,9 +34,12 @@ def indent_text(text, indent_level):
     return "\n".join(" " * indent_level + line if line.strip() else line for line in text.split("\n"))
 
 def extract_preamble_classes_and_functions(code, tcm):
-    class_pattern = re.compile(r'class\s+\w+\(.*\):')
-    test_method_pattern = re.compile(r'^\s*def\s+test\w+\(.*\):', re.MULTILINE)
-    test_function_pattern = re.compile(r'^\s*def\s+test\w+\(.*\):', re.MULTILINE)
+    class_pattern = re.compile(r'(^(\s*@[\w\.\(\)\', ]+\s*)*^\s*class ([\w]+)\([^)]+\):)', re.MULTILINE)
+    # Capture methods with or without decorators
+    test_method_pattern = re.compile(r'(^(\s*@.*\s*)*^\s*def\s+test\w+\(.*\):)', re.MULTILINE)
+
+    # Capture functions with or without decorators
+    test_function_pattern = re.compile(r'(^(\s*@.*\s*)*^\s*def\s+test\w+\(.*\):)', re.MULTILINE)
 
     preamble = ""
     classes = []
@@ -48,14 +51,6 @@ def extract_preamble_classes_and_functions(code, tcm):
         """
         Extracts the body of a class from the given code starting from the specified index.
         Returns the class body and the end index of the class body.
-        
-        Parameters:
-        - code (str): The complete source code as a string.
-        - start_index (int): The starting index of the class definition.
-        
-        Returns:
-        - str: The extracted class body.
-        - int: The end index of the class body.
         """
         if not code or start_index < 0 or start_index >= len(code):
             raise ValueError("Invalid code or start index")
@@ -130,8 +125,11 @@ def extract_preamble_classes_and_functions(code, tcm):
 
         else:
             break
-
-    preamble = code[:classes[0][2]] if classes else code[:test_functions[0][1]] if test_functions else code
+    
+    if classes and test_functions:
+        preamble = code[:min(classes[0][2], test_functions[0][1])]
+    else:
+        preamble = code[:classes[0][2]] if classes else code[:test_functions[0][1]] if test_functions else code
 
     return preamble.strip(), classes, test_functions
 
