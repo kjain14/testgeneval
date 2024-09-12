@@ -1,3 +1,5 @@
+# Adapted from: https://github.com/aorwall/SWE-bench-docker/blob/main/generate_report.py
+
 import argparse
 import json
 

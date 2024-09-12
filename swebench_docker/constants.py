@@ -1,3 +1,5 @@
+# Adapted from: https://github.com/aorwall/SWE-bench-docker/blob/main/swebench_docker/context_manager.py
+
 from enum import Enum
 
 PYTHON_ENVIRONMENT_VERSIONS = {

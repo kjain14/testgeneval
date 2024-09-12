@@ -1,3 +1,5 @@
+# Adapted from: https://github.com/aorwall/SWE-bench-docker/blob/main/swebench_docker/evaluate_instance.py
+
 import base64
 import json
 import logging

@@ -1,3 +1,5 @@
+# Adapted from: https://github.com/aorwall/SWE-bench-docker/blob/main/swebench_docker/context_manager.py
+
 import json
 import logging
 import os

@@ -1,3 +1,5 @@
+# Adapted from: https://github.com/aorwall/SWE-bench-docker/blob/main/swebench_docker/run_docker.py
+
 import asyncio
 import base64
 import json

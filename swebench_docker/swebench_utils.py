@@ -1,3 +1,5 @@
+# Adapted from: https://github.com/aorwall/SWE-bench-docker/blob/main/swebench_docker/utils.py
+
 import re
 import json
 import os

@@ -35,7 +35,7 @@ conda env create -f swebench-testing.yaml
 conda activate swebench-testing
 ```
 
-To build the docker images run one of these commands:
+To build the docker images (adapted from [SWEBench Docker](https://github.com/aorwall/SWE-bench-docker/tree/main/docker)) run one of these commands:
 
 **TestGenEvalLite** - TestGenEvalLite for faster evaluation
 ```
