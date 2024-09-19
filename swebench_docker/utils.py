@@ -1,7 +1,9 @@
-import os
 import json
+import os
+
+from datasets import load_dataset, load_from_disk
 from swebench_docker.constants import KEY_ID
-from datasets import load_from_disk, load_dataset
+
 
 def get_eval_refs(data_path_or_name):
     decode_keys = False

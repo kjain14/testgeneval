@@ -1,26 +1,27 @@
 # Adapted from: https://github.com/aorwall/SWE-bench-docker/blob/main/swebench_docker/utils.py
 
-import re
+import glob
 import json
 import os
+import re
+from enum import Enum
+from typing import Tuple
+
 from swebench_docker.constants import (
-    TESTS_PASSED, 
-    TESTS_FAILED,
     INSTALL_FAIL,
     KEY_ID,
-    RESET_FAILED,
-    TESTS_ERROR,
-    TESTS_TIMEOUT,
-    TESTS_CONFIG,
-    VALID_K,
-    UNFILTERED_TESTS_PASSED,
-    UNFILTERED_TESTS_FAILED,
     NON_TEST_EXTS,
+    RESET_FAILED,
+    TESTS_CONFIG,
+    TESTS_ERROR,
+    TESTS_FAILED,
+    TESTS_PASSED,
+    TESTS_TIMEOUT,
+    UNFILTERED_TESTS_FAILED,
+    UNFILTERED_TESTS_PASSED,
+    VALID_K,
 )
-from enum import Enum
-import glob
 
-from typing import Tuple
 
 # Test Status Enum
 class TestStatus(Enum):
@@ -51,6 +52,7 @@ def classify_error(test_str: str) -> str:
     else:
         return "Other"
 
+
 def get_logs_eval(log_fp: str) -> dict:
     """
     Retrieve evaluation results for a task instance from its corresponding log file
@@ -68,7 +70,7 @@ def get_logs_eval(log_fp: str) -> dict:
         content = f.read()
 
         test_data = content.split(TESTS_CONFIG)[1:]
-        
+
         for config in test_data:
             config_line = config.split("\n")[0].split()
 
@@ -77,12 +79,20 @@ def get_logs_eval(log_fp: str) -> dict:
             test_passed = TESTS_PASSED in config
 
             unfiltered_tests_passed = UNFILTERED_TESTS_PASSED in config
-            unfiltered_tests_compiled =UNFILTERED_TESTS_FAILED in config or unfiltered_tests_passed
+            unfiltered_tests_compiled = (
+                UNFILTERED_TESTS_FAILED in config or unfiltered_tests_passed
+            )
 
             test_compiled = TESTS_FAILED in config or test_passed
 
             if setting not in results:
-                results[setting] = {"tests_passed": [], "tests_compiled": [], "coverage": [], "test_time": [], "test_error": []}
+                results[setting] = {
+                    "tests_passed": [],
+                    "tests_compiled": [],
+                    "coverage": [],
+                    "test_time": [],
+                    "test_error": [],
+                }
                 if setting == "full":
                     results[setting]["unfiltered_tests_passed"] = []
                     results[setting]["unfiltered_tests_compiled"] = []
@@ -91,7 +101,11 @@ def get_logs_eval(log_fp: str) -> dict:
                     results[setting]["mutation_num"] = []
 
             if "CoverageLOG" in config:
-                coverage = float(config.split("CoverageLOG: ")[1].split("%")[0]) if test_passed else -1
+                coverage = (
+                    float(config.split("CoverageLOG: ")[1].split("%")[0])
+                    if test_passed
+                    else -1
+                )
             else:
                 coverage = -1
 
@@ -102,25 +116,41 @@ def get_logs_eval(log_fp: str) -> dict:
 
             if setting == "full":
                 if "MutationLOG" in config:
-                    mutation_score = float(config.split("MutationLOG: ")[1].split("%")[0]) if test_passed else -1
+                    mutation_score = (
+                        float(config.split("MutationLOG: ")[1].split("%")[0])
+                        if test_passed
+                        else -1
+                    )
                 else:
                     mutation_score = -1
 
                 if "MutationUncertainty" in config:
-                    mutation_uncertainty = float(config.split("MutationUncertainty: ")[1].split("\n")[0]) if test_passed else -1
+                    mutation_uncertainty = (
+                        float(config.split("MutationUncertainty: ")[1].split("\n")[0])
+                        if test_passed
+                        else -1
+                    )
                 else:
                     mutation_uncertainty = -1
-                
+
                 if "MutationNum" in config:
-                    mutation_num = float(config.split("MutationNum: ")[1].split("\n")[0]) if test_passed else -1
+                    mutation_num = (
+                        float(config.split("MutationNum: ")[1].split("\n")[0])
+                        if test_passed
+                        else -1
+                    )
                 else:
                     mutation_num = -1
 
                 results[setting]["mutation_score"].append(mutation_score)
                 results[setting]["mutation_uncertainty"].append(mutation_uncertainty)
                 results[setting]["mutation_num"].append(mutation_num)
-                results[setting]["unfiltered_tests_passed"].append(unfiltered_tests_passed)
-                results[setting]["unfiltered_tests_compiled"].append(unfiltered_tests_compiled)
+                results[setting]["unfiltered_tests_passed"].append(
+                    unfiltered_tests_passed
+                )
+                results[setting]["unfiltered_tests_compiled"].append(
+                    unfiltered_tests_compiled
+                )
 
             results[setting]["tests_passed"].append(test_passed)
             results[setting]["tests_compiled"].append(test_compiled)
@@ -129,6 +159,7 @@ def get_logs_eval(log_fp: str) -> dict:
             results[setting]["test_error"].append(classify_error(config))
 
     return results
+
 
 def get_eval_reports_for_logs(
     eval_logs: list,
@@ -164,9 +195,15 @@ def get_eval_reports_for_logs(
             instance_id = eval_log.split("/")[-1].split(".")[0]
 
             if raw_only:
-                eval_sm["baseline_covs"] = swe_bench_instances[instance_id]["baseline_covs"]
+                eval_sm["baseline_covs"] = swe_bench_instances[instance_id][
+                    "baseline_covs"
+                ]
 
-            report = get_eval_report(eval_sm, swe_bench_instances, instance_id, is_baseline) if not raw_only else eval_sm
+            report = (
+                get_eval_report(eval_sm, swe_bench_instances, instance_id, is_baseline)
+                if not raw_only
+                else eval_sm
+            )
             report_tests[get_file_name_from_lp(eval_log)] = report
         except Exception as e:
             print(e)
@@ -181,44 +218,75 @@ def get_eval_reports_for_logs(
         if instance_id not in report_final:
             report_final[instance_id] = report_tests[get_file_name_from_lp(eval_log)]
         else:
-            report_final[instance_id].update(report_tests[get_file_name_from_lp(eval_log)])
+            report_final[instance_id].update(
+                report_tests[get_file_name_from_lp(eval_log)]
+            )
 
     return report_final
 
 
 def add_execution_metric(eval_sm, final_results, setting, baseline_info, metric_name):
     metric_ds = eval_sm[setting][metric_name]
-    metric_non_negative_1 = [metric_ds[i] for i in range(len(metric_ds)) if metric_ds[i] >= 0]
-    
+    metric_non_negative_1 = [
+        metric_ds[i] for i in range(len(metric_ds)) if metric_ds[i] >= 0
+    ]
 
     if "full" in setting:
-        final_results[f"{setting}_av_{metric_name}"] = sum(metric_non_negative_1) / len(metric_non_negative_1) if len(metric_non_negative_1) > 0 else 0
-        final_results[f"{setting}_av_pass_{metric_name}"] = sum(metric_non_negative_1) / len(metric_non_negative_1) if len(metric_non_negative_1) > 0 else -1
+        final_results[f"{setting}_av_{metric_name}"] = (
+            sum(metric_non_negative_1) / len(metric_non_negative_1)
+            if len(metric_non_negative_1) > 0
+            else 0
+        )
+        final_results[f"{setting}_av_pass_{metric_name}"] = (
+            sum(metric_non_negative_1) / len(metric_non_negative_1)
+            if len(metric_non_negative_1) > 0
+            else -1
+        )
     else:
         EXECUTION_MAPPING = {"last": "last_minus_one", "extra": "last"}
 
-        
         if setting != "first":
             metric_baseline_ds = baseline_info[EXECUTION_MAPPING[setting]]
-            metric_non_negative_baseline = [metric_baseline_ds for i in range(len(metric_ds)) if metric_baseline_ds >= 0 and metric_ds[i] >= 0]
-            metric_non_negative_pred = [metric_ds[i] for i in range(len(metric_ds)) if metric_baseline_ds >= 0 and metric_ds[i] >= 0]
+            metric_non_negative_baseline = [
+                metric_baseline_ds
+                for i in range(len(metric_ds))
+                if metric_baseline_ds >= 0 and metric_ds[i] >= 0
+            ]
+            metric_non_negative_pred = [
+                metric_ds[i]
+                for i in range(len(metric_ds))
+                if metric_baseline_ds >= 0 and metric_ds[i] >= 0
+            ]
         else:
             metric_non_negative_baseline = [0 for i in range(len(metric_ds))]
-            metric_non_negative_pred = [metric_ds[i] for i in range(len(metric_ds)) if metric_ds[i] >= 0]
+            metric_non_negative_pred = [
+                metric_ds[i] for i in range(len(metric_ds)) if metric_ds[i] >= 0
+            ]
 
         if len(metric_non_negative_pred) == 0:
             final_results[f"{setting}_av_{metric_name}_imp_baseline"] = 0
             final_results[f"{setting}_av_pass_{metric_name}_imp_baseline"] = -1
         else:
-            metric_non_negative_baseline_av = sum(metric_non_negative_baseline) / len(metric_non_negative_baseline)
-            metric_non_negative_pred_av = sum(metric_non_negative_pred) / len(metric_non_negative_pred)
+            metric_non_negative_baseline_av = sum(metric_non_negative_baseline) / len(
+                metric_non_negative_baseline
+            )
+            metric_non_negative_pred_av = sum(metric_non_negative_pred) / len(
+                metric_non_negative_pred
+            )
             if metric_non_negative_pred_av - metric_non_negative_baseline_av < 0:
                 final_results[f"{setting}_av_{metric_name}_imp_baseline"] = 0
                 final_results[f"{setting}_av_pass_{metric_name}_imp_baseline"] = -1
-                print(f"{setting}_av_{metric_name}_imp_baseline: {metric_non_negative_pred_av - metric_non_negative_baseline_av}")
+                print(
+                    f"{setting}_av_{metric_name}_imp_baseline: {metric_non_negative_pred_av - metric_non_negative_baseline_av}"
+                )
             else:
-                final_results[f"{setting}_av_{metric_name}_imp_baseline"] = metric_non_negative_pred_av - metric_non_negative_baseline_av
-                final_results[f"{setting}_av_pass_{metric_name}_imp_baseline"] = metric_non_negative_pred_av - metric_non_negative_baseline_av
+                final_results[f"{setting}_av_{metric_name}_imp_baseline"] = (
+                    metric_non_negative_pred_av - metric_non_negative_baseline_av
+                )
+                final_results[f"{setting}_av_pass_{metric_name}_imp_baseline"] = (
+                    metric_non_negative_pred_av - metric_non_negative_baseline_av
+                )
+
 
 def get_eval_report(
     eval_sm: dict,
@@ -238,17 +306,24 @@ def get_eval_report(
 
     final_results = {}
 
-
     for setting in eval_sm:
         tests_passed = eval_sm[setting]["tests_passed"]
-        unfiltered_tests_passed = eval_sm[setting]["unfiltered_tests_passed"] if "unfiltered_tests_passed" in eval_sm[setting] else []
+        unfiltered_tests_passed = (
+            eval_sm[setting]["unfiltered_tests_passed"]
+            if "unfiltered_tests_passed" in eval_sm[setting]
+            else []
+        )
 
         if not is_baseline:
             baseline_cov_info = swe_bench_instances[instance_id]["baseline_covs"]
 
-            add_execution_metric(eval_sm, final_results, setting, baseline_cov_info, "coverage")
+            add_execution_metric(
+                eval_sm, final_results, setting, baseline_cov_info, "coverage"
+            )
             if setting == "full":
-                add_execution_metric(eval_sm, final_results, setting, {}, "mutation_score")
+                add_execution_metric(
+                    eval_sm, final_results, setting, {}, "mutation_score"
+                )
         else:
             final_results[f"{setting}_av_coverage"] = eval_sm[setting]["coverage"][0]
 
@@ -256,19 +331,36 @@ def get_eval_report(
             if len(tests_passed) >= k:
                 final_results[f"{setting}_pass_at_{k}"] = any(tests_passed[:k])
             if len(tests_passed) >= k:
-                final_results[f"{setting}_avg_pass_at_{k}"] = sum(tests_passed[:k]) / len(tests_passed[:k])
+                final_results[f"{setting}_avg_pass_at_{k}"] = sum(
+                    tests_passed[:k]
+                ) / len(tests_passed[:k])
             if len(unfiltered_tests_passed) >= k:
-                final_results[f"{setting}_unfiltered_pass_at_{k}"] = any(unfiltered_tests_passed[:k])
+                final_results[f"{setting}_unfiltered_pass_at_{k}"] = any(
+                    unfiltered_tests_passed[:k]
+                )
 
         for metric in eval_sm[setting]:
-            if metric not in ["tests_passed", "tests_compiled", "unfiltered_tests_passed", "unfiltered_tests_compiled", "coverage", "mutation_score", "test_error"]:
-                met_non_negative = [eval_sm[setting][metric][i] for i in range(len(eval_sm[setting][metric])) if eval_sm[setting][metric][i] >= 0]
+            if metric not in [
+                "tests_passed",
+                "tests_compiled",
+                "unfiltered_tests_passed",
+                "unfiltered_tests_compiled",
+                "coverage",
+                "mutation_score",
+                "test_error",
+            ]:
+                met_non_negative = [
+                    eval_sm[setting][metric][i]
+                    for i in range(len(eval_sm[setting][metric]))
+                    if eval_sm[setting][metric][i] >= 0
+                ]
                 if len(met_non_negative) == 0:
                     final_results[f"{setting}_av_{metric}"] = -1
                 else:
-                    final_results[f"{setting}_av_{metric}"] = sum(eval_sm[setting][metric]) / len(eval_sm[setting][metric])
+                    final_results[f"{setting}_av_{metric}"] = sum(
+                        eval_sm[setting][metric]
+                    ) / len(eval_sm[setting][metric])
     return final_results
-
 
 
 get_file_name_from_lp = lambda x: x.rsplit("/", 1)[-1]
@@ -286,8 +378,15 @@ test_failed = lambda case, sm: case not in sm or any(
     [sm[case] == status for status in [TestStatus.FAILED.value, TestStatus.ERROR.value]]
 )
 
+
 def get_eval_reports_for_dir(
-    eval_dir: str, swe_bench_instances: dict, model_name, callback: callable = None, verbose=False, raw_only=False, is_baseline=False 
+    eval_dir: str,
+    swe_bench_instances: dict,
+    model_name,
+    callback: callable = None,
+    verbose=False,
+    raw_only=False,
+    is_baseline=False,
 ) -> dict:
     """
     Wrapper for getting eval report for a directory of evaluation logs.
@@ -299,7 +398,9 @@ def get_eval_reports_for_dir(
     if not os.path.exists(eval_dir):
         raise ValueError(f"Path {eval_dir} does not exist")
     logs_list = [x for x in glob.glob(os.path.join(eval_dir, f"*{model_name}*.log"))]
-    return get_eval_reports_for_logs(logs_list, swe_bench_instances, callback, verbose, raw_only, is_baseline)
+    return get_eval_reports_for_logs(
+        logs_list, swe_bench_instances, callback, verbose, raw_only, is_baseline
+    )
 
 
 ### MARK - Model Evaluation Summary
@@ -338,11 +439,20 @@ def get_model_eval_summary(
 
         # Get reports
         report_net = get_eval_reports_for_dir(
-            eval_dir, swe_bench_instances, is_baseline=is_baseline, callback=criteria_eval_sm, verbose=False, model_name=model_name
+            eval_dir,
+            swe_bench_instances,
+            is_baseline=is_baseline,
+            callback=criteria_eval_sm,
+            verbose=False,
+            model_name=model_name,
         )
     else:
         report_net = get_eval_reports_for_dir(
-            eval_dir, swe_bench_instances, is_baseline=is_baseline, verbose=False, model_name=model_name
+            eval_dir,
+            swe_bench_instances,
+            is_baseline=is_baseline,
+            verbose=False,
+            model_name=model_name,
         )
 
     # Print reports for different granularities of patch success/failure
@@ -352,7 +462,6 @@ def get_model_eval_summary(
     }
 
     format_dec = lambda x: round(x * 100, 2)
-
 
     total_metrics = {}
     for fn in report_net:
@@ -368,6 +477,7 @@ def get_model_eval_summary(
             summary[met] = sum(cleansed_metrics) / len(cleansed_metrics)
 
     return summary
+
 
 def get_model_report(
     model: str,
@@ -388,6 +498,7 @@ def get_model_report(
         report_map (dict): map of repo to report
     """
     from tqdm import tqdm
+
     # Get predictions
     predictions = []
     if predictions_path.endswith("jsonl"):
@@ -441,6 +552,7 @@ def get_model_report(
 
     return report_map
 
+
 def get_instances(instance_path: str) -> list:
     """
     Get task instances from given path
@@ -460,6 +572,7 @@ def get_instances(instance_path: str) -> list:
     with open(instance_path) as f:
         task_instances = json.load(f)
     return task_instances
+
 
 def get_test_directives(instance: dict, keep_as_files: bool = False) -> list:
     """

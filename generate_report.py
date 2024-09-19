@@ -2,54 +2,59 @@
 
 import argparse
 import json
+import re
 
 from swebench_docker.swebench_utils import (
+    get_eval_reports_for_dir,
+    get_instances,
     get_model_eval_summary,
     get_model_report,
-    get_instances,
-    get_eval_reports_for_dir
 )
-
 from swebench_docker.utils import get_eval_refs
 
-import re
 
 def count_methods(code_str):
     """
     Counts the number of methods/functions in a given string of code.
-    
+
     Args:
     code_str (str): A string containing code.
-    
+
     Returns:
     int: The number of methods/functions found.
     """
     # Regular expression to find Python function definitions
-    pattern = r'\bdef\b\s+\w+\s*\('
+    pattern = r"\bdef\b\s+\w+\s*\("
     matches = re.findall(pattern, code_str)
     return len(matches)
+
 
 def get_lines_of_code(code_str):
     """
     Extracts lines of code from a given string.
-    
+
     Args:
     code_str (str): A string containing code.
-    
+
     Returns:
     list: A list of lines of code.
     """
-    return len(code_str.strip().split('\n'))
+    return len(code_str.strip().split("\n"))
 
 
 def get_preds_report(preds_path, instances):
     with open(preds_path, "r") as f:
         preds = [json.loads(line) for line in f.readlines()]
 
-    preds_report = {"loc": [], "num_methods": [], "baseline_loc": [], "baseline_num_methods": []}
+    preds_report = {
+        "loc": [],
+        "num_methods": [],
+        "baseline_loc": [],
+        "baseline_num_methods": [],
+    }
     found_full = False
     from tqdm import tqdm
-    
+
     for pred in tqdm(preds):
         if "full" in pred["preds"]:
             for pred_text in pred["preds"]["full"]:
@@ -65,14 +70,20 @@ def get_preds_report(preds_path, instances):
 
     final_report = {}
     if found_full:
-        final_report["av_pred_full_loc"] = sum(preds_report["loc"]) / len(preds_report["loc"])
-        final_report["av_pred_full_num_methods"] = sum(preds_report["num_methods"]) / len(preds_report["num_methods"])
-        final_report["av_baseline_loc"] = sum(preds_report["baseline_loc"]) / len(preds_report["baseline_loc"])
-        final_report["av_baseline_num_methods"] = sum(preds_report["baseline_num_methods"]) / len(preds_report["baseline_num_methods"])
+        final_report["av_pred_full_loc"] = sum(preds_report["loc"]) / len(
+            preds_report["loc"]
+        )
+        final_report["av_pred_full_num_methods"] = sum(
+            preds_report["num_methods"]
+        ) / len(preds_report["num_methods"])
+        final_report["av_baseline_loc"] = sum(preds_report["baseline_loc"]) / len(
+            preds_report["baseline_loc"]
+        )
+        final_report["av_baseline_num_methods"] = sum(
+            preds_report["baseline_num_methods"]
+        ) / len(preds_report["baseline_num_methods"])
     return final_report
 
-
-    
 
 def generate_report(
     swe_bench_tasks: str, predictions_path: str, log_dir: str, output_dir: str
@@ -112,7 +123,6 @@ def generate_report(
 
     with open(f"{output_dir}/{model_name_or_path}_report.json", "w") as f:
         f.write(json.dumps(report, indent=4))
-
 
 
 if __name__ == "__main__":

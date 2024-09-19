@@ -7,17 +7,16 @@ import hashlib
 import logging
 import os
 
-from swebench_docker.swebench_utils import get_instances, get_test_directives
-from swebench_docker.utils import get_eval_refs
-
 from swebench_docker.constants import (
     KEY_ID,
-    KEY_MODEL,
     KEY_INSTANCE_ID,
-    KEY_PREDICTIONS, 
+    KEY_MODEL,
+    KEY_PREDICTIONS,
     MAP_REPO_TO_TEST_FRAMEWORK,
 )
 from swebench_docker.run_docker import run_docker_evaluation
+from swebench_docker.swebench_utils import get_instances, get_test_directives
+from swebench_docker.utils import get_eval_refs
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -33,8 +32,15 @@ def validate_predictions(predictions_path, tasks_ids):
     not_in_tasks = []
     # Check that predictions are correctly formatted
     for pred in predictions:
-        if any([x not in pred for x in [KEY_ID, KEY_INSTANCE_ID, KEY_MODEL, KEY_PREDICTIONS]]):
-            raise ValueError(f"Every prediction must have {KEY_INSTANCE_ID}, {KEY_MODEL}, {KEY_ID}, and {KEY_PREDICTIONS} fields")
+        if any(
+            [
+                x not in pred
+                for x in [KEY_ID, KEY_INSTANCE_ID, KEY_MODEL, KEY_PREDICTIONS]
+            ]
+        ):
+            raise ValueError(
+                f"Every prediction must have {KEY_INSTANCE_ID}, {KEY_MODEL}, {KEY_ID}, and {KEY_PREDICTIONS} fields"
+            )
         if pred[KEY_ID] not in tasks_ids:
             not_in_tasks.append(pred[KEY_ID])
     # Check that instance IDs specified by predictions exist
@@ -44,6 +50,7 @@ def validate_predictions(predictions_path, tasks_ids):
             + "found in the tasks file and will not be considered: "
             + ", ".join(not_in_tasks)
         )
+
 
 async def main(
     predictions_path: str,
@@ -114,14 +121,12 @@ async def main(
             return
         else:
             logger.info(
-                f"# of predictions to evaluate: {len(predictions_filtered)} " +
-                f"({len(predictions) - len(predictions_filtered)} already evaluated)"
+                f"# of predictions to evaluate: {len(predictions_filtered)} "
+                + f"({len(predictions) - len(predictions_filtered)} already evaluated)"
             )
             predictions = predictions_filtered
     else:
-        logger.info(
-            f"# of predictions to evaluate: {len(predictions)}"
-        )
+        logger.info(f"# of predictions to evaluate: {len(predictions)}")
 
     task_instances = []
 
@@ -133,22 +138,24 @@ async def main(
         test_directives = get_test_directives(task)
         test_cmd = f"{test_type} {' '.join(test_directives)}"
 
-        task_instances.append({
-            "repo": task["repo"],
-            "version": task["version"],
-            "base_commit": task["base_commit"],
-            KEY_ID: prediction[KEY_ID],
-            KEY_INSTANCE_ID: prediction[KEY_INSTANCE_ID],
-            KEY_MODEL: prediction[KEY_MODEL],
-            KEY_PREDICTIONS: prediction[KEY_PREDICTIONS],
-            "preds_context": task["preds_context"],
-            "test_patch": task["test_patch"],
-            "test_file": task["test_file"],
-            "code_file": task["code_file"],
-            "patch": task["patch"],
-            "test_directives": test_directives,
-            "test_cmd": test_cmd
-        })
+        task_instances.append(
+            {
+                "repo": task["repo"],
+                "version": task["version"],
+                "base_commit": task["base_commit"],
+                KEY_ID: prediction[KEY_ID],
+                KEY_INSTANCE_ID: prediction[KEY_INSTANCE_ID],
+                KEY_MODEL: prediction[KEY_MODEL],
+                KEY_PREDICTIONS: prediction[KEY_PREDICTIONS],
+                "preds_context": task["preds_context"],
+                "test_patch": task["test_patch"],
+                "test_file": task["test_file"],
+                "code_file": task["code_file"],
+                "patch": task["patch"],
+                "test_directives": test_directives,
+                "test_cmd": test_cmd,
+            }
+        )
 
     task_instances = sorted(task_instances, key=lambda x: x[KEY_ID])
 
@@ -156,12 +163,22 @@ async def main(
     tasks = []
     for task_instance in task_instances:
         if task_instance[KEY_PREDICTIONS]:
+
             async def run_docker_throttled(*args, **kwargs):
                 async with sem:
-                    return await run_docker_evaluation(*args, **kwargs, only_baseline=False, skip_mutation=skip_mutation)
+                    return await run_docker_evaluation(
+                        *args,
+                        **kwargs,
+                        only_baseline=False,
+                        skip_mutation=skip_mutation,
+                    )
 
             for setting in task_instance[KEY_PREDICTIONS]:
-                task = asyncio.create_task(run_docker_throttled(task_instance, namespace, log_dir, setting, timeout))
+                task = asyncio.create_task(
+                    run_docker_throttled(
+                        task_instance, namespace, log_dir, setting, timeout
+                    )
+                )
                 tasks.append(task)
         else:
             logger.info(f"[{task_instance[KEY_ID]}] No prediction found.")
@@ -171,13 +188,42 @@ async def main(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--predictions_path", type=str, help="Path to predictions file", required=True)
-    parser.add_argument("--log_dir", type=str, help="Path to log directory", required=True)
-    parser.add_argument("--swe_bench_tasks", type=str, help="Path to dataset file or HF datasets name", required=True)
-    parser.add_argument("--namespace", type=str, help="Docker repository namespace", required=False, default="aorwall")
-    parser.add_argument("--skip_existing", action="store_true", help="(Optional) Skip existing logs")
-    parser.add_argument("--timeout", type=int, help="(Optional) Timeout in seconds (default: 60)", default=60)
-    parser.add_argument("--num_processes", type=int, help="(Optional) Number of processes to run in parallel (-1 for unlimited)", default=-1)
-    parser.add_argument("--skip_mutation", action="store_true", help="(Optional) Skip mutation")
+    parser.add_argument(
+        "--predictions_path", type=str, help="Path to predictions file", required=True
+    )
+    parser.add_argument(
+        "--log_dir", type=str, help="Path to log directory", required=True
+    )
+    parser.add_argument(
+        "--swe_bench_tasks",
+        type=str,
+        help="Path to dataset file or HF datasets name",
+        required=True,
+    )
+    parser.add_argument(
+        "--namespace",
+        type=str,
+        help="Docker repository namespace",
+        required=False,
+        default="aorwall",
+    )
+    parser.add_argument(
+        "--skip_existing", action="store_true", help="(Optional) Skip existing logs"
+    )
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        help="(Optional) Timeout in seconds (default: 60)",
+        default=60,
+    )
+    parser.add_argument(
+        "--num_processes",
+        type=int,
+        help="(Optional) Number of processes to run in parallel (-1 for unlimited)",
+        default=-1,
+    )
+    parser.add_argument(
+        "--skip_mutation", action="store_true", help="(Optional) Skip mutation"
+    )
     args = parser.parse_args()
     asyncio.run(main(**vars(args)))

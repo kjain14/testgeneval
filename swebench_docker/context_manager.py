@@ -1,20 +1,31 @@
 # Adapted from: https://github.com/aorwall/SWE-bench-docker/blob/main/swebench_docker/context_manager.py
 
+import configparser
 import json
 import logging
 import os
 import shutil
 import subprocess
-import configparser
 import time
-
-from logging import INFO, Logger, DEBUG, ERROR
+from logging import DEBUG, ERROR, INFO, Logger
 from traceback import format_exc
 
+from swebench_docker.constants import (
+    APPLY_PATCH_FAIL,
+    APPLY_PATCH_PASS,
+    INSTALL_FAIL,
+    KEY_ID,
+    KEY_INSTANCE_ID,
+    KEY_MODEL,
+    MAP_VERSION_TO_INSTALL,
+    MUTATION_TEMPLATE,
+    TESTS_ERROR,
+    TESTS_FAILED,
+    TESTS_PASSED,
+    TESTS_TIMEOUT,
+    PatchType,
+)
 from swebench_docker.swebench_utils import get_test_directives
-
-from swebench_docker.constants import KEY_INSTANCE_ID, PatchType, APPLY_PATCH_FAIL, APPLY_PATCH_PASS, TESTS_FAILED, \
-    TESTS_PASSED, TESTS_TIMEOUT, TESTS_ERROR, KEY_MODEL, MAP_VERSION_TO_INSTALL, INSTALL_FAIL, MUTATION_TEMPLATE, KEY_ID
 
 logger_taskenv = logging.getLogger("taskenv")
 
@@ -30,14 +41,13 @@ class LogWrapper:
         self.logger = logger
         self.prefix = prefix
 
-    def write(
-            self,
-            message: str,
-            mode: str = "a",
-            level: int = INFO):
+    def write(self, message: str, mode: str = "a", level: int = INFO):
         with open(self.log_file, mode) as f:
-            log = f"{self.prefix} {message} \n" if self.prefix \
-                is not None else f"{message} \n"
+            log = (
+                f"{self.prefix} {message} \n"
+                if self.prefix is not None
+                else f"{message} \n"
+            )
             f.write(log)
         if self.logger is not None:
             self.logger.log(level, message)
@@ -62,7 +72,9 @@ class ExecWrapper:
             else:
                 self.logger.write(f"Command: {cmd}", level=DEBUG)
             combined_args = {**self.subprocess_args, **kwargs}
-            self.logger.write(f"Subprocess args: {json.dumps(combined_args)}", level=DEBUG)
+            self.logger.write(
+                f"Subprocess args: {json.dumps(combined_args)}", level=DEBUG
+            )
             output = subprocess.run(cmd, **combined_args)
             self.logger.write(f"Std. Output:\n{output.stdout}", level=DEBUG)
             if output.stderr:
@@ -91,7 +103,7 @@ class TaskEnvContextManager:
         timeout: int = None,
         mutation_timeout: int = None,
         is_eval: bool = True,
-        image_type: str = "conda"
+        image_type: str = "conda",
     ):
         self.instance_id = task_instance[KEY_INSTANCE_ID]
         self.id = task_instance[KEY_ID]
@@ -115,8 +127,10 @@ class TaskEnvContextManager:
 
         self.log_file = os.path.join(log_dir, log_file_name)
         self.log = LogWrapper(
-            self.log_file, logger=logger_taskenv,
-            prefix=f"[{testbed_name}] [{self.instance_id}]")
+            self.log_file,
+            logger=logger_taskenv,
+            prefix=f"[{testbed_name}] [{self.instance_id}]",
+        )
 
         self.exec = ExecWrapper(
             subprocess_args={
@@ -134,38 +148,38 @@ class TaskEnvContextManager:
     def add_coverage_tox(self, config_file):
         # Create a ConfigParser object
         config = configparser.ConfigParser()
-        
+
         # Read the existing tox.ini file
         config.read(config_file)
-        
+
         # Check if the 'testenv' section exists
-        if 'testenv' in config:
+        if "testenv" in config:
             # Get the existing commands or set default if not found
-            commands = config.get('testenv', 'commands')
-            
-            self.log.write("OLD COMMANDS: "+commands)
+            commands = config.get("testenv", "commands")
+
+            self.log.write("OLD COMMANDS: " + commands)
             # Modify the command to include coverage
             if "coverage run" not in commands:
                 # Assuming the command is something like `python -m pytest {posargs}`
                 # We need to replace it with `coverage run -m pytest {posargs}`
                 modified_commands = []
-                for command in commands.split('\n'):
-                    if '--cov' not in command and "pytest" in command:
+                for command in commands.split("\n"):
+                    if "--cov" not in command and "pytest" in command:
                         # Replace python with coverage run
 
                         command = command.replace("pytest", "pytest --cov sphinx")
-                    
+
                     modified_commands.append(command)
                 modified_commands.append("coverage json -o coverage.json")
 
-                commands = '\n'.join(modified_commands)
+                commands = "\n".join(modified_commands)
 
-            self.log.write("NEW COMMANDS: "+commands)
+            self.log.write("NEW COMMANDS: " + commands)
             # Set the modified commands back to the config
-            config.set('testenv', 'commands', commands)
-            
+            config.set("testenv", "commands", commands)
+
             # Write the changes back to the tox.ini file
-            with open(config_file, 'w') as configfile:
+            with open(config_file, "w") as configfile:
                 config.write(configfile)
             self.log.write(f"Coverage added to {config_file}\n")
             self.log.write(commands)
@@ -189,9 +203,7 @@ class TaskEnvContextManager:
         self.log.write(enter_msg, mode="w")
 
         self.exec(
-            f"git config --global --add safe.directory {self.repo_dir}".split(
-                " "
-            )
+            f"git config --global --add safe.directory {self.repo_dir}".split(" ")
         )
         self.exec(
             f"git -c advice.detachedHead=false checkout {self.instance['base_commit']}".split(
@@ -199,7 +211,9 @@ class TaskEnvContextManager:
             )
         )
 
-        specifications = MAP_VERSION_TO_INSTALL[self.instance["repo"]][self.instance["version"]]
+        specifications = MAP_VERSION_TO_INSTALL[self.instance["repo"]][
+            self.instance["version"]
+        ]
         if "pre_test" in specifications:
             for cmd_pre_install in specifications["pre_test"]:
                 self.log.write(f"Running pre-test command: {cmd_pre_install}")
@@ -274,10 +288,19 @@ class TaskEnvContextManager:
             if patch_type != PatchType.PATCH_TEST.value:
                 self.exec("git restore .".split(" "))
                 # revert to the state of the repo before the patch was applied
-                output = self.exec(f"git apply {init_diff_patch_path}".split(), raise_error=False, check=False)
-                self.log.write(f"Output (git apply - revert to initial state): {output.stdout}")
-            apply_cmd = (f"patch -R --batch --fuzz=5 -p1 -i {patch_path}" if revert
-                         else f"patch --batch --fuzz=5 -p1 -i {patch_path}")
+                output = self.exec(
+                    f"git apply {init_diff_patch_path}".split(),
+                    raise_error=False,
+                    check=False,
+                )
+                self.log.write(
+                    f"Output (git apply - revert to initial state): {output.stdout}"
+                )
+            apply_cmd = (
+                f"patch -R --batch --fuzz=5 -p1 -i {patch_path}"
+                if revert
+                else f"patch --batch --fuzz=5 -p1 -i {patch_path}"
+            )
             out_patch = self.exec(apply_cmd.split(" "), raise_error=False, check=False)
 
         # TODO os.remove(patch_path)
@@ -291,12 +314,21 @@ class TaskEnvContextManager:
                 f.write(out_patch.stdout)
                 if out_patch.stderr:
                     f.write(out_patch.stderr)
-                if patch_type != PatchType.PATCH_TEST.value and "patching" in out_patch.stdout:
+                if (
+                    patch_type != PatchType.PATCH_TEST.value
+                    and "patching" in out_patch.stdout
+                ):
                     # Patch has been partially applied so we should revert it.
                     self.exec("git restore .".split(" "))
                     # revert to the state of the repo before the patch was applied
-                    output = self.exec(f"git apply {init_diff_patch_path}".split(), raise_error=False, check=False)
-                    self.log.write(f"Output (git apply - revert to initial state): {output.stdout}")
+                    output = self.exec(
+                        f"git apply {init_diff_patch_path}".split(),
+                        raise_error=False,
+                        check=False,
+                    )
+                    self.log.write(
+                        f"Output (git apply - revert to initial state): {output.stdout}"
+                    )
             return False
 
         # Patch apply succeeded
@@ -307,43 +339,88 @@ class TaskEnvContextManager:
 
     def run_mutation_testing(self, instance, specifications, test_time, test_cmd):
         with open("mutation.toml", "w") as mutant_file:
-            formatted_content = MUTATION_TEMPLATE.format(source_fp=instance["code_file"], timeout=max(10, 1.5*test_time), test_cmd=test_cmd)
+            formatted_content = MUTATION_TEMPLATE.format(
+                source_fp=instance["code_file"],
+                timeout=max(10, 1.5 * test_time),
+                test_cmd=test_cmd,
+            )
             mutant_file.write(formatted_content)
 
-        
         if "image" in specifications and specifications["image"] == "python":
-            self.exec("cosmic-ray init mutation.toml mutation.sqlite".split(), shell=False, check=False, timeout=self.timeout)
+            self.exec(
+                "cosmic-ray init mutation.toml mutation.sqlite".split(),
+                shell=False,
+                check=False,
+                timeout=self.timeout,
+            )
             try:
-                self.exec("cosmic-ray exec mutation.toml mutation.sqlite".split(), shell=False, check=False, timeout=self.mutation_timeout)
+                self.exec(
+                    "cosmic-ray exec mutation.toml mutation.sqlite".split(),
+                    shell=False,
+                    check=False,
+                    timeout=self.mutation_timeout,
+                )
             except subprocess.TimeoutExpired:
                 self.log.write("MutationTimeout")
-            
-            output = str(self.exec("cr-rate mutation.sqlite  --estimate --confidence 95.0".split(), shell=False, check=False).stdout)
-            num_output = str(self.exec("cr-report mutation.sqlite".split(), shell=False, check=False).stdout)
+
+            output = str(
+                self.exec(
+                    "cr-rate mutation.sqlite  --estimate --confidence 95.0".split(),
+                    shell=False,
+                    check=False,
+                ).stdout
+            )
+            num_output = str(
+                self.exec(
+                    "cr-report mutation.sqlite".split(), shell=False, check=False
+                ).stdout
+            )
             if "total jobs: " in num_output:
                 num_mutants = num_output.split("total jobs: ")[1].split("\n")[0]
                 self.log.write(f"\nMutationNum: {num_mutants}")
 
         else:
-            self.exec(f"{self.cmd_conda_run} cosmic-ray init mutation.toml mutation.sqlite".split(), shell=False, check=False, timeout=self.timeout)
+            self.exec(
+                f"{self.cmd_conda_run} cosmic-ray init mutation.toml mutation.sqlite".split(),
+                shell=False,
+                check=False,
+                timeout=self.timeout,
+            )
             try:
-                self.exec(f"{self.cmd_conda_run} cosmic-ray exec mutation.toml mutation.sqlite".split(), shell=False, check=False, timeout=self.mutation_timeout)
+                self.exec(
+                    f"{self.cmd_conda_run} cosmic-ray exec mutation.toml mutation.sqlite".split(),
+                    shell=False,
+                    check=False,
+                    timeout=self.mutation_timeout,
+                )
             except subprocess.TimeoutExpired:
                 self.log.write("MutationTimeout")
 
-            output = str(self.exec(f"{self.cmd_conda_run} cr-rate mutation.sqlite  --estimate --confidence 95.0".split(), shell=False, check=False).stdout)
-            num_output = str(self.exec(f"{self.cmd_conda_run} cr-report mutation.sqlite".split(), shell=False, check=False).stdout)
+            output = str(
+                self.exec(
+                    f"{self.cmd_conda_run} cr-rate mutation.sqlite  --estimate --confidence 95.0".split(),
+                    shell=False,
+                    check=False,
+                ).stdout
+            )
+            num_output = str(
+                self.exec(
+                    f"{self.cmd_conda_run} cr-report mutation.sqlite".split(),
+                    shell=False,
+                    check=False,
+                ).stdout
+            )
             if "total jobs: " in num_output:
                 num_mutants = num_output.split("total jobs: ")[1].split("\n")[0]
                 self.log.write(f"\nMutationNum: {num_mutants}")
 
-        if len(output.strip().split(" ")) == 3: 
+        if len(output.strip().split(" ")) == 3:
             low, val, high = output.split(" ")
             low = float(low)
             val = float(val)
             high = float(high)
 
-            confidence_range = (high - val)
+            confidence_range = high - val
             mutation_score = 100 - val
 
             self.log.write(f"\nMutationLOG: {mutation_score}%")
@@ -352,12 +429,14 @@ class TaskEnvContextManager:
             self.log.write(f"\nMutationFAIL")
 
     def run_testing_diagnostic(self, instance: dict):
-        specifications = MAP_VERSION_TO_INSTALL[self.instance["repo"]][self.instance["version"]]
+        specifications = MAP_VERSION_TO_INSTALL[self.instance["repo"]][
+            self.instance["version"]
+        ]
 
         try:
-            if "tox" in instance['test_cmd']:
+            if "tox" in instance["test_cmd"]:
                 test_cmd = self.add_coverage_tox("tox.ini")
-            
+
             if "image" in specifications and specifications["image"] == "python":
                 test_cmd = f"{instance['test_cmd']}"
             else:
@@ -369,23 +448,42 @@ class TaskEnvContextManager:
             )
             end = time.time()
 
-            test_time = end - start            
+            test_time = end - start
             self.log.write(f"TestsTime: {test_time}")
 
             self.log.write(f"\n{TESTS_PASSED}\n")
             self.log.write(f"\nCoverageLOG: 100%\n")
 
             with open("mutation.toml", "w") as mutant_file:
-                formatted_content = MUTATION_TEMPLATE.format(source_fp=instance["code_file"], timeout=10, test_cmd="test")
+                formatted_content = MUTATION_TEMPLATE.format(
+                    source_fp=instance["code_file"], timeout=10, test_cmd="test"
+                )
                 mutant_file.write(formatted_content)
 
-            
             if "image" in specifications and specifications["image"] == "python":
-                self.exec("cosmic-ray init mutation.toml mutation.sqlite".split(), shell=False, check=False)
-                output = str(self.exec("cr-report mutation.sqlite".split(), shell=False, check=False).stdout)
+                self.exec(
+                    "cosmic-ray init mutation.toml mutation.sqlite".split(),
+                    shell=False,
+                    check=False,
+                )
+                output = str(
+                    self.exec(
+                        "cr-report mutation.sqlite".split(), shell=False, check=False
+                    ).stdout
+                )
             else:
-                self.exec(f"{self.cmd_conda_run} cosmic-ray init mutation.toml mutation.sqlite".split(), shell=False, check=False)
-                output = str(self.exec(f"{self.cmd_conda_run} cr-report mutation.sqlite".split(), shell=False, check=False).stdout)
+                self.exec(
+                    f"{self.cmd_conda_run} cosmic-ray init mutation.toml mutation.sqlite".split(),
+                    shell=False,
+                    check=False,
+                )
+                output = str(
+                    self.exec(
+                        f"{self.cmd_conda_run} cr-report mutation.sqlite".split(),
+                        shell=False,
+                        check=False,
+                    ).stdout
+                )
 
             num_mutants = output.split("total jobs: ")[1].split("\n")[0]
             self.log.write(f"\nMutationLOG: {num_mutants}%")
@@ -409,11 +507,13 @@ class TaskEnvContextManager:
                 os.remove(".coveragerc")
 
             # Run test command for task instance
-            specifications = MAP_VERSION_TO_INSTALL[self.instance["repo"]][self.instance["version"]]
+            specifications = MAP_VERSION_TO_INSTALL[self.instance["repo"]][
+                self.instance["version"]
+            ]
 
-            if "tox" in instance['test_cmd']:
+            if "tox" in instance["test_cmd"]:
                 test_cmd = self.add_coverage_tox("tox.ini")
-            
+
             if "image" in specifications and specifications["image"] == "python":
                 test_cmd = f"{instance['test_cmd']}"
             else:
@@ -432,32 +532,43 @@ class TaskEnvContextManager:
 
             self.log.write(f"TestsTime: {test_time}")
 
-            if log_data: 
+            if log_data:
                 # Write pass/fail status to log file
                 if out_test.returncode != 0:
                     self.log.write(f"\n{TESTS_FAILED}\n")
                 else:
                     self.log.write(f"\n{TESTS_PASSED}\n")
                     self.log.write(f"Current Working Directory: {os.getcwd()}")
-                    
-                    if "image" in specifications and specifications["image"] == "python":
+
+                    if (
+                        "image" in specifications
+                        and specifications["image"] == "python"
+                    ):
                         coverage_data_cmd = f"coverage json -o coverage.json"
                     else:
-                        coverage_data_cmd = f"{self.cmd_conda_run} coverage json -o coverage.json"
+                        coverage_data_cmd = (
+                            f"{self.cmd_conda_run} coverage json -o coverage.json"
+                        )
 
                     self.exec(coverage_data_cmd.split(), shell=False, check=False)
                     cov_success = False
                     with open("coverage.json", "r") as cov_file:
                         coverage_data = json.load(cov_file)
-                        if instance["code_file"] in coverage_data["files"].keys(): 
+                        if instance["code_file"] in coverage_data["files"].keys():
                             file_data = coverage_data["files"][instance["code_file"]]
                             cov_success = True
-                            self.log.write(f"\nCoverageLOG: {file_data['summary']['percent_covered']}%\n")
+                            self.log.write(
+                                f"\nCoverageLOG: {file_data['summary']['percent_covered']}%\n"
+                            )
                         else:
-                            self.log.write(f"\nCoverageFAIL:{instance['code_file']} not found in coverage data\n")
+                            self.log.write(
+                                f"\nCoverageFAIL:{instance['code_file']} not found in coverage data\n"
+                            )
                     if cov_success and not skip_mutation:
                         self.log.write("Running mutation testing")
-                        self.run_mutation_testing(instance, specifications, test_time, test_cmd)
+                        self.run_mutation_testing(
+                            instance, specifications, test_time, test_cmd
+                        )
 
             self.log.write(f"Test script run successful")
             return True, out_test.returncode == 0
@@ -474,7 +585,7 @@ class TaskEnvContextManager:
                 self.log.write(f"{TESTS_ERROR}: {e}")
             self.log.write(format_exc(), level=ERROR)
             exit()
-            #return False
+            # return False
         finally:
             if os.path.exists("mutation.sqlite"):
                 os.remove("mutation.sqlite")

@@ -5,28 +5,24 @@ It sorts instances by length and continually writes the outputs to a specified f
 """
 
 import json
+import logging
 import os
 import time
-import dotenv
 import traceback
+from argparse import ArgumentParser
 from pathlib import Path
-from tqdm.auto import tqdm
+
+import dotenv
 import numpy as np
 import openai
-from frozendict import frozendict
 import tiktoken
-from anthropic import HUMAN_PROMPT, AI_PROMPT, Anthropic
-from tenacity import (
-    retry,
-    stop_after_attempt,
-    wait_random_exponential,
-)
-from datasets import load_dataset, load_from_disk, DatasetDict
+from anthropic import AI_PROMPT, HUMAN_PROMPT, Anthropic
+from datasets import DatasetDict, load_dataset, load_from_disk
+from frozendict import frozendict
 from inference.configs.instruct_prompt import InstructPrompt
+from tenacity import retry, stop_after_attempt, wait_random_exponential
+from tqdm.auto import tqdm
 from transformers import AutoTokenizer
-
-from argparse import ArgumentParser
-import logging
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
@@ -68,6 +64,7 @@ OUTPUT_LIMITS = {
 
 EPSILON = 1000
 
+
 def calc_cost(model_name, input_tokens, output_tokens):
     """
     Calculates the cost of a response from the openai API.
@@ -89,7 +86,16 @@ def calc_cost(model_name, input_tokens, output_tokens):
 
 
 @retry(wait=wait_random_exponential(min=30, max=600), stop=stop_after_attempt(3))
-def call_chat_llama_405B(model_name_or_path, client, inputs, temperature, top_p, max_tokens, system_message, **model_args):
+def call_chat_llama_405B(
+    model_name_or_path,
+    client,
+    inputs,
+    temperature,
+    top_p,
+    max_tokens,
+    system_message,
+    **model_args,
+):
     """
     Calls the OpenAI API to generate completions for the given inputs using the new API interface.
 
@@ -106,23 +112,36 @@ def call_chat_llama_405B(model_name_or_path, client, inputs, temperature, top_p,
     user_message = inputs
     messages = [
         {"role": "system", "content": system_message},
-        {"role": "user", "content": user_message}
+        {"role": "user", "content": user_message},
     ]
 
     model = "meta-llama/Meta-Llama-3.1-405B-Instruct"
-    
+
     try:
-        completion = client.chat.completions.create(model=model, messages=messages, max_tokens=max_tokens, temperature=temperature)
+        completion = client.chat.completions.create(
+            model=model,
+            messages=messages,
+            max_tokens=max_tokens,
+            temperature=temperature,
+        )
         print(completion.choices[0].message.content)
         return completion.choices[0].message.content, 0
 
     except Exception as e:
         print(f"API Error: {e}")
         raise
-    
+
 
 @retry(wait=wait_random_exponential(min=30, max=600), stop=stop_after_attempt(3))
-def call_chat(model_name_or_path, inputs, temperature, top_p, max_tokens, system_message, **model_args):
+def call_chat(
+    model_name_or_path,
+    inputs,
+    temperature,
+    top_p,
+    max_tokens,
+    system_message,
+    **model_args,
+):
     """
     Calls the OpenAI API to generate completions for the given inputs using the new API interface.
 
@@ -139,7 +158,7 @@ def call_chat(model_name_or_path, inputs, temperature, top_p, max_tokens, system
     user_message = inputs
     messages = [
         {"role": "system", "content": system_message},
-        {"role": "user", "content": user_message}
+        {"role": "user", "content": user_message},
     ]
 
     try:
@@ -149,7 +168,7 @@ def call_chat(model_name_or_path, inputs, temperature, top_p, max_tokens, system
             temperature=temperature,
             max_tokens=max_tokens,  # Adjust max_tokens as needed
             top_p=top_p,
-            **model_args
+            **model_args,
         )
 
         input_tokens = response.usage.prompt_tokens
@@ -172,6 +191,7 @@ def claude_tokenize(string: str, api) -> int:
     """Returns the number of tokens in a text string."""
     num_tokens = api.count_tokens(string)
     return num_tokens
+
 
 def llama_405B_inference(
     test_dataset,
@@ -199,13 +219,15 @@ def llama_405B_inference(
     num_samples (int): The number of samples to generate for each prompt.
     """
     tokenizer = AutoTokenizer.from_pretrained(
-        "meta-llama/Meta-Llama-3.1-405B-Instruct",        
+        "meta-llama/Meta-Llama-3.1-405B-Instruct",
         trust_remote_code=True,
         use_auth_token=True,
         truncation_side="left",
         padding_side="right",
-)
-    model_limit = MODEL_LIMITS[model_name_or_path] - OUTPUT_LIMITS[model_name_or_path] - EPSILON
+    )
+    model_limit = (
+        MODEL_LIMITS[model_name_or_path] - OUTPUT_LIMITS[model_name_or_path] - EPSILON
+    )
 
     def truncate_prompts(example):
         truncated = {}
@@ -218,7 +240,9 @@ def llama_405B_inference(
             if len(tokens) > model_limit:
                 # Truncate to the last model_limit tokens and decode back to text
                 truncated_tokens = tokens[-model_limit:]
-                truncated[key] = tokenizer.decode(truncated_tokens)  # Assuming direct slicing works, adjust if necessary
+                truncated[key] = tokenizer.decode(
+                    truncated_tokens
+                )  # Assuming direct slicing works, adjust if necessary
             else:
                 truncated[key] = prompt
         example["preds_prompts"] = truncated
@@ -230,7 +254,7 @@ def llama_405B_inference(
     top_p = model_args.pop("top_p", 0.95 if temperature > 0 else 1)
     print(f"Using temperature={temperature}, top_p={top_p}")
     basic_args = {
-        "model_name_or_path": model_name_or_path+f"t={temperature}",
+        "model_name_or_path": model_name_or_path + f"t={temperature}",
     }
     total_cost = 0
     print(f"Filtered to {len(test_dataset)} instances")
@@ -264,11 +288,21 @@ def llama_405B_inference(
                             prompt_text,
                             temperature,
                             top_p,
-                            OUTPUT_LIMITS[model_name_or_path] if prompt_name == "full" else 512,
-                            system_message_full if prompt_name=="full" else system_message,
+                            (
+                                OUTPUT_LIMITS[model_name_or_path]
+                                if prompt_name == "full"
+                                else 512
+                            ),
+                            (
+                                system_message_full
+                                if prompt_name == "full"
+                                else system_message
+                            ),
                         )
                         completion = response
-                        prompt_predictions.append(postprocess_fn(completion, prompt_name=="full"))
+                        prompt_predictions.append(
+                            postprocess_fn(completion, prompt_name == "full")
+                        )
                         total_cost += cost
                         if max_cost is not None and total_cost >= max_cost:
                             print(f"Reached max cost {max_cost}, exiting")
@@ -276,7 +310,7 @@ def llama_405B_inference(
                     except Exception as e:
                         print(f"Error: {e}")
                         failed = True
-                    
+
                     if failed:
                         break
                 if failed:
@@ -287,6 +321,7 @@ def llama_405B_inference(
                 print(f"Total Cost: {total_cost:.2f}")
             else:
                 print("Failed, skipping...")
+
 
 def openai_inference(
     test_dataset,
@@ -314,7 +349,10 @@ def openai_inference(
     num_samples (int): The number of samples to generate for each prompt.
     """
     encoding = tiktoken.encoding_for_model(model_name_or_path)
-    model_limit = MODEL_LIMITS[model_name_or_path] - OUTPUT_LIMITS[model_name_or_path] - EPSILON
+    model_limit = (
+        MODEL_LIMITS[model_name_or_path] - OUTPUT_LIMITS[model_name_or_path] - EPSILON
+    )
+
     # Adjust dataset to truncate prompts to the last model_limit tokens
     def truncate_prompts(example):
         truncated = {}
@@ -327,7 +365,7 @@ def openai_inference(
                 truncated[key] = prompt
         example["preds_prompts"] = truncated
         return example
-    
+
     test_dataset = test_dataset.map(truncate_prompts, load_from_cache_file=False)
 
     openai_key = os.environ.get("OPENAI_API_KEY", None)
@@ -342,7 +380,7 @@ def openai_inference(
     top_p = model_args.pop("top_p", 0.95 if temperature > 0 else 1)
     print(f"Using temperature={temperature}, top_p={top_p}")
     basic_args = {
-        "model_name_or_path": model_name_or_path+f"t={temperature}",
+        "model_name_or_path": model_name_or_path + f"t={temperature}",
     }
     total_cost = 0
     print(f"Filtered to {len(test_dataset)} instances")
@@ -369,12 +407,22 @@ def openai_inference(
                             prompt_text,
                             temperature,
                             top_p,
-                            OUTPUT_LIMITS[model_name_or_path] if prompt_name == "full" else 512,
-                            system_message_full if prompt_name=="full" else system_message,
+                            (
+                                OUTPUT_LIMITS[model_name_or_path]
+                                if prompt_name == "full"
+                                else 512
+                            ),
+                            (
+                                system_message_full
+                                if prompt_name == "full"
+                                else system_message
+                            ),
                         )
                         completion = response.choices[0].message.content
-                        print(postprocess_fn(completion, prompt_name=="full"))
-                        prompt_predictions.append(postprocess_fn(completion, prompt_name=="full"))
+                        print(postprocess_fn(completion, prompt_name == "full"))
+                        prompt_predictions.append(
+                            postprocess_fn(completion, prompt_name == "full")
+                        )
                         total_cost += cost
                         if max_cost is not None and total_cost >= max_cost:
                             print(f"Reached max cost {max_cost}, exiting")
@@ -392,7 +440,14 @@ def openai_inference(
 
 @retry(wait=wait_random_exponential(min=60, max=600), stop=stop_after_attempt(6))
 def call_anthropic(
-    inputs, anthropic, model_name_or_path, temperature, top_p, max_tokens, system_message, **model_args
+    inputs,
+    anthropic,
+    model_name_or_path,
+    temperature,
+    top_p,
+    max_tokens,
+    system_message,
+    **model_args,
 ):
     """
     Calls the anthropic API to generate completions for the given inputs.
@@ -425,11 +480,18 @@ def call_anthropic(
         traceback.print_exc()
         time.sleep(20)
         return None
-    
+
 
 @retry(wait=wait_random_exponential(min=60, max=600), stop=stop_after_attempt(6))
 def call_anthropic_v2(
-    inputs, anthropic, model_name_or_path, temperature, top_p, max_tokens, system_message, **model_args
+    inputs,
+    anthropic,
+    model_name_or_path,
+    temperature,
+    top_p,
+    max_tokens,
+    system_message,
+    **model_args,
 ):
     """
     Calls the anthropic API to generate completions for the given inputs.
@@ -498,7 +560,10 @@ def anthropic_inference(
         )
     print(f"Using Anthropic key {'*' * max(0, len(api_key)-5) + api_key[-5:]}")
     anthropic = Anthropic(api_key=api_key)
-    model_limit = MODEL_LIMITS[model_name_or_path] - OUTPUT_LIMITS[model_name_or_path] - EPSILON
+    model_limit = (
+        MODEL_LIMITS[model_name_or_path] - OUTPUT_LIMITS[model_name_or_path] - EPSILON
+    )
+
     # Adjust dataset to truncate prompts to the last model_limit tokens
     def truncate_prompts(example):
         truncated = {}
@@ -506,23 +571,25 @@ def anthropic_inference(
             tokenized = anthropic.count_tokens(prompt)
             if tokenized > model_limit:
                 # Truncate to the last model_limit tokens and decode back to text
-                truncated[key] = prompt[-model_limit:]  # Assuming direct slicing works, adjust if necessary
+                truncated[key] = prompt[
+                    -model_limit:
+                ]  # Assuming direct slicing works, adjust if necessary
             else:
                 truncated[key] = prompt
         example["preds_prompts"] = truncated
         return example
-    
+
     test_dataset = test_dataset.map(truncate_prompts, load_from_cache_file=False)
 
     temperature = model_args.pop("temperature", 0.2)
     top_p = model_args.pop("top_p", 0.95 if temperature > 0 else 1)
     print(f"Using temperature={temperature}, top_p={top_p}")
     basic_args = {
-        "model_name_or_path": model_name_or_path+f"t={temperature}",
+        "model_name_or_path": model_name_or_path + f"t={temperature}",
     }
     total_cost = 0
     print(f"Filtered to {len(test_dataset)} instances")
-    if 'claude-3' in model_name_or_path.lower():
+    if "claude-3" in model_name_or_path.lower():
         call_api = call_anthropic_v2
     else:
         call_api = call_anthropic
@@ -548,15 +615,24 @@ def anthropic_inference(
                             model_name_or_path,
                             temperature,
                             top_p,
-                            OUTPUT_LIMITS[model_name_or_path] if prompt_name == "full" else 512,
-                            system_message_full if prompt_name == "full" else system_message
-                            **model_args,
+                            (
+                                OUTPUT_LIMITS[model_name_or_path]
+                                if prompt_name == "full"
+                                else 512
+                            ),
+                            (
+                                system_message_full
+                                if prompt_name == "full"
+                                else system_message**model_args
+                            ),
                         )
                     except Exception as e:
                         logger.error(e)
                         traceback.print_exc()
                         continue
-                    prompt_predictions.append(postprocess_fn(completion.completion, prompt_name=="full"))
+                    prompt_predictions.append(
+                        postprocess_fn(completion.completion, prompt_name == "full")
+                    )
                     total_cost += cost
                     if max_cost is not None and total_cost >= max_cost:
                         print(f"Reached max cost {max_cost}, exiting")
@@ -600,6 +676,7 @@ def parse_model_args(model_args):
             else:
                 kwargs[key] = value
     return kwargs
+
 
 def main(
     dataset_name_or_path,
@@ -650,7 +727,7 @@ def main(
         dataset = load_dataset(dataset_name_or_path)
 
     dataset = prompt_info.add_prompts_to_dataset(dataset, no_import=no_imports)
-    
+
     if not split in dataset:
         raise ValueError(f"Invalid split {split} for dataset {dataset_name_or_path}")
     dataset = dataset[split]
@@ -707,7 +784,7 @@ if __name__ == "__main__":
         type=str,
         help="Name of API model. Update MODEL* constants in this file to add new models.",
         choices=sorted(list(MODEL_LIMITS.keys())),
-        default="gpt-3.5-turbo-1106"
+        default="gpt-3.5-turbo-1106",
     )
     parser.add_argument(
         "--shard_id",
