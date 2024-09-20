@@ -67,3 +67,7 @@ Adding a new model is quite simple. Under `inference/configs` create a new file 
 `add_prompts_to_dataset` should output a prompt for all four settings: `full`, `first`, `last`, `extra`. The `preds_context` attribute of each datapoint contains the preamble of the file, the first test, the file without the last test and the file with the last test (full file)
 
 Once you update this file our standard evaluation flow will work.
+
+## Licensing
+
+The majority of code in this repository is licensed under CC-by-NC, however the third party code/files may be subject to different licenses.
