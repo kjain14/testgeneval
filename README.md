@@ -68,6 +68,14 @@ Adding a new model is quite simple. Under `inference/configs` create a new file 
 
 Once you update this file our standard evaluation flow will work.
 
+## TestGenEval creation
+
+All creation scripts are housed in the `creation` subdirectory. 
+
+`transform_swebench.py` is the main script that takes the SWEBench dataset and converts it for test generation.
+
+`filter_unittests.py` takes the baseline results and filters out datapoints with no coverage of gold tests (gold tests must cover the code under test).
+
 ## Licensing
 
 The majority of code in this repository is licensed under CC-by-NC, however the third party code/files may be subject to different licenses.
