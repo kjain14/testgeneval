@@ -20,7 +20,7 @@ We measure the following metrics for the test generation task:
 ## Datasets
 
 ### TestGenEvalLite
-Docker images for testbeds used in the `TeestGenEvalLite` dataset has been built and tested.
+Docker images for testbeds used in the `TestGenEvalLite` dataset has been built and tested.
 
 ### TestGenEval
 Docker images for testbeds used in the `TestGenEval` dataset has been built and tested.
@@ -34,6 +34,8 @@ cd TestGenEval
 conda env create -f swebench-testing.yaml
 conda activate swebench-testing
 ```
+
+Modify the `.env_template` file with the appropriate values and rename it to `.env` (specifically make sure to set SWEBENCH_DOCKER_FORK_DIR to the current directory where the repository was cloned)
 
 To build the docker images (adapted from [SWEBench Docker](https://github.com/aorwall/SWE-bench-docker/tree/main/docker)) run one of these commands:
 
@@ -70,7 +72,7 @@ Once you update this file our standard evaluation flow will work.
 
 ## TestGenEval creation
 
-All creation scripts are housed in the `creation` subdirectory. 
+All creation scripts are housed in the `creation` subdirectory.
 
 `transform_swebench.py` is the main script that takes the SWEBench dataset and converts it for test generation.
 
