@@ -47,7 +47,7 @@ mkdir -p $dir
 string="Starting iteration \$i"
 echo \$string
 
-eval "\$(/home/kdjain/miniconda3/bin/conda shell.bash hook)"
+eval "\$(CONDA_HOME shell.bash hook)"
 conda activate vllm
 
 if [[ "$model" == *"gemma"* ]]; then
