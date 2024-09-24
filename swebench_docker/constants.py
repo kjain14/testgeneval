@@ -1,8 +1,9 @@
 # Adapted from: https://github.com/aorwall/SWE-bench-docker/blob/main/swebench_docker/context_manager.py
 
 from enum import Enum
+from typing import Any, Collection, Dict, List, Sequence, Union
 
-PYTHON_ENVIRONMENT_VERSIONS = {
+PYTHON_ENVIRONMENT_VERSIONS: Dict[str, str] = {
     "3.5": "3.5.10",
     "3.6": "3.6.15",
     "3.7": "3.7.17",
@@ -12,9 +13,9 @@ PYTHON_ENVIRONMENT_VERSIONS = {
     "3.11": "3.11.9",
 }
 
-PYENV_REPOS = {"django/django", "psf/requests", "scikit-learn/scikit-learn"}
+PYENV_REPOS: set[str] = {"django/django", "psf/requests", "scikit-learn/scikit-learn"}
 
-MAP_VERSION_TO_INSTALL_SKLEARN = {
+MAP_VERSION_TO_INSTALL_SKLEARN: Dict[str, Dict[str, Any]] = {
     k: {
         "instance_image": True,
         "python": "3.6",
@@ -42,7 +43,7 @@ MAP_VERSION_TO_INSTALL_SKLEARN.update(
     }
 )
 
-MAP_VERSION_TO_INSTALL_FLASK = {
+MAP_VERSION_TO_INSTALL_FLASK: Dict[str, Dict[str, Any]] = {
     "2.0": {
         "python": "3.9",
         "packages": "requirements.txt",
@@ -86,7 +87,7 @@ MAP_VERSION_TO_INSTALL_FLASK.update(
     }
 )
 
-MAP_VERSION_TO_INSTALL_DJANGO = {
+MAP_VERSION_TO_INSTALL_DJANGO: Dict[str, Dict[str, Any]] = {
     k: {
         "python": "3.5",
         "packages": "requirements.txt",
@@ -145,14 +146,14 @@ for k in ["2.2", "3.0", "3.1"]:
         {"env_vars_test": {"LANG": "en_US.UTF-8", "LC_ALL": "en_US.UTF-8"}}
     )
 
-MAP_VERSION_TO_INSTALL_REQUESTS = {
+MAP_VERSION_TO_INSTALL_REQUESTS: Dict[str, Dict[str, Any]] = {
     k: {"python": "3.9", "packages": "pytest", "install": "python -m pip install ."}
     for k in ["0.7", "0.8", "0.9", "0.11", "0.13", "0.14", "1.1", "1.2", "2.0", "2.2"]
     + ["2.3", "2.4", "2.5", "2.7", "2.8", "2.9", "2.10", "2.11", "2.12", "2.17"]
     + ["2.18", "2.19", "2.22", "2.26", "2.25", "2.27", "3.0"]
 }
 
-MAP_VERSION_TO_INSTALL_SEABORN = {
+MAP_VERSION_TO_INSTALL_SEABORN: Dict[str, Dict[str, Any]] = {
     k: {
         "python": "3.9",
         "install": "pip install -e .",
@@ -208,7 +209,7 @@ MAP_VERSION_TO_INSTALL_SEABORN.update(
     }
 )
 
-MAP_VERSION_TO_INSTALL_PYTEST = {
+MAP_VERSION_TO_INSTALL_PYTEST: Dict[str, Dict[str, Any]] = {
     k: {"python": "3.9", "install": "pip install -e ."}
     for k in [
         "4.4",
@@ -335,7 +336,7 @@ MAP_VERSION_TO_INSTALL_PYTEST["8.0"]["pip_packages"] = [
     "tomli==2.0.1",
 ]
 
-MAP_VERSION_TO_INSTALL_MATPLOTLIB = {
+MAP_VERSION_TO_INSTALL_MATPLOTLIB: Dict[str, Dict[str, Any]] = {
     k: {
         "python": "3.11",
         "packages": "environment.yml",
@@ -403,7 +404,7 @@ MAP_VERSION_TO_INSTALL_MATPLOTLIB.update(
     }
 )
 
-MAP_VERSION_TO_INSTALL_SPHINX = {
+MAP_VERSION_TO_INSTALL_SPHINX: Dict[str, Dict[str, Any]] = {
     k: {
         "python": "3.9",
         "pip_packages": ["tox"],
@@ -462,7 +463,7 @@ for k in ["3.0", "3.1", "3.2", "3.3", "3.4", "3.5", "4.0", "4.1", "4.2", "4.3", 
 for spec in MAP_VERSION_TO_INSTALL_SPHINX.values():
     spec["pre_test"] = spec["pre_install"]
 
-MAP_VERSION_TO_INSTALL_ASTROPY = {
+MAP_VERSION_TO_INSTALL_ASTROPY: Dict[str, Dict[str, Any]] = {
     k: {
         "python": "3.9",
         "install": "pip install -e .[test]",
@@ -503,7 +504,7 @@ for k in ["4.1", "4.2", "4.3", "5.0", "5.1", "5.2"]:
         'sed -i \'s/requires = \\["setuptools",/requires = \\["setuptools==68.0.0",/\' pyproject.toml'
     ]
 
-MAP_VERSION_TO_INSTALL_SYMPY = {
+MAP_VERSION_TO_INSTALL_SYMPY: Dict[str, Dict[str, Any]] = {
     k: {
         "python": "3.9",
         "packages": "mpmath flake8",
@@ -538,7 +539,7 @@ MAP_VERSION_TO_INSTALL_SYMPY.update(
     }
 )
 
-MAP_VERSION_TO_INSTALL_PYLINT = {
+MAP_VERSION_TO_INSTALL_PYLINT: Dict[str, Dict[str, Any]] = {
     k: {
         "python": "3.9",
         "packages": "requirements.txt",
@@ -578,7 +579,7 @@ MAP_VERSION_TO_INSTALL_PYLINT.update(
     }
 )
 
-MAP_VERSION_TO_INSTALL_XARRAY = {
+MAP_VERSION_TO_INSTALL_XARRAY: Dict[str, Dict[str, Any]] = {
     k: {
         "python": "3.10",
         "packages": "environment.yml",
@@ -597,7 +598,7 @@ MAP_VERSION_TO_INSTALL_XARRAY = {
     for k in ["0.12", "0.18", "0.19", "0.20", "2022.03", "2022.06", "2022.09"]
 }
 
-MAP_VERSION_TO_INSTALL_SQLFLUFF = {
+MAP_VERSION_TO_INSTALL_SQLFLUFF: Dict[str, Dict[str, Any]] = {
     k: {
         "python": "3.9",
         "packages": "requirements.txt",
@@ -622,7 +623,7 @@ MAP_VERSION_TO_INSTALL_SQLFLUFF = {
     ]
 }
 
-MAP_VERSION_TO_INSTALL_PYVISTA = {
+MAP_VERSION_TO_INSTALL_PYVISTA: Dict[str, Dict[str, Any]] = {
     k: {
         "python": "3.9",
         "install": "pip install -e .",
@@ -663,7 +664,7 @@ MAP_VERSION_TO_INSTALL_PYVISTA.update(
     }
 )
 
-MAP_VERSION_TO_INSTALL_ASTROID = {
+MAP_VERSION_TO_INSTALL_ASTROID: Dict[str, Dict[str, Any]] = {
     k: {
         "python": "3.9",
         "install": "pip install -e .",
@@ -694,7 +695,7 @@ MAP_VERSION_TO_INSTALL_ASTROID["2.7"]["pip_packages"].extend(
 MAP_VERSION_TO_INSTALL_ASTROID["3.0"]["pip_packages"].append("typing-extensions==4.8.0")
 
 
-MAP_VERSION_TO_INSTALL_MARSHMALLOW = {
+MAP_VERSION_TO_INSTALL_MARSHMALLOW: Dict[str, Dict[str, Any]] = {
     k: {
         "python": "3.9",
         "install": "pip install -e '.[dev]'",
@@ -702,7 +703,7 @@ MAP_VERSION_TO_INSTALL_MARSHMALLOW = {
     for k in ["2.18", "2.19", "2.20", "3.0", "3.12", "3.19", "3.9"]
 }
 
-MAP_VERSION_TO_INSTALL_PVLIB = {
+MAP_VERSION_TO_INSTALL_PVLIB: Dict[str, Dict[str, Any]] = {
     k: {
         "python": "3.9",
         "install": "pip install -e .[all]",
@@ -712,7 +713,7 @@ MAP_VERSION_TO_INSTALL_PVLIB = {
     for k in ["0.5", "0.6", "0.7", "0.8", "0.9"]
 }
 
-MAP_VERSION_TO_INSTALL_PYDICOM = {
+MAP_VERSION_TO_INSTALL_PYDICOM: Dict[str, Dict[str, Any]] = {
     k: {
         "python": "3.6",
         "install": "pip install -e .",
@@ -745,10 +746,12 @@ MAP_VERSION_TO_INSTALL_PYDICOM.update(
     {k: {**MAP_VERSION_TO_INSTALL_PYDICOM[k], "python": "3.10"} for k in ["2.3"]}
 )
 
-MAP_VERSION_TO_INSTALL_HUMANEVAL = {k: {"python": "3.9"} for k in ["1.0"]}
+MAP_VERSION_TO_INSTALL_HUMANEVAL: Dict[str, Dict[str, str]] = {
+    k: {"python": "3.9"} for k in ["1.0"]
+}
 
-# Constants - Task Instance Instllation Environment
-MAP_VERSION_TO_INSTALL = {
+# Constants - Task Instance Installation Environment
+MAP_VERSION_TO_INSTALL: Dict[str, Dict[str, Dict[str, Any]]] = {
     "astropy/astropy": MAP_VERSION_TO_INSTALL_ASTROPY,
     "django/django": MAP_VERSION_TO_INSTALL_DJANGO,
     "matplotlib/matplotlib": MAP_VERSION_TO_INSTALL_MATPLOTLIB,
@@ -771,12 +774,14 @@ MAP_VERSION_TO_INSTALL = {
 }
 
 # Constants - Repository Specific Installation Instructions
-MAP_REPO_TO_INSTALL = {}
+MAP_REPO_TO_INSTALL: Dict[str, Any] = {}
 
 # Constants - Task Instance Test Frameworks
-TEST_PYTEST = "coverage run -m pytest --no-header -rA --tb=no -p no:cacheprovider"
-TEST_PYTEST_SKIP_NO_HEADER = "coverage run -m pytest -rA --tb=no -p no:cacheprovider"
-MAP_REPO_TO_TEST_FRAMEWORK = {
+TEST_PYTEST: str = "coverage run -m pytest --no-header -rA --tb=no -p no:cacheprovider"
+TEST_PYTEST_SKIP_NO_HEADER: str = (
+    "coverage run -m pytest -rA --tb=no -p no:cacheprovider"
+)
+MAP_REPO_TO_TEST_FRAMEWORK: Dict[str, str] = {
     "astropy/astropy": TEST_PYTEST,
     "django/django": "coverage run ./tests/runtests.py --verbosity 2",
     "marshmallow-code/marshmallow": TEST_PYTEST,
@@ -799,7 +804,7 @@ MAP_REPO_TO_TEST_FRAMEWORK = {
 }
 
 # Constants - Task Instance Requirements File Paths
-MAP_REPO_TO_REQS_PATHS = {
+MAP_REPO_TO_REQS_PATHS: Dict[str, List[str]] = {
     "django/django": ["tests/requirements/py3.txt"],
     "matplotlib/matplotlib": [
         "requirements/dev/dev-requirements.txt",
@@ -813,12 +818,12 @@ MAP_REPO_TO_REQS_PATHS = {
 }
 
 # Constants - Task Instance environment.yml File Paths
-MAP_REPO_TO_ENV_YML_PATHS = {
+MAP_REPO_TO_ENV_YML_PATHS: Dict[str, List[str]] = {
     "matplotlib/matplotlib": ["environment.yml"],
     "pydata/xarray": ["ci/requirements/environment.yml", "environment.yml"],
 }
 
-MAP_REPO_TO_DEB_PACKAGES = {
+MAP_REPO_TO_DEB_PACKAGES: Dict[str, List[str]] = {
     "matplotlib/matplotlib": [
         "texlive",
         "texlive-xetex",
@@ -831,35 +836,35 @@ MAP_REPO_TO_DEB_PACKAGES = {
 }
 
 # Constants - Evaluation Keys
-KEY_INSTANCE_ID = "instance_id"
-KEY_ID = "id"
-KEY_MODEL = "model_name_or_path"
-KEY_PREDICTIONS = "preds"
-KEY_TEST_FILE_PATH = "test_file"
-KEY_BASELINES = "preds_context"
+KEY_INSTANCE_ID: str = "instance_id"
+KEY_ID: str = "id"
+KEY_MODEL: str = "model_name_or_path"
+KEY_PREDICTIONS: str = "preds"
+KEY_TEST_FILE_PATH: str = "test_file"
+KEY_BASELINES: str = "preds_context"
 
 # Constants - Logging
-APPLY_PATCH_FAIL = ">>>>> Patch Apply Failed"
-APPLY_PATCH_PASS = ">>>>> Applied Patch"
-INSTALL_FAIL = ">>>>> Init Failed"
-INSTALL_PASS = ">>>>> Init Succeeded"
-INSTALL_TIMEOUT = ">>>>> Init Timed Out"
-RESET_FAILED = ">>>>> Reset Failed"
-TESTS_ERROR = ">>>>> Tests Errored"
-TESTS_FAILED = ">>>>> Some Tests Failed"
-UNFILTERED_TESTS_FAILED = ">>>>> Unfiltered Tests Failed"
-TESTS_CONFIG = ">>>>> Tests config"
-TESTS_PASSED = ">>>>> All Tests Passed"
-UNFILTERED_TESTS_PASSED = ">>>>> Unfiltered Tests Passed"
-TESTS_TIMEOUT = ">>>>> Tests Timed Out"
+APPLY_PATCH_FAIL: str = ">>>>> Patch Apply Failed"
+APPLY_PATCH_PASS: str = ">>>>> Applied Patch"
+INSTALL_FAIL: str = ">>>>> Init Failed"
+INSTALL_PASS: str = ">>>>> Init Succeeded"
+INSTALL_TIMEOUT: str = ">>>>> Init Timed Out"
+RESET_FAILED: str = ">>>>> Reset Failed"
+TESTS_ERROR: str = ">>>>> Tests Errored"
+TESTS_FAILED: str = ">>>>> Some Tests Failed"
+UNFILTERED_TESTS_FAILED: str = ">>>>> Unfiltered Tests Failed"
+TESTS_CONFIG: str = ">>>>> Tests config"
+TESTS_PASSED: str = ">>>>> All Tests Passed"
+UNFILTERED_TESTS_PASSED: str = ">>>>> Unfiltered Tests Passed"
+TESTS_TIMEOUT: str = ">>>>> Tests Timed Out"
 
-SETTING_PROMPT_MAP = {
+SETTING_PROMPT_MAP: Dict[str, str] = {
     "none": "none",
     "first": "preamble",
     "last": "last_minus_one",
     "extra": "last",
 }
-VALID_K = [1, 5, 10, 100]
+VALID_K: List[int] = [1, 5, 10, 100]
 
 
 # Constants - Patch Types
@@ -871,12 +876,12 @@ class PatchType(Enum):
     PATCH_PRED_MINIMAL_TRY = "pred_minimal_try"
     PATCH_TEST = "test"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.value
 
 
 # Constants - Miscellaneous
-NON_TEST_EXTS = [
+NON_TEST_EXTS: List[str] = [
     ".json",
     ".png",
     "csv",
@@ -889,10 +894,10 @@ NON_TEST_EXTS = [
     ".yaml",
     ".toml",
 ]
-SWE_BENCH_URL_RAW = "https://raw.githubusercontent.com/"
+SWE_BENCH_URL_RAW: str = "https://raw.githubusercontent.com/"
 
 
-MUTATION_TEMPLATE = """[cosmic-ray]
+MUTATION_TEMPLATE: str = """[cosmic-ray]
 module-path = "{source_fp}"
 timeout = {timeout}
 excluded-modules = []

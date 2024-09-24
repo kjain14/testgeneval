@@ -5,7 +5,7 @@ import json
 import os
 import re
 from enum import Enum
-from typing import Tuple
+from typing import Callable, Dict, Optional, Tuple
 
 from swebench_docker.constants import (
     INSTALL_FAIL,
@@ -53,7 +53,7 @@ def classify_error(test_str: str) -> str:
         return "Other"
 
 
-def get_logs_eval(log_fp: str) -> dict:
+def get_logs_eval(log_fp: str) -> Dict[str, dict]:
     """
     Retrieve evaluation results for a task instance from its corresponding log file
 
@@ -65,7 +65,7 @@ def get_logs_eval(log_fp: str) -> dict:
     """
     repo = get_repo_from_lp(log_fp)
 
-    results = {}
+    results: Dict[str, dict] = {}
     with open(log_fp) as f:
         content = f.read()
 
@@ -163,12 +163,12 @@ def get_logs_eval(log_fp: str) -> dict:
 
 def get_eval_reports_for_logs(
     eval_logs: list,
-    swe_bench_instances: str,
-    callback: callable = None,
+    swe_bench_instances: dict,
+    callback: Optional[Callable[[str], bool]] = None,
     verbose: bool = False,
     raw_only: bool = False,
     is_baseline: bool = False,
-) -> Tuple[dict, dict]:
+) -> Dict[str, dict]:
     """
     Wrapper for getting eval report for a list of evaluation log paths.
 
@@ -304,7 +304,7 @@ def get_eval_report(
     """
     # Calculate resolution metrics
 
-    final_results = {}
+    final_results: Dict[str, float] = {}
 
     for setting in eval_sm:
         tests_passed = eval_sm[setting]["tests_passed"]
@@ -383,7 +383,7 @@ def get_eval_reports_for_dir(
     eval_dir: str,
     swe_bench_instances: dict,
     model_name,
-    callback: callable = None,
+    callback: Optional[Callable[[str], bool]] = None,
     verbose=False,
     raw_only=False,
     is_baseline=False,
@@ -411,7 +411,7 @@ def get_model_eval_summary(
     eval_dir: str,
     swe_bench_instances: dict,
     model_name: str,
-    repo: str = None,
+    repo: Optional[str] = None,
     is_baseline: bool = False,
 ) -> dict:
     """
@@ -463,7 +463,7 @@ def get_model_eval_summary(
 
     format_dec = lambda x: round(x * 100, 2)
 
-    total_metrics = {}
+    total_metrics: Dict[str, list] = {}
     for fn in report_net:
         for key in report_net[fn]:
             if key not in total_metrics:
@@ -509,7 +509,7 @@ def get_model_report(
         predictions = json.load(open(predictions_path))
     else:
         raise ValueError("Predictions file must be in json or jsonl format")
-    report_map = {}
+    report_map: Dict[str, list] = {}
 
     # Iterate through predictions
     report_map = {

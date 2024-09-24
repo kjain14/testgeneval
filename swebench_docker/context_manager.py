@@ -9,6 +9,7 @@ import subprocess
 import time
 from logging import DEBUG, ERROR, INFO, Logger
 from traceback import format_exc
+from typing import Dict, Optional
 
 from swebench_docker.constants import (
     APPLY_PATCH_FAIL,
@@ -34,8 +35,8 @@ class LogWrapper:
     def __init__(
         self,
         log_file: str,
-        logger: Logger = None,
-        prefix: str = None,
+        logger: Optional[Logger] = None,
+        prefix: Optional[str] = None,
     ):
         self.log_file = log_file
         self.logger = logger
@@ -56,8 +57,8 @@ class LogWrapper:
 class ExecWrapper:
     def __init__(
         self,
-        subprocess_args: dict = None,
-        logger: LogWrapper = None,
+        subprocess_args: Optional[Dict] = None,
+        logger: Optional[LogWrapper] = None,
     ):
         self.logger = logger
         if subprocess_args is None:
@@ -100,8 +101,8 @@ class TaskEnvContextManager:
         testbed_name: str,
         repo_dir: str,
         log_dir: str,
-        timeout: int = None,
-        mutation_timeout: int = None,
+        timeout: Optional[int] = None,
+        mutation_timeout: Optional[int] = None,
         is_eval: bool = True,
         image_type: str = "conda",
     ):
@@ -236,7 +237,7 @@ class TaskEnvContextManager:
         return self
 
     def apply_patch(
-        self, patch: str, patch_type: PatchType = "", revert: bool = False
+        self, patch: str, patch_type: PatchType, revert: bool = False
     ) -> bool:
         """
         Apply patch to task environment
@@ -428,7 +429,7 @@ class TaskEnvContextManager:
         else:
             self.log.write(f"\nMutationFAIL")
 
-    def run_testing_diagnostic(self, instance: dict):
+    def run_testing_diagnostic(self, instance: dict, log_data=True):
         specifications = MAP_VERSION_TO_INSTALL[self.instance["repo"]][
             self.instance["version"]
         ]

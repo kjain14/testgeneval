@@ -136,9 +136,9 @@ async def run_docker_evaluation(
             cmd_string, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
         )
         stdout, stderr = await process.communicate()
-        stdout = stdout.decode()
-        if stderr:
-            stderr = stderr.decode()
+        # Decode stdout and stderr from bytes to str
+        str_stdout = stdout.decode() if stdout else ""
+        str_stderr = stderr.decode() if stderr else ""
 
         elapsed_time = time.time() - start_time
 
@@ -147,15 +147,15 @@ async def run_docker_evaluation(
                 f"[{task_instance['id']}][{docker_image}]  Error running container:"
             )
             logger.warning(f"Command: {cmd_string}")
-            logger.warning(f"Stdout - {stdout}")
-            logger.warning(f"Stderr - {stderr}")
+            logger.warning(f"Stdout - {str_stdout}")
+            logger.warning(f"Stderr - {str_stderr}")
 
-        elif "Evaluation succeeded" not in stdout:
+        elif "Evaluation succeeded" not in str_stdout:
             logger.warning(
                 f"[{task_instance['id']}][{docker_image}]  Container ran successfully in {elapsed_time} seconds, but evaluation failed."
             )
             logger.warning(f"Command: {cmd_string}")
-            logger.warning(f"stdout - {stdout}")
+            logger.warning(f"stdout - {str_stdout}")
         else:
             logger.info(
                 f"[{task_instance['id']}][{docker_image}]  Container ran successfully in {elapsed_time} seconds."

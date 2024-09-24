@@ -7,6 +7,7 @@ import os
 import re
 import subprocess
 import sys
+from typing import Optional, Tuple
 
 from swebench_docker.constants import (
     KEY_BASELINES,
@@ -57,7 +58,7 @@ def extract_preamble_classes_and_functions(code, tcm):
 
     current_position = 0
 
-    def extract_class_body(code: str, start_index: int) -> (str, int):
+    def extract_class_body(code: str, start_index: int) -> Tuple[str, int]:
         """
         Extracts the body of a class from the given code starting from the specified index.
         Returns the class body and the end index of the class body.
@@ -338,7 +339,7 @@ def main(
     setting: str,
     repo_dir: str,
     log_dir: str,
-    timeout: int,
+    timeout: Optional[int],
     image_type: str = "conda",
     only_baseline: bool = False,
     skip_mutation: bool = False,
@@ -407,30 +408,41 @@ if __name__ == "__main__":
         with open(TASK_INSTANCE_JSON, "r") as f:
             task_instance = json.load(f)
     else:
-        assert (
-            os.getenv("INSTANCE") is not None
-        ), "INSTANCE environment variable is not set"
-        task_instance = json.loads(
-            base64.b64decode(os.getenv("INSTANCE")).decode("utf-8")
-        )
-    assert os.getenv("LOG_DIR") is not None, "LOG_DIR environment variable is not set"
-    assert (
-        os.getenv("TESTBED_NAME") is not None
-    ), "TESTBED_NAME environment variable is not set"
+        instance_encoded = os.getenv("INSTANCE")
+        if instance_encoded is None:
+            raise ValueError("INSTANCE environment variable is not set")
+        task_instance = json.loads(base64.b64decode(instance_encoded).decode("utf-8"))
+    log_dir = os.getenv("LOG_DIR")
+    if log_dir is None:
+        raise ValueError("LOG_DIR environment variable is not set")
 
-    repo_dir = os.getenv("REPO_DIR")
-    if not repo_dir:
-        repo_dir = os.getenv("TESTBED")
+    testbed_name = os.getenv("TESTBED_NAME")
+    if testbed_name is None:
+        raise ValueError("TESTBED_NAME environment variable is not set")
 
-    assert repo_dir, "REPO_DIR environment variable is not set"
+    repo_dir = os.getenv("REPO_DIR") if os.getenv("REPO_DIR") else os.getenv("TESTBED")
+    if repo_dir is None:
+        raise ValueError("REPO_DIR environment variable is not set")
+
+    timeout = os.getenv("TIMEOUT")
+    int_timeout: Optional[int] = None
+    if timeout is not None:
+        try:
+            int_timeout = int(timeout)
+        except ValueError:
+            raise ValueError("TIMEOUT environment variable must be an integer or None")
+
+    setting = os.getenv("SETTING")
+    if setting is None:
+        raise ValueError("SETTING environment variable is not set")
 
     main(
         task_instance=task_instance,
-        testbed_name=os.getenv("TESTBED_NAME"),
+        testbed_name=testbed_name,
         repo_dir=repo_dir,
-        log_dir=os.getenv("LOG_DIR"),
-        timeout=int(os.getenv("TIMEOUT")) if os.getenv("TIMEOUT") is not None else None,
-        setting=os.getenv("SETTING"),
+        log_dir=log_dir,
+        timeout=int_timeout,
+        setting=setting,
         image_type=os.getenv("IMAGE_TYPE", "conda"),
         only_baseline=os.getenv("ONLY_BASELINE") == "True",
         skip_mutation=os.getenv("SKIP_MUTATION") == "True",
