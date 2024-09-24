@@ -116,11 +116,9 @@ def extract_prompts_from_raw_files(raw_outputs, raw_output_file, prompt_output):
     This function should be used when the raw file exists but the prompt file does not.
     """
     prompts = {}
-    print("HERE")
 
     with open(raw_output_file, "w") as raw_file:
         for fn in raw_outputs:
-            print(fn)
             new_raw_output = []
 
             with open(fn, "r") as raw_file_curr:
@@ -406,10 +404,7 @@ def main():
     output_file_raw = Path(args.output_dir, output_file_raw + ".jsonl")
     output_file_prompt = Path(args.output_dir, output_file_prompt + ".jsonl")
 
-    print("Entering")
     # Generate the prompt file if it doesn't exist
-    #
-
     dataset = prompt_info.add_prompts_to_dataset(
         dataset, tokenizer=tokenizer, no_import=args.no_imports
     )["test"]
