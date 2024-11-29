@@ -13,7 +13,7 @@ from swebench_docker.swebench_utils import (
 from swebench_docker.utils import get_eval_refs
 from metrics import code_bleu, bleu, exact_match, edit_sim, rouge_l
 from pygments_utils import tokenize_code
-
+from compute_readability import compute_readability
 
 def count_methods(code_str):
     """
@@ -53,6 +53,7 @@ def get_preds_report(preds_path, instances):
         "num_methods": [],
         "bleu": [],
         "codebleu": [],
+        "readability": [],
         "xmatch": [],
         "rouge_p": [],
         "rouge_r": [],
@@ -60,6 +61,7 @@ def get_preds_report(preds_path, instances):
         "edit_sim": [],
         "baseline_loc": [],
         "baseline_num_methods": [],
+        "baseline_readability": [],
     }
     found_full = False
     from tqdm import tqdm
@@ -83,9 +85,11 @@ def get_preds_report(preds_path, instances):
                 preds_report["rouge_r"].append(rouge["r"])
                 preds_report["rouge_f"].append(rouge["f"])
                 preds_report["edit_sim"].append(edit_sim(preds, golds))
+                preds_report["readability"].append(compute_readability(pred_text))
             
             preds_report["baseline_loc"].append(get_lines_of_code(baseline_test))
             preds_report["baseline_num_methods"].append(count_methods(baseline_test))
+            preds_report["baseline_readability"].append(compute_readability(baseline_test))
             found_full = True
 
     final_report = {}
