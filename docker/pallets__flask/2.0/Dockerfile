@@ -12,6 +12,7 @@ COPY docker/pallets__flask/2.0/requirements.txt .
 RUN pip install -r requirements.txt
 
 RUN pip install Werkzeug==2.3.7 Jinja2==3.0.1 itsdangerous==2.1.2 click==8.0.1 MarkupSafe==2.1.3
+RUN pip install -U setuptools[core]
 
 RUN pip install -e .
 RUN pip install coverage cosmic-ray

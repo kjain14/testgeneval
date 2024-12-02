@@ -32,7 +32,7 @@ def build_push_and_clean_images(images):
             subprocess.run(['docker', 'push', image], check=True)
             
             # Remove the image if it's not a base image
-            if "bookworm-slim" in image:
+            if "bookworm-slim" not in image:
                 print(f"Removing image: {image} to save space")
                 subprocess.run(['docker', 'rmi', image], check=True)
             else:
