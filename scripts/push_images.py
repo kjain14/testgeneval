@@ -18,13 +18,13 @@ def parse_makefile(makefile_path):
     return images
 
 # Function to build, push, and optionally remove Docker images
-def build_push_and_clean_images(images, base_images):
+def build_push_and_clean_images(images):
     for image, dockerfile in images:
         print(f"Building image: {image} using Dockerfile: {dockerfile}")
         try:
             # Build the image
             subprocess.run(['docker', 'build', '-t', image, '-f', dockerfile, '.'], check=True)
-            if image in base_images:
+            if "bookworm-slim" in image:
                 subprocess.run(['docker', 'build', '-t', image.replace("kdjain/", "aorwall/"), '-f', dockerfile, '.'], check=True)
 
             # Push the image
@@ -32,7 +32,7 @@ def build_push_and_clean_images(images, base_images):
             subprocess.run(['docker', 'push', image], check=True)
             
             # Remove the image if it's not a base image
-            if image not in base_images:
+            if "bookworm-slim" in image:
                 print(f"Removing image: {image} to save space")
                 subprocess.run(['docker', 'rmi', image], check=True)
             else:
@@ -55,16 +55,9 @@ if __name__ == "__main__":
         print(f"Makefile not found at {makefile_path}")
         exit(1)
     
-    # Specify the base images to retain
-    base_images = [
-        "kdjain/swe-bench-conda:bookworm-slim",  # Corresponds to docker/.Dockerfile.stamp
-        "kdjain/swe-bench-pyenv:bookworm-slim",  # Corresponds to docker/pyenv/.Dockerfile.stamp
-        "kdjain/swe-bench-pyenvs:bookworm-slim",  # Corresponds to docker/pyenv/.Dockerfile-pyenvs.stamp
-    ]
-
     images = parse_makefile(makefile_path)
     if not images:
         print("No images found in the Makefile.")
         exit(1)
 
-    build_push_and_clean_images(images, base_images)
+    build_push_and_clean_images(images)
