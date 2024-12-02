@@ -31,8 +31,8 @@ To setup the repository run
 ```
 git clone git@github.com:kjain14/TestGenEval.git
 cd TestGenEval
-conda env create -f swebench-testing.yaml
-conda activate swebench-testing
+conda env create -f testgeneval.yaml
+conda activate testgeneval
 ```
 
 Modify the `.env_template` file with the appropriate values and rename it to `.env` (specifically make sure to set SWEBENCH_DOCKER_FORK_DIR to the current directory where the repository was cloned)

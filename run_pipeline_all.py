@@ -23,7 +23,7 @@ def run_command(model, temperature, results_dir, data_dir, num_processes):
     skip_full = "" if temperature == 0.2 else "--skip_full"
     command = f"""
     eval "$(conda shell.bash hook)"
-    conda activate swebench-testing
+    conda activate testgeneval
     python run_pipeline.py --results_dir {results_dir} --dataset_dir {data_dir} --model {model} --temperature {temperature} --num_processes {num_processes} --azure --num_samples {num_samples} {skip_full} --rerun_eval
     """
     subprocess.run(command, shell=True, executable="/bin/bash")
