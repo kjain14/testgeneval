@@ -43,6 +43,13 @@ if __name__ == "__main__":
         default=1,
     )
     parser.add_argument(
+        "--namespace",
+        type=str,
+        help="Docker repository namespace",
+        required=False,
+        default="aorwall",
+    )
+    parser.add_argument(
         "--num_processes", type=int, help="Number of processes to run", default=1
     )
     parser.add_argument(
@@ -164,6 +171,8 @@ if __name__ == "__main__":
             dataset_dir,
             "--num_processes",
             str(args.num_processes),
+            "--namespace",
+            args.namespace,
         ] + extra_cmd
         report_cmd = [
             "python",
@@ -187,6 +196,8 @@ if __name__ == "__main__":
             dataset_dir,
             "--num_processes",
             str(args.num_processes),
+            "--namespace",
+            args.namespace,
         ] + extra_cmd
         report_cmd = [
             "python",

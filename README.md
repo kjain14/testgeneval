@@ -66,7 +66,6 @@ python run_pipeline.py \
 --results_dir results
 --dataset_dir dataset/tesgenevallite
 --model meta-llama/Meta-Llama-3.1-8B-Instruct
---namespace aorwall
 ```
 
 Otherwise to pull from Dockerhub:
@@ -76,6 +75,7 @@ python run_pipeline.py \
 --results_dir results
 --dataset_dir dataset/tesgenevallite
 --model meta-llama/Meta-Llama-3.1-8B-Instruct
+--namespace kdjain
 ```
 
 ## Adding a new model to TestGenEval
