@@ -11,7 +11,9 @@ from swebench_docker.swebench_utils import (
     get_model_report,
 )
 from swebench_docker.utils import get_eval_refs
-
+from metrics import code_bleu, bleu, exact_match, edit_sim, rouge_l
+from pygments_utils import tokenize_code
+from compute_readability import compute_readability
 
 def count_methods(code_str):
     """
@@ -49,39 +51,51 @@ def get_preds_report(preds_path, instances):
     preds_report = {
         "loc": [],
         "num_methods": [],
+        "bleu": [],
+        "codebleu": [],
+        "readability": [],
+        "xmatch": [],
+        "rouge_p": [],
+        "rouge_r": [],
+        "rouge_f": [],
+        "edit_sim": [],
         "baseline_loc": [],
         "baseline_num_methods": [],
+        "baseline_readability": [],
     }
     found_full = False
     from tqdm import tqdm
 
     for pred in tqdm(preds):
         if "full" in pred["preds"]:
-            for pred_text in pred["preds"]["full"]:
-                preds_report["loc"].append(get_lines_of_code(pred_text))
-                preds_report["num_methods"].append(count_methods(pred_text))
             baseline_test = instances[pred["id"]]["preds_context"]["last"]
             if type(baseline_test) is list:
                 baseline_test = baseline_test[0]
 
+            golds = tokenize_code(baseline_test)
+            for pred_text in pred["preds"]["full"]:
+                preds = tokenize_code(pred_text)
+                preds_report["loc"].append(get_lines_of_code(pred_text))
+                preds_report["num_methods"].append(count_methods(pred_text))
+                preds_report["bleu"].append(bleu(preds, golds))
+                preds_report["codebleu"].append(code_bleu(preds, golds))
+                preds_report["xmatch"].append(exact_match(preds, golds))
+                rouge = rouge_l(preds, golds)
+                preds_report["rouge_p"].append(rouge["p"])
+                preds_report["rouge_r"].append(rouge["r"])
+                preds_report["rouge_f"].append(rouge["f"])
+                preds_report["edit_sim"].append(edit_sim(preds, golds))
+                preds_report["readability"].append(compute_readability(pred_text))
+            
             preds_report["baseline_loc"].append(get_lines_of_code(baseline_test))
             preds_report["baseline_num_methods"].append(count_methods(baseline_test))
+            preds_report["baseline_readability"].append(compute_readability(baseline_test))
             found_full = True
 
     final_report = {}
     if found_full:
-        final_report["av_pred_full_loc"] = sum(preds_report["loc"]) / len(
-            preds_report["loc"]
-        )
-        final_report["av_pred_full_num_methods"] = sum(
-            preds_report["num_methods"]
-        ) / len(preds_report["num_methods"])
-        final_report["av_baseline_loc"] = sum(preds_report["baseline_loc"]) / len(
-            preds_report["baseline_loc"]
-        )
-        final_report["av_baseline_num_methods"] = sum(
-            preds_report["baseline_num_methods"]
-        ) / len(preds_report["baseline_num_methods"])
+        for k in preds_report:
+            final_report[f"av_{k}"] = sum(preds_report[k]) / len(preds_report[k])
     return final_report
 
 
