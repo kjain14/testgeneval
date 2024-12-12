@@ -32,15 +32,23 @@ if __name__ == "__main__":
             "mistralai/Codestral-22B-v0.1",
             "google/gemma-2-9b-it",
             "google/gemma-2-27b-it",
+            "nikitharao/catlm",
         ],
         required=True,
     )
     parser.add_argument(
-        "--num_samples",
+        "--num_samples_full",
         type=int,
         help="Number of samples to run",
         choices=VALID_K,
         default=1,
+    )
+    parser.add_argument(
+        "--num_samples_completion",
+        type=int,
+        help="Number of samples to run",
+        choices=VALID_K,
+        default=5,
     )
     parser.add_argument(
         "--namespace",
@@ -74,7 +82,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "--skip_full", action="store_true", help="(Optional) Skip full inference"
     )
-
+    parser.add_argument(
+        "--skip_completion", action="store_true", help="(Optional) Skip completion inference"
+    )
     args = parser.parse_args()
 
     print(
@@ -122,6 +132,7 @@ if __name__ == "__main__":
             model_extra_cmd = ["--model_args", f"temperature={args.temperature}"]
             model_extra_cmd += ["--azure"] if args.azure else []
             model_extra_cmd += ["--skip_full"] if args.skip_full else []
+            model_extra_cmd += ["--skip_completion"] if args.skip_completion else []
             # Run model prediction
             model_cmd = [
                 "python",
@@ -138,6 +149,8 @@ if __name__ == "__main__":
             ] + model_extra_cmd
             subprocess.run(model_cmd)
         else:
+            model_extra_cmd = ["--skip_full"] if args.skip_full else []
+            model_extra_cmd += ["--skip_completion"] if args.skip_completion else []
             model_cmd = [
                 "python",
                 "-m",
@@ -150,10 +163,13 @@ if __name__ == "__main__":
                 "--output_dir",
                 pred_dir,
                 "--num_samples_completion",
-                str(args.num_samples),
+                str(args.num_samples_completion),
+                "--num_samples_full",
+                str(args.num_samples_full),
                 "--temperature",
                 str(args.temperature),
             ]
+            model_cmd += model_extra_cmd
             subprocess.run(model_cmd)
 
     # Run evaluation

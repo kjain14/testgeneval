@@ -17,6 +17,7 @@ from datasets import Dataset, load_dataset, load_from_disk
 from inference.configs.codestral_prompt import CodestralPrompt
 from inference.configs.gemma2_prompt import Gemma2Prompt
 from inference.configs.instruct_prompt import InstructPrompt
+from inference.configs.catlm_prompt import CATLMPrompt
 from inference.configs.llama3_prompt import Llama3Prompt
 from inference.huggingface.generator import Generator
 from tqdm import tqdm
@@ -34,6 +35,13 @@ MODEL_CONFIG = {
         "prompt_class": InstructPrompt,
         "eager": True,
         "huggingface": False,
+    },
+    "catlm": {
+        "tensor_parallel_size": 2,
+        "max_context_window": 8_192,
+        "prompt_class": CATLMPrompt,
+        "eager": True,
+        "huggingface": True,
     },
     "CodeLlama-70b-Instruct-hf": {
         "tensor_parallel_size": 8,
@@ -198,7 +206,7 @@ def parse_args():
         help="Number of samples to generate for completing tests.",
     )
     parser.add_argument(
-        "--num_samples_generation",
+        "--num_samples_full",
         type=int,
         default=1,
         help="Number of samples to generate full file.",
@@ -483,7 +491,7 @@ def main():
                 dataset_full,
                 prompt_info.postprocess_output,
                 True,
-                args.num_samples_generation,
+                args.num_samples_full,
                 8192,
                 stop_token_ids,
             )
