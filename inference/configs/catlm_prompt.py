@@ -1,6 +1,6 @@
 from datasets import Dataset, DatasetDict
 from inference.configs.config_utils import get_first_method_partial_python
-
+import re
 
 class CATLMPrompt:
     def __init__(self):
@@ -18,16 +18,26 @@ class CATLMPrompt:
 {test_src}
 """
     def postprocess_output(self, text, is_full):
-        return (
-            text
-        )
+        if not is_full:
+            return text
+
+        # Match all function definitions in the text
+        function_definitions = list(re.finditer(r"def\s+\w+\s*\(.*?\):", text))
+
+        # If there is at least one function definition, remove the last one
+        if function_definitions:
+            last_function_start = function_definitions[-1].start()
+            text = text[:last_function_start].rstrip()
+
+        return text
+
 
     def add_prompts_to_dataset(self, dataset, no_import=False, tokenizer=None):
         assert tokenizer != None
         test_data = dataset["test"]
 
         new_arr = []
-        for new_data in test_data:
+        for new_data in test_data.select(range(1)):
             code_src = new_data["code_src"]
             full_context = self.PROMPT_FULL.format(
                 code_src=code_src,

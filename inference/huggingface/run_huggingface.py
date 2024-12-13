@@ -475,7 +475,7 @@ def main():
 
     if len(dataset) > 0:
         dataset_full, dataset_completion = split_dataset(dataset, existing_ids_full)
-
+        print("catlm" in args.model_name_or_path)
         generator = Generator(
             model,
             tokenizer,
@@ -483,6 +483,7 @@ def main():
             output_file_raw,
             output_file_prompt,
             use_huggingface=huggingface,
+            is_catlm="catlm" in args.model_name_or_path,
         )
 
         if len(dataset_full) > 0 and not args.skip_full:
