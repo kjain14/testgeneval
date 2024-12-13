@@ -363,7 +363,7 @@ def main():
         model = AutoModelForCausalLM.from_pretrained(
             args.model_name_or_path,
             use_auth_token=args.use_auth_token if args.use_auth_token else None,
-            torch_dtype=args.precision,
+            torch_dtype=args.precision if 'catlm' not in args.model_name_or_path else 'auto',
             device_map="auto",
             trust_remote_code=args.trust_remote_code,
         )

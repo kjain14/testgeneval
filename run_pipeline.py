@@ -100,7 +100,7 @@ if __name__ == "__main__":
         args.model = model_suf
 
     print(
-        f"Running pipeline for {args.model} with pass@{args.num_samples} on {data_suf}"
+        f"Running pipeline for {args.model} with pass@{args.num_samples_full} (full) and pass@{args.num_samples_completion} (completion) on {data_suf}"
     )
 
     base_dir = os.path.join(os.path.abspath(args.results_dir), data_suf)
@@ -144,8 +144,10 @@ if __name__ == "__main__":
                 dataset_dir,
                 "--output_dir",
                 pred_dir,
-                "--num_samples",
-                str(args.num_samples),
+                "--num_samples_full",
+                str(args.num_samples_full),
+                "--num_samples_completion",
+                str(args.num_samples_completion),
             ] + model_extra_cmd
             subprocess.run(model_cmd)
         else:
