@@ -266,6 +266,8 @@ dependencies:
       - tqdm==4.66.4
       - traitlets==5.14.3
       - transformers==4.44.2
+      - tree-sitter==0.23.2
+      - tree-sitter-python==0.23.5
       - typeguard==4.3.0
       - typer==0.9.4
       - types-certifi==2021.10.8.3
