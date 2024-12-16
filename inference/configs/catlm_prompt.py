@@ -37,7 +37,7 @@ class CATLMPrompt:
         test_data = dataset["test"]
 
         new_arr = []
-        for new_data in test_data.select(range(1)):
+        for new_data in test_data:
             code_src = new_data["code_src"]
             full_context = self.PROMPT_FULL.format(
                 code_src=code_src,

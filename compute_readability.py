@@ -285,7 +285,6 @@ def identifier_stats(tree, num_lines):
 
 
 def compute_regression(results):
-    print(results)
     components = {
     "total_line_length": -0.0001,
     "max_line_length": -0.0021,
@@ -316,7 +315,6 @@ def compute_regression(results):
 
     for component in components:
         test_score += components[component] * results[component]
-        print(f"{component}: {components[component]} * {results[component]} = {components[component] * results[component]}")
 
     test_score += 5.7501
     return test_score
@@ -324,7 +322,7 @@ def compute_regression(results):
 
 def compute_readability(python_code):
     parser = Parser()
-    parser.set_language(Language(tspython.langauge()))
+    parser.set_language(Language(tspython.language(), 'python'))
     
     results = code_stats(python_code)
 

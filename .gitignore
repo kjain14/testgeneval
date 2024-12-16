@@ -9,6 +9,10 @@ __pycache__/
 # log files
 images*.log
 
+baseline_data/inputs
+baseline_data/outputs
+results
+
 # Distribution / packaging
 .Python
 build/

@@ -493,7 +493,7 @@ def main():
                 prompt_info.postprocess_output,
                 True,
                 args.num_samples_full,
-                8192,
+                4092,
                 stop_token_ids,
             )
         if len(dataset_completion) > 0 and not args.skip_completion:
