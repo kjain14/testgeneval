@@ -1,0 +1,3 @@
+[submodule "baselines/MuTAP/code"]
+	path = baselines/MuTAP/code
+	url = https://github.com/ExpertiseModel/MuTAP.git

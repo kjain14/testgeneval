@@ -94,6 +94,6 @@ if __name__ == "__main__":
         image = generate_docker_image(instance['id'])
         output_dir = prepare_output_dir(args.output_base_dir, instance['id'])
         run_pynguin_in_docker(image, instance, output_dir)
-        os.system("docker system prune")
+        os.system("docker system prune -f")
 
     print("Pynguin execution completed for all Docker images.")
