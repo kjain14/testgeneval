@@ -33,6 +33,7 @@ if __name__ == "__main__":
             "google/gemma-2-9b-it",
             "google/gemma-2-27b-it",
             "nikitharao/catlm",
+            "baseline",
         ],
         required=True,
     )
@@ -150,7 +151,7 @@ if __name__ == "__main__":
                 str(args.num_samples_completion),
             ] + model_extra_cmd
             subprocess.run(model_cmd)
-        else:
+        elif args.model != "baseline":
             model_extra_cmd = ["--skip_full"] if args.skip_full else []
             model_extra_cmd += ["--skip_completion"] if args.skip_completion else []
             model_cmd = [
