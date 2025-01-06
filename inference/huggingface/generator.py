@@ -17,7 +17,10 @@ class Generator:
         prompt_file,
         shuffle=True,
         use_huggingface=False,
+<<<<<<< HEAD
         is_catlm=False,
+=======
+>>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
     ):
         self.model = model
         self.tokenizer = tokenizer
@@ -26,7 +29,10 @@ class Generator:
         self.prompt_file = prompt_file  # New prompt file parameter
         self.temperature = temperature
         self.use_huggingface = use_huggingface
+<<<<<<< HEAD
         self.is_catlm = is_catlm
+=======
+>>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
 
     def generate(
         self,
@@ -78,5 +84,8 @@ class Generator:
             self.output_file,
             self.prompt_file,
             self.use_huggingface,
+<<<<<<< HEAD
             self.is_catlm,
+=======
+>>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
         )

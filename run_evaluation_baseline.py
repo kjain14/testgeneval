@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+# Copyright (c) Meta Platforms, Inc. and affiliates.
 
 """Run evaluation"""
 import argparse
@@ -8,7 +8,6 @@ import os
 
 from swebench_docker.constants import KEY_BASELINES, KEY_ID
 from swebench_docker.run_docker import run_docker_evaluation
-
 from swebench_docker.utils import get_eval_refs
 
 logging.basicConfig(
@@ -38,8 +37,6 @@ async def main(
 
     filtered_tasks = []
     for task_instance in tasks:
-        if not ("sphinx-doc__sphinx-7975" in task_instance[KEY_ID]):
-            continue
         all_settings_exist = True
         for setting in ["first", "last_minus_one", "last"]:
             log_file_name = f"{task_instance[KEY_ID]}.baseline.{setting}.eval.log"

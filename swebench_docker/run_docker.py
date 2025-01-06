@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates.
 # Adapted from: https://github.com/aorwall/SWE-bench-docker/blob/main/swebench_docker/run_docker.py
 
 import asyncio

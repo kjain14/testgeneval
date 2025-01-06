@@ -1,3 +1,5 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+
 import argparse
 import json
 
@@ -7,7 +9,6 @@ from swebench_docker.swebench_utils import (
     get_model_eval_summary,
     get_model_report,
 )
-
 from swebench_docker.utils import get_eval_refs
 
 

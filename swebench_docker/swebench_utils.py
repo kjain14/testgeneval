@@ -1,3 +1,4 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates.
 # Adapted from: https://github.com/aorwall/SWE-bench-docker/blob/main/swebench_docker/utils.py
 
 import glob
@@ -8,6 +9,7 @@ from enum import Enum
 from typing import Callable, Dict, Optional, Tuple
 
 from swebench_docker.constants import (
+    INSTALL_FAIL,
     KEY_ID,
     NON_TEST_EXTS,
     RESET_FAILED,

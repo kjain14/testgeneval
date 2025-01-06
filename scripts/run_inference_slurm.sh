@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright (c) Meta Platforms, Inc. and affiliates.
 
 models=(
     "meta-llama/CodeLlama-7b-Instruct-hf"

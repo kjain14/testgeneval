@@ -74,7 +74,10 @@ def complete_code(
     output_file,
     prompt_file,
     use_huggingface,
+<<<<<<< HEAD
     is_catlm,
+=======
+>>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
 ):
     total = math.ceil(n_tasks)
     if use_huggingface:
@@ -85,9 +88,12 @@ def complete_code(
                 for step, batch in tqdm(enumerate(dataloader), total=total):
                     inputs = batch["ids"][:, : batch["input_len"]].tolist()
                     input_tensor = torch.Tensor(inputs).long().cuda()
+<<<<<<< HEAD
                     while is_catlm and tokenizer.decode(input_tensor[0,-1]) == '</s>':
                         input_tensor = input_tensor[:,:-1]
 
+=======
+>>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
                     generated_texts = []
                     for i in range(num_samples):
                         outputs = model.generate(

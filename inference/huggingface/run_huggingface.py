@@ -17,7 +17,10 @@ from datasets import Dataset, load_dataset, load_from_disk
 from inference.configs.codestral_prompt import CodestralPrompt
 from inference.configs.gemma2_prompt import Gemma2Prompt
 from inference.configs.instruct_prompt import InstructPrompt
+<<<<<<< HEAD
 from inference.configs.catlm_prompt import CATLMPrompt
+=======
+>>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
 from inference.configs.llama3_prompt import Llama3Prompt
 from inference.huggingface.generator import Generator
 from tqdm import tqdm
@@ -36,6 +39,7 @@ MODEL_CONFIG = {
         "eager": True,
         "huggingface": False,
     },
+<<<<<<< HEAD
     "catlm": {
         "tensor_parallel_size": 2,
         "max_context_window": 8_192,
@@ -43,6 +47,8 @@ MODEL_CONFIG = {
         "eager": True,
         "huggingface": True,
     },
+=======
+>>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
     "CodeLlama-70b-Instruct-hf": {
         "tensor_parallel_size": 8,
         "max_context_window": 4_096,
@@ -206,7 +212,11 @@ def parse_args():
         help="Number of samples to generate for completing tests.",
     )
     parser.add_argument(
+<<<<<<< HEAD
         "--num_samples_full",
+=======
+        "--num_samples_generation",
+>>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
         type=int,
         default=1,
         help="Number of samples to generate full file.",
@@ -363,7 +373,11 @@ def main():
         model = AutoModelForCausalLM.from_pretrained(
             args.model_name_or_path,
             use_auth_token=args.use_auth_token if args.use_auth_token else None,
+<<<<<<< HEAD
             torch_dtype=args.precision if 'catlm' not in args.model_name_or_path else 'auto',
+=======
+            torch_dtype=args.precision,
+>>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
             device_map="auto",
             trust_remote_code=args.trust_remote_code,
         )
@@ -475,7 +489,11 @@ def main():
 
     if len(dataset) > 0:
         dataset_full, dataset_completion = split_dataset(dataset, existing_ids_full)
+<<<<<<< HEAD
         print("catlm" in args.model_name_or_path)
+=======
+
+>>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
         generator = Generator(
             model,
             tokenizer,
@@ -483,7 +501,10 @@ def main():
             output_file_raw,
             output_file_prompt,
             use_huggingface=huggingface,
+<<<<<<< HEAD
             is_catlm="catlm" in args.model_name_or_path,
+=======
+>>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
         )
 
         if len(dataset_full) > 0 and not args.skip_full:
@@ -492,8 +513,13 @@ def main():
                 dataset_full,
                 prompt_info.postprocess_output,
                 True,
+<<<<<<< HEAD
                 args.num_samples_full,
                 4092,
+=======
+                args.num_samples_generation,
+                8192,
+>>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
                 stop_token_ids,
             )
         if len(dataset_completion) > 0 and not args.skip_completion:

@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+
+>>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
 from datasets import Dataset, DatasetDict
 from inference.configs.config_utils import get_first_method_partial_python
 from inference.configs.instruct_prompt import InstructPrompt

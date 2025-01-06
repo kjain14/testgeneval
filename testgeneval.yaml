@@ -1,7 +1,10 @@
 name: testgeneval
 channels:
   - defaults
+<<<<<<< HEAD
   - conda-forge
+=======
+>>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
 dependencies:
   - _libgcc_mutex=0.1=main
   - _openmp_mutex=5.1=1_gnu
@@ -25,6 +28,10 @@ dependencies:
   - openssl=3.0.14=h5eee18b_0
   - pip=24.0=py39h06a4308_0
   - python=3.9.19=h955ad1f_1
+<<<<<<< HEAD
+=======
+  - rapidfuzz=3.5.2=py39h6a678d5_0
+>>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
   - readline=8.2=h5eee18b_0
   - setuptools=69.5.1=py39h06a4308_0
   - smmap=4.0.0=pyhd3eb1b0_0
@@ -104,7 +111,10 @@ dependencies:
       - frozendict==2.4.4
       - frozenlist==1.4.1
       - fsspec==2023.12.2
+<<<<<<< HEAD
       - fuzzywuzzy==0.18.0
+=======
+>>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
       - gcsfs==2023.12.2.post1
       - google-api-core==2.19.1
       - google-auth==2.30.0
@@ -159,7 +169,10 @@ dependencies:
       - jupyterlab-server==2.27.2
       - jupyterlab-widgets==3.0.11
       - kiwisolver==1.4.5
+<<<<<<< HEAD
       - levenshtein==0.26.1
+=======
+>>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
       - loky==3.4.1
       - mako==1.3.5
       - markdown-it-py==3.0.0
@@ -210,7 +223,10 @@ dependencies:
       - python-dotenv==1.0.1
       - python-engineio==4.9.1
       - python-json-logger==2.0.7
+<<<<<<< HEAD
       - python-levenshtein==0.26.1
+=======
+>>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
       - python-socketio==5.11.3
       - pytz==2024.1
       - pyyaml==6.0.1
@@ -218,7 +234,10 @@ dependencies:
       - qprompt==0.16.3
       - qtconsole==5.5.2
       - qtpy==2.4.1
+<<<<<<< HEAD
       - rapidfuzz==3.10.1
+=======
+>>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
       - referencing==0.35.1
       - regex==2024.5.15
       - requests==2.32.3
@@ -228,7 +247,10 @@ dependencies:
       - rfc3986-validator==0.1.1
       - rich==13.7.1
       - rich-argparse==1.5.2
+<<<<<<< HEAD
       - rouge==1.0.1
+=======
+>>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
       - rpds-py==0.18.1
       - rsa==4.9
       - ruamel-yaml==0.18.6
@@ -266,8 +288,11 @@ dependencies:
       - tqdm==4.66.4
       - traitlets==5.14.3
       - transformers==4.44.2
+<<<<<<< HEAD
       - tree-sitter==0.23.2
       - tree-sitter-python==0.23.5
+=======
+>>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
       - typeguard==4.3.0
       - typer==0.9.4
       - types-certifi==2021.10.8.3

@@ -1,3 +1,5 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+
 import argparse
 import os
 import subprocess
@@ -12,7 +14,10 @@ if __name__ == "__main__":
         "--results_dir", type=str, help="Path to results directory", required=True
     )
     parser.add_argument(
-        "--dataset_dir", type=str, help="Path to dataset directory", required=True
+        "--dataset_name_or_path",
+        type=str,
+        required=True,
+        help="HuggingFace dataset name or local path",
     )
     parser.add_argument(
         "--model",
@@ -32,7 +37,6 @@ if __name__ == "__main__":
             "mistralai/Codestral-22B-v0.1",
             "google/gemma-2-9b-it",
             "google/gemma-2-27b-it",
-            "nikitharao/catlm",
             "baseline",
         ],
         required=True,
@@ -84,7 +88,9 @@ if __name__ == "__main__":
         "--skip_full", action="store_true", help="(Optional) Skip full inference"
     )
     parser.add_argument(
-        "--skip_completion", action="store_true", help="(Optional) Skip completion inference"
+        "--skip_completion",
+        action="store_true",
+        help="(Optional) Skip completion inference",
     )
     args = parser.parse_args()
 
@@ -92,9 +98,13 @@ if __name__ == "__main__":
         "NOTE: Make sure you have built the docker images for the appropriate dataset"
     )
 
-    dataset_dir = os.path.abspath(args.dataset_dir)
+    dataset_name_or_path = (
+        os.path.abspath(args.dataset_name_or_path)
+        if os.path.exists(args.dataset_name_or_path)
+        else args.dataset_name_or_path
+    )
 
-    data_suf = dataset_dir.split("/")[-1]
+    data_suf = dataset_name_or_path.split("/")[-1]
     model_suf = args.model.split("/")[-1]
 
     if model_suf == "Meta-Llama-3.1-405B-Instruct":
@@ -142,7 +152,7 @@ if __name__ == "__main__":
                 "--model_name_or_path",
                 args.model,
                 "--dataset_name_or_path",
-                dataset_dir,
+                dataset_name_or_path,
                 "--output_dir",
                 pred_dir,
                 "--num_samples_full",
@@ -161,7 +171,7 @@ if __name__ == "__main__":
                 "--model_name_or_path",
                 args.model,
                 "--dataset_name_or_path",
-                dataset_dir,
+                dataset_name_or_path,
                 "--use_auth_token",
                 "--output_dir",
                 pred_dir,
@@ -187,7 +197,7 @@ if __name__ == "__main__":
             "--log_dir",
             log_dir,
             "--swe_bench_tasks",
-            dataset_dir,
+            dataset_name_or_path,
             "--num_processes",
             str(args.num_processes),
             "--namespace",
@@ -201,7 +211,7 @@ if __name__ == "__main__":
             "--output_dir",
             base_dir,
             "--swe_bench_tasks",
-            dataset_dir,
+            dataset_name_or_path,
         ]
     else:
         eval_cmd = [
@@ -212,7 +222,7 @@ if __name__ == "__main__":
             "--log_dir",
             log_dir,
             "--swe_bench_tasks",
-            dataset_dir,
+            dataset_name_or_path,
             "--num_processes",
             str(args.num_processes),
             "--namespace",
@@ -228,7 +238,7 @@ if __name__ == "__main__":
             "--output_dir",
             base_dir,
             "--swe_bench_tasks",
-            dataset_dir,
+            dataset_name_or_path,
         ]
 
     subprocess.run(eval_cmd)

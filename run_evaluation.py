@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+# Copyright (c) Meta Platforms, Inc. and affiliates.
 # Adapted from: https://github.com/aorwall/SWE-bench-docker/blob/main/run_evaluation.py
 """Run evaluation"""
 import argparse

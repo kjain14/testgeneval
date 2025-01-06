@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+# Copyright (c) Meta Platforms, Inc. and affiliates.
 
 """This python script is designed to run inference on a dataset using either the OpenAI or Anthropic API, depending on the model specified. 
 It sorts instances by length and continually writes the outputs to a specified file, so that the script can be stopped and restarted without losing progress.
@@ -200,13 +200,11 @@ def llama_405B_inference(
     model_args,
     existing_ids,
     max_cost,
-    num_samples_full,
-    num_samples_completion,
+    num_samples,
     postprocess_fn,
     system_message,
     system_message_full,
     skip_full,
-    skip_completion,
 ):
     """
     Runs inference on a dataset using the openai API.
@@ -279,10 +277,8 @@ def llama_405B_inference(
             client = OpenAI(base_url=f"http://$HOSTNAME:8000/v1", api_key="EMPTY")
             for prompt_name, prompt_text in datum["preds_prompts"].items():
                 prompt_predictions = []
-                num_samples_curr = num_samples_full if prompt_name == "full" else num_samples_completion
+                num_samples_curr = 1 if prompt_name == "full" else num_samples
                 if skip_full and prompt_name == "full":
-                    continue
-                if skip_completion and prompt_name != "full":
                     continue
                 for _ in range(num_samples_curr):
                     try:
@@ -334,13 +330,11 @@ def openai_inference(
     model_args,
     existing_ids,
     max_cost,
-    num_samples_full,
-    num_samples_completion,
+    num_samples,
     postprocess_fn,
     system_message,
     system_message_full,
     skip_full,
-    skip_completion,
 ):
     """
     Runs inference on a dataset using the openai API.
@@ -403,10 +397,8 @@ def openai_inference(
             failed = False
             for prompt_name, prompt_text in datum["preds_prompts"].items():
                 prompt_predictions = []
-                num_samples_curr = num_samples_full if prompt_name == "full" else num_samples_completion
+                num_samples_curr = 1 if prompt_name == "full" else num_samples
                 if skip_full and prompt_name == "full":
-                    continue
-                if skip_completion and prompt_name != "full":
                     continue
                 for _ in range(num_samples_curr):
                     try:
@@ -544,13 +536,10 @@ def anthropic_inference(
     model_args,
     existing_ids,
     max_cost,
-    num_samples_completion,
-    num_samples_full,
+    num_samples,
     postprocess_fn,
     system_message,
     system_message_full,
-    skip_full,
-    skip_completion,
 ):
     """
     Runs inference on a dataset using the anthropic API.
@@ -615,10 +604,8 @@ def anthropic_inference(
             output_dict["preds"] = {}
             for prompt_name, prompt_text in datum["preds_prompts"].items():
                 prompt_predictions = []
-                num_samples_curr = num_samples_full if prompt_name == "full" else num_samples_completion
+                num_samples_curr = 1 if prompt_name == "full" else num_samples
                 if skip_full and prompt_name == "full":
-                    continue
-                if skip_completion and prompt_name != "full":
                     continue
                 for _ in range(num_samples_curr):
                     try:
@@ -701,10 +688,8 @@ def main(
     no_imports,
     model_args,
     max_cost,
-    num_samples_full,
-    num_samples_completion,
+    num_samples,
     skip_full,
-    skip_completion,
 ):
     if shard_id is None and num_shards is not None:
         logger.warning(
@@ -763,13 +748,11 @@ def main(
         "model_args": model_args,
         "existing_ids": existing_ids,
         "max_cost": max_cost,
-        "num_samples_full": num_samples_full,
-        "num_samples_completion": num_samples_completion,
+        "num_samples": num_samples,
         "postprocess_fn": prompt_info.postprocess_output,
         "system_message": prompt_info.system_message,
         "system_message_full": prompt_info.system_message_full,
         "skip_full": skip_full,
-        "skip_completion": skip_completion
     }
     if model_name_or_path.startswith("claude"):
         anthropic_inference(**inference_args)
@@ -839,24 +822,13 @@ if __name__ == "__main__":
         help="Maximum cost to spend on inference.",
     )
     parser.add_argument(
-        "--num_samples_full",
-        type=int,
-        default=1,
-        help="Number of samples to generate for each prompt.",
-    )
-    parser.add_argument(
-        "--num_samples_completion",
+        "--num_samples",
         type=int,
         default=5,
         help="Number of samples to generate for each prompt.",
     )
     parser.add_argument(
         "--skip_full",
-        help="Whether to skip full setting.",
-        action="store_true",
-    )
-    parser.add_argument(
-        "--skip_completion",
         help="Whether to skip full setting.",
         action="store_true",
     )
