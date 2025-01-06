@@ -1,3 +1,6 @@
 [submodule "baselines/MuTAP/code"]
 	path = baselines/MuTAP/code
 	url = https://github.com/ExpertiseModel/MuTAP.git
+[submodule "baselines/codamosa/codamosa-source"]
+	path = baselines/codamosa/codamosa-source
+	url = https://github.com/microsoft/codamosa.git
