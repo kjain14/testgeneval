@@ -63,7 +63,7 @@ def run_codamosa_in_docker(image, instance, output_dir):
             "--include-partially-parsable", "True",
             "--allow-expandable-cluster", "True",
             "--uninterpreted_statements", "ONLY",
-            "--temperature", "0.8",
+            "--temperature", "0.2",
             "--model_name", "gpt-4o",
             "--authorization-key", os.environ.get("AUTH_KEY"),
         ]
