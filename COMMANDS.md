@@ -27,3 +27,6 @@ python run_pipeline.py \
 --dataset_name_or_path kjain14/testgeneval \
 --model codamosa \
 --namespace kdjain
+
+Summarize GPT-4o results:
+python baselines/summarize_results.py --input_file /data/kdjain/results/unittest_swebench/gpt-4o-2024-05-13t\=0.2_full.json --preds_file /data/kdjain/results/unittest_swebench/preds/gpt-4o-2024-05-13__unittest_swebench__0.2__test.jsonl --output_file baseline_data/gpt_4o_summary.json --ids_file baselines/ids.txt
