@@ -138,7 +138,7 @@ async def main(
         test_type = MAP_REPO_TO_TEST_FRAMEWORK[task["repo"]]
         test_directives = get_test_directives(task)
         if is_genetic:
-            test_cmd = f"pytest {prediction['test_file']}"
+            test_cmd = f"coverage run -m pytest {prediction['test_file']}"
         else:
             test_cmd = f"{test_type} {' '.join(test_directives)}"
 
@@ -153,7 +153,7 @@ async def main(
                 KEY_PREDICTIONS: prediction[KEY_PREDICTIONS],
                 "preds_context": task["preds_context"],
                 "test_patch": task["test_patch"],
-                "test_file": task["test_file"],
+                "test_file": task["test_file"] if not is_genetic else prediction["test_file"],
                 "code_file": task["code_file"],
                 "patch": task["patch"],
                 "test_directives": test_directives,

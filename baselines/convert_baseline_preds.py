@@ -74,7 +74,7 @@ def main():
                 "instance_id": instance_id,
                 "id": entry_name,
                 "preds": {
-                    "full": file_contents
+                    "full": [file_contents]
                 },
                 "model_name_or_path": model_name,
                 "test_file": test_short_path
