@@ -59,6 +59,8 @@ def run_codamosa_in_docker(image, instance, output_dir):
             "--coverage_metrics", "BRANCH,LINE",
             "--assertion-generation", "NONE",
             "--algorithm", "CODAMOSA",
+            "--model_base_url", "https://api.openai.com/v1",
+            "--model_relative_url", "/chat/completions",
             "-v",
             "--include-partially-parsable", "True",
             "--allow-expandable-cluster", "True",

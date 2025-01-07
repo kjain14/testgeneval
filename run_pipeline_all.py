@@ -15,6 +15,7 @@ models = [
     "google/gemma-2-9b-it",
     "google/gemma-2-27b-it",
     "gpt-4o-2024-05-13",
+    "nikitharao/catlm",
 ]
 temperatures = [0.2, 0.8]
 

@@ -489,11 +489,7 @@ def main():
 
     if len(dataset) > 0:
         dataset_full, dataset_completion = split_dataset(dataset, existing_ids_full)
-<<<<<<< HEAD
         print("catlm" in args.model_name_or_path)
-=======
-
->>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
         generator = Generator(
             model,
             tokenizer,
@@ -501,10 +497,7 @@ def main():
             output_file_raw,
             output_file_prompt,
             use_huggingface=huggingface,
-<<<<<<< HEAD
             is_catlm="catlm" in args.model_name_or_path,
-=======
->>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
         )
 
         if len(dataset_full) > 0 and not args.skip_full:
@@ -513,13 +506,8 @@ def main():
                 dataset_full,
                 prompt_info.postprocess_output,
                 True,
-<<<<<<< HEAD
                 args.num_samples_full,
-                4092,
-=======
-                args.num_samples_generation,
-                8192,
->>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
+                4092 if "catlm" in args.model_name_or_path else 8192,
                 stop_token_ids,
             )
         if len(dataset_completion) > 0 and not args.skip_completion:
