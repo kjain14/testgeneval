@@ -61,6 +61,7 @@ async def main(
     timeout: int = 900,
     num_processes: int = -1,
     skip_mutation: bool = False,
+    is_genetic: bool = False,
 ):
     """
     Runs evaluation on predictions for each model/repo/version combination.
@@ -136,7 +137,10 @@ async def main(
 
         test_type = MAP_REPO_TO_TEST_FRAMEWORK[task["repo"]]
         test_directives = get_test_directives(task)
-        test_cmd = f"{test_type} {' '.join(test_directives)}"
+        if is_genetic:
+            test_cmd = f"pytest {prediction['test_file']}"
+        else:
+            test_cmd = f"{test_type} {' '.join(test_directives)}"
 
         task_instances.append(
             {
@@ -154,6 +158,7 @@ async def main(
                 "patch": task["patch"],
                 "test_directives": test_directives,
                 "test_cmd": test_cmd,
+                "is_genetic": is_genetic,
             }
         )
 
@@ -224,6 +229,9 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--skip_mutation", action="store_true", help="(Optional) Skip mutation"
+    )
+    parser.add_argument(
+        "--is_genetic", action="store_true", help="Mark if evaluating genetic programming approach"
     )
     args = parser.parse_args()
     asyncio.run(main(**vars(args)))

@@ -30,6 +30,7 @@ async def run_docker_evaluation(
     base64_instance: bool = True,
     only_baseline: bool = False,
     skip_mutation: bool = False,
+    is_genetic: bool = False,
 ):
     repo_name = task_instance["repo"].replace("/", "_")
 
@@ -92,6 +93,8 @@ async def run_docker_evaluation(
             f"ONLY_BASELINE={only_baseline}",
             "-e",
             f"SKIP_MUTATION={skip_mutation}",
+            "-e",
+            f"IS_GENETIC={is_genetic}",
             docker_image,
         ]
     else:
@@ -122,6 +125,8 @@ async def run_docker_evaluation(
             f"ONLY_BASELINE={only_baseline}",
             "-e",
             f"SKIP_MUTATION={skip_mutation}",
+            "-e",
+            f"IS_GENETIC={is_genetic}",
             docker_image,
         ]
 

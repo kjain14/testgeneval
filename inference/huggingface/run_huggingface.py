@@ -39,7 +39,6 @@ MODEL_CONFIG = {
         "eager": True,
         "huggingface": False,
     },
-<<<<<<< HEAD
     "catlm": {
         "tensor_parallel_size": 2,
         "max_context_window": 8_192,
@@ -47,8 +46,6 @@ MODEL_CONFIG = {
         "eager": True,
         "huggingface": True,
     },
-=======
->>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
     "CodeLlama-70b-Instruct-hf": {
         "tensor_parallel_size": 8,
         "max_context_window": 4_096,
@@ -212,11 +209,7 @@ def parse_args():
         help="Number of samples to generate for completing tests.",
     )
     parser.add_argument(
-<<<<<<< HEAD
-        "--num_samples_full",
-=======
         "--num_samples_generation",
->>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
         type=int,
         default=1,
         help="Number of samples to generate full file.",
@@ -373,11 +366,7 @@ def main():
         model = AutoModelForCausalLM.from_pretrained(
             args.model_name_or_path,
             use_auth_token=args.use_auth_token if args.use_auth_token else None,
-<<<<<<< HEAD
             torch_dtype=args.precision if 'catlm' not in args.model_name_or_path else 'auto',
-=======
-            torch_dtype=args.precision,
->>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
             device_map="auto",
             trust_remote_code=args.trust_remote_code,
         )
@@ -506,7 +495,7 @@ def main():
                 dataset_full,
                 prompt_info.postprocess_output,
                 True,
-                args.num_samples_full,
+                args.num_samples_generation,
                 4092 if "catlm" in args.model_name_or_path else 8192,
                 stop_token_ids,
             )

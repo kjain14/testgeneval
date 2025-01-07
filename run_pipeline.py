@@ -39,6 +39,8 @@ if __name__ == "__main__":
             "google/gemma-2-27b-it",
             "nikitharao/catlm",
             "baseline",
+            "codamosa",
+            "pynguin",
         ],
         required=True,
     )
@@ -191,6 +193,7 @@ if __name__ == "__main__":
     extra_cmd += (
         ["--skip_mutation"] if args.skip_mutation and args.model != "baseline" else []
     )
+    extra_cmd += ["--is_genetic"] if args.model == "codamosa" or args.model == "pynguin" else []
     if args.model == "baseline":
         eval_cmd = [
             "python",

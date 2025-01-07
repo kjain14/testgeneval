@@ -165,10 +165,10 @@ def extract_preamble_classes_and_functions(code, tcm):
 
 
 def postprocess_tests(
-    task_instance, preamble, class_name, methods, successful_tests, tcm
+    task_instance, preamble, class_name, methods, successful_tests, tcm, is_genetic
 ):
     repo = task_instance["repo"]
-    django_repo = repo == "django/django"
+    django_repo = False if is_genetic else (repo == "django/django")
 
     def needs_django_harness(preamble):
         no_django_test = "TestCase" not in preamble
@@ -202,10 +202,10 @@ def postprocess_tests(
 
 
 def postprocess_functions(
-    task_instance, preamble, test_functions, successful_tests, tcm
+    task_instance, preamble, test_functions, successful_tests, tcm, is_genetic
 ):
     repo = task_instance["repo"]
-    django_repo = repo == "django/django"
+    django_repo = False if is_genetic else (repo == "django/django")
 
     def needs_django_harness(preamble):
         no_django_test = "TestCase" not in preamble
@@ -244,7 +244,7 @@ def postprocess_functions(
         successful_tests.append((None, class_wrapper_start + class_content))
 
 
-def full_processing(prompt_list, tcm, task_instance, skip_mutation):
+def full_processing(prompt_list, tcm, task_instance, skip_mutation, is_genetic):
     for prompt in prompt_list:
         preamble, classes, test_functions = extract_preamble_classes_and_functions(
             prompt, tcm
@@ -254,12 +254,12 @@ def full_processing(prompt_list, tcm, task_instance, skip_mutation):
         if classes:
             for class_name, methods, start in classes:
                 postprocess_tests(
-                    task_instance, preamble, class_name, methods, successful_tests, tcm
+                    task_instance, preamble, class_name, methods, successful_tests, tcm, is_genetic
                 )
 
         if test_functions:
             postprocess_functions(
-                task_instance, preamble, test_functions, successful_tests, tcm
+                task_instance, preamble, test_functions, successful_tests, tcm, is_genetic
             )
 
         tcm.log.write(f"{TESTS_CONFIG}full pred\n")
@@ -344,6 +344,7 @@ def main(
     image_type: str = "conda",
     only_baseline: bool = False,
     skip_mutation: bool = False,
+    is_genetic: bool = False,
 ):
     logger.info(
         "Instance ID: "
@@ -394,7 +395,7 @@ def main(
             else task_instance[KEY_PREDICTIONS][setting]
         )
         if setting == "full":
-            full_processing(prompt_list, tcm, task_instance, skip_mutation)
+            full_processing(prompt_list, tcm, task_instance, skip_mutation, is_genetic)
         else:
             completion_processing(
                 prompt_list, tcm, setting, task_instance, only_baseline, skip_mutation
@@ -447,4 +448,5 @@ if __name__ == "__main__":
         image_type=os.getenv("IMAGE_TYPE", "conda"),
         only_baseline=os.getenv("ONLY_BASELINE") == "True",
         skip_mutation=os.getenv("SKIP_MUTATION") == "True",
+        is_genetic=os.getenv("IS_GENETIC") == "True",
     )

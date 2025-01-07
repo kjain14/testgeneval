@@ -29,24 +29,16 @@ Docker images for testbeds used in the `TestGenEval` dataset has been built and 
 
 To setup the repository run
 ```
-<<<<<<< HEAD
-git clone git@github.com:TestGenEval.git
-cd TestGenEval
-=======
 git clone git@github.com:facebookresearch/testgeneval.git
 cd testgeneval
->>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
 conda env create -f testgeneval.yaml
 conda activate testgeneval
 ```
 
 Modify the `.env_template` file with the appropriate values and rename it to `.env` (specifically make sure to set SWEBENCH_DOCKER_FORK_DIR to the current directory where the repository was cloned)
 
-<<<<<<< HEAD
-=======
 **The env template setup is important, make sure you do this**
 
->>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
 ## Building TestGenEval
 
 To build the docker images locally (adapted from [SWEBench Docker](https://github.com/aorwall/SWE-bench-docker/tree/main/docker)) run one of these commands:
@@ -61,9 +53,6 @@ make -f Makefile.testgenevallite
 make -f Makefile.testgeneval
 ```
 
-<<<<<<< HEAD
-**OR** you can simply just run with images pushed to Dockerhub (and skip this section)
-=======
 **OR** 
 
 You can simply just run with images pushed to Dockerhub
@@ -83,7 +72,6 @@ python scripts/pull_images.py --makefile Makefile.testgenevallite
 The TestGenEval datasets are available on huggingface:
 - [kjain14/testgeneval](https://huggingface.co/datasets/kjain14/testgeneval)
 - [kjain14/testgenevallite](https://huggingface.co/datasets/kjain14/testgenevallite)
->>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
 
 ## Running TestGenEval
 
