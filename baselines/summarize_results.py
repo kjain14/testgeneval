@@ -22,7 +22,7 @@ def summarize_results(report_full, preds, preds_path, instances, ids_file):
 
     # 2) Build a separate preds report for only the subset of IDs
     #    - filter the instances so we only keep those whose "id" is in subset_ids
-    subset_instances = [inst for inst in instances if inst.get("id") in subset_ids]
+    subset_instances = {inst: instances[inst] for inst in instances if inst in subset_ids}
     subset_report = get_preds_report(preds_path, subset_instances)
 
     # --- Calculate metrics over ALL IDs (Total) ---
@@ -31,11 +31,13 @@ def summarize_results(report_full, preds, preds_path, instances, ids_file):
     total_pass = []
 
     for pred_id, datum in report_full.items():
+        if "full" not in datum:
+            continue
         # coverage/mutation_score are always counted
         total_cov.append(datum["full"]["coverage"][0])
         total_mut.append(datum["full"]["mutation_score"][0])
         # pass@1 is 1 if unfiltered_tests_passed is True, else 0
-        total_pass.append(1 if datum["full"]["unfiltered_tests_passed"][0] else 0)
+        total_pass.append(1 if datum["full"]["tests_passed"][0] else 0)
 
     # Avoid division by zero if empty
     final_report["total_av_coverage"] = (
@@ -55,9 +57,11 @@ def summarize_results(report_full, preds, preds_path, instances, ids_file):
 
     for pred_id, datum in report_full.items():
         if pred_id in subset_ids:
+            if "full" not in datum:
+                continue
             subset_cov.append(datum["full"]["coverage"][0])
             subset_mut.append(datum["full"]["mutation_score"][0])
-            subset_pass.append(1 if datum["full"]["unfiltered_tests_passed"][0] else 0)
+            subset_pass.append(1 if datum["full"]["tests_passed"][0] else 0)
 
     # Store subset metrics in the subset_report object
     if subset_cov:

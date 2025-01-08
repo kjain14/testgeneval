@@ -69,6 +69,8 @@ def get_preds_report(preds_path, instances):
 
     for pred in tqdm(preds):
         if "full" in pred["preds"]:
+            if pred["id"] not in instances:
+                continue
             baseline_test = instances[pred["id"]]["preds_context"]["last"]
             if type(baseline_test) is list:
                 baseline_test = baseline_test[0]
