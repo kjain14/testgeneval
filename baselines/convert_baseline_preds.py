@@ -48,18 +48,24 @@ def main():
             test_file_path = None
             test_short_path = None
             for fname in os.listdir(full_path):
-                if fname.startswith("test_") and fname.endswith(".py"):
+                if fname.startswith("combined_tests") and fname.endswith(".py"):
                     test_file_path = os.path.join(full_path, fname)
                     test_short_path = fname
                     break
 
+                if fname.startswith("test_") and fname.endswith(".py"):
+                    test_file_path = os.path.join(full_path, fname)
+                    test_short_path = fname
+
             # Skip if we didn't find a test file
             if not test_file_path:
-                continue
+                test_short_path = "test.py"
+                file_contents = ""
 
-            # Read the contents of that test file
-            with open(test_file_path, "r") as f:
-                file_contents = f.read()
+            else:
+                # Read the contents of that test file
+                with open(test_file_path, "r") as f:
+                    file_contents = f.read()
 
             # Strip the trailing '-<digits>' from the directory name
             match = trailing_pattern.match(entry_name)

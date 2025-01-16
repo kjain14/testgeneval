@@ -57,7 +57,6 @@ def run_codamosa_in_docker(image, instance, output_dir):
             "--maximum_search_time", "600",
             "--output_variables", "TargetModule,CoverageTimeline",
             "--coverage_metrics", "BRANCH,LINE",
-            "--assertion-generation", "NONE",
             "--algorithm", "CODAMOSA",
             "--model_base_url", "https://api.openai.com/v1",
             "--model_relative_url", "/chat/completions",
@@ -100,7 +99,6 @@ if __name__ == "__main__":
         output_dir = prepare_output_dir(args.output_base_dir, instance['id'])
         if os.path.exists(output_dir):
             has_py_file = any(file.endswith('.py') for file in os.listdir(output_dir) if os.path.isfile(os.path.join(output_dir, file)))
-
             if has_py_file:
                 continue
 

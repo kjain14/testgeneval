@@ -3,7 +3,7 @@ python baselines/pynguin/run_pynguin.py --input_file baselines/ids.txt --output_
 
 CodaMosa:
 export AUTH_KEY=<YOUR AUTH KEY>
-python baselines/codamosa/run_codamosa.py --input_file baselines/ids.txt --output_base_dir baseline_data/outputs/codamosa/
+python baselines/codamosa/run_codamosa.py --input_file baselines/ids.txt --output_base_dir baseline_data/outputs/codamosa/ 2>&1 | tee logs/codamosa.log
 
 CAT-LM:
 python run_pipeline.py --results_dir results --dataset_name_or_path kjain14/testgeneval --model nikitharao/catlm --namespace kdjain
@@ -33,3 +33,5 @@ python baselines/summarize_results.py --input_file /data/kdjain/results/unittest
 
 Summarize CAT-LM results:
 python baselines/summarize_results.py --input_file results/testgeneval/catlmt\=0.2_full.json --preds_file results/testgeneval/preds/catlm__testgeneval__0.2__test.jsonl --output_file baseline_data/catlm_summary.json --ids_file baselines/ids.txt
+
+OpenHands Test Example:

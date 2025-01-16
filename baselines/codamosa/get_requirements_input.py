@@ -60,7 +60,11 @@ def run_pip_freeze_in_docker(image, output_dir):
             "-v", f"{os.path.abspath(output_dir)}:/output",
             image,
             "bash", "-c",
-            "echo 'numpy == 1.24.0\npackaging >= 20.0\npandas >= 1.1' > /output/testbed/package.txt"
+            """
+            source activate testbed && \\
+            numpy_version=$(python -c "import numpy; print(numpy.__version__)") && \\
+            echo -e "numpy == $numpy_version\npackaging >= 20.0\npandas >= 1.1" > /output/testbed/package.txt
+            """
         ]
         
         # Run Docker command
