@@ -246,10 +246,11 @@ def postprocess_functions(
 
 def full_processing(prompt_list, tcm, task_instance, skip_mutation, is_genetic):
     for prompt in prompt_list:
+        successful_tests = []
+        # if not is_genetic:
         preamble, classes, test_functions = extract_preamble_classes_and_functions(
             prompt, tcm
         )
-        successful_tests = []
 
         if classes:
             for class_name, methods, start in classes:
@@ -263,7 +264,8 @@ def full_processing(prompt_list, tcm, task_instance, skip_mutation, is_genetic):
             )
 
         tcm.log.write(f"{TESTS_CONFIG}full pred\n")
-        if len(successful_tests) > 0:
+        if len(successful_tests) > 0: #or is_genetic:
+            # if not is_genetic:
             success_tests = []
             class_definitions = {}
             for item in successful_tests:
@@ -281,6 +283,9 @@ def full_processing(prompt_list, tcm, task_instance, skip_mutation, is_genetic):
                 success_tests.append(class_content)
 
             success_tests_str = "\n\n".join(success_tests)
+            # else:
+            #     preamble = ''
+            #     success_tests_str = prompt
 
             with open(task_instance[KEY_TEST_FILE_PATH], "w") as f:
                 f.write(preamble + "\n" + success_tests_str)

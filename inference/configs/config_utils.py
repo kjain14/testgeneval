@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-=======
 # Copyright (c) Meta Platforms, Inc. and affiliates.
 
->>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
 import re
 
 

@@ -11,6 +11,7 @@ import tempfile
 import time
 
 import dotenv
+
 from swebench_docker.constants import MAP_VERSION_TO_INSTALL
 
 logger = logging.getLogger(__name__)

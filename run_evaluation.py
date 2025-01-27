@@ -158,7 +158,6 @@ async def main(
                 "patch": task["patch"],
                 "test_directives": test_directives,
                 "test_cmd": test_cmd,
-                "is_genetic": is_genetic,
             }
         )
 
@@ -176,6 +175,7 @@ async def main(
                         **kwargs,
                         only_baseline=False,
                         skip_mutation=skip_mutation,
+                        is_genetic=is_genetic,
                     )
 
             for setting in task_instance[KEY_PREDICTIONS]:

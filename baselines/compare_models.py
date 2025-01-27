@@ -9,7 +9,6 @@ if __name__ == '__main__':
     parser.add_argument('--approach_fp', type=str, required=True)
 
     args = parser.parse_args()
-    print(f'Comparing {args.model1} and {args.model2}')
 
     # Load the data
     with open(args.baseline_full_fp, 'r') as f:
@@ -29,18 +28,19 @@ if __name__ == '__main__':
     mutation_baseline = 0
 
     for i, curr in enumerate(curr_data):
-        coverage_total += curr['coverage']
-        mutation_total += curr['mutation_score']
+        print(curr['test_result'].keys())
+        coverage_total += curr['test_result']['report']['coverage']
+        # mutation_total += curr['mutation_score']
 
-        print('Agent Prediction:\n', curr['test_suite'])
-        print('Coverage:', curr['coverage'], 'Mutation:', curr['mutation_score'])
+        print('Agent Prediction:\n', curr['test_result']['test_suite'])
+        print('Coverage:', curr['test_result']['report']['coverage'])#, 'Mutation:', curr['test_result']['report']['coverage'])
         input()
 
         instance_id = curr['test_result']['id']
 
         baseline = baseline_full[instance_id]
-        coverage_baseline_curr = baseline['coverage']
-        mutation_baseline_curr = baseline['mutation_score']
+        coverage_baseline_curr = baseline['full']['coverage'][0]
+        mutation_baseline_curr = baseline['full']['mutation_score'][0]
 
         coverage_baseline += coverage_baseline_curr if coverage_baseline != -1 else 0
         mutation_baseline += mutation_baseline_curr if mutation_baseline != -1 else 0
@@ -48,7 +48,7 @@ if __name__ == '__main__':
         baseline_pred = ''
         for pred in baseline_preds:
             if pred['id'] == instance_id:
-                baseline_pred = pred['prediction']
+                baseline_pred = pred['preds']['full'][0]
                 break
 
         print('Baseline Prediction:\n', baseline_pred)
