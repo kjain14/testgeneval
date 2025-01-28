@@ -865,7 +865,7 @@ SETTING_PROMPT_MAP: Dict[str, str] = {
     "last": "last_minus_one",
     "extra": "last",
 }
-VALID_K: List[int] = [1, 5, 10, 100]
+VALID_K: List[int] = [0, 1, 5, 10, 100]
 
 
 # Constants - Patch Types
