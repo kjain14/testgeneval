@@ -17,10 +17,7 @@ from datasets import Dataset, load_dataset, load_from_disk
 from inference.configs.codestral_prompt import CodestralPrompt
 from inference.configs.gemma2_prompt import Gemma2Prompt
 from inference.configs.instruct_prompt import InstructPrompt
-<<<<<<< HEAD
 from inference.configs.catlm_prompt import CATLMPrompt
-=======
->>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
 from inference.configs.llama3_prompt import Llama3Prompt
 from inference.huggingface.generator import Generator
 from tqdm import tqdm

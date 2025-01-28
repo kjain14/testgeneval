@@ -25,8 +25,10 @@ if __name__ == "__main__":
         help="Model name",
         choices=[
             "gpt-4o-2024-05-13",
+            "gpt-4o-2024-08-06",
             "gpt-4-0613",
             "gpt-4-turbo-2024-04-09",
+            "o1-2024-12-17",
             "gpt-3.5-turbo-0125",
             "meta-llama/CodeLlama-7b-Instruct-hf",
             "meta-llama/Meta-Llama-3.1-8B-Instruct",
@@ -136,8 +138,10 @@ if __name__ == "__main__":
 
     API_MODELS = [
         "gpt-4o-2024-05-13",
+        "gpt-4o-2024-08-06",
         "gpt-4-0613",
         "gpt-4-turbo-2024-04-09",
+        "o1-2024-12-17",
         "gpt-3.5-turbo-0125",
         "Meta-Llama-3.1-405B-Instruct",
     ]
@@ -158,9 +162,7 @@ if __name__ == "__main__":
                 dataset_name_or_path,
                 "--output_dir",
                 pred_dir,
-                "--num_samples_full",
-                str(args.num_samples_full),
-                "--num_samples_completion",
+                "--num_samples",
                 str(args.num_samples_completion),
             ] + model_extra_cmd
             subprocess.run(model_cmd)
@@ -180,7 +182,7 @@ if __name__ == "__main__":
                 pred_dir,
                 "--num_samples_completion",
                 str(args.num_samples_completion),
-                "--num_samples_full",
+                "--num_samples_generation",
                 str(args.num_samples_full),
                 "--temperature",
                 str(args.temperature),
