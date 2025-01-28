@@ -6,7 +6,6 @@ __pycache__/
 # C extensions
 *.so
 
-<<<<<<< HEAD
 # log files
 images*.log
 
@@ -14,8 +13,6 @@ baseline_data/inputs
 baseline_data/outputs
 results
 
-=======
->>>>>>> d0c886a40f18f94648e5f38bc3933c3e03f3970b
 # Distribution / packaging
 .Python
 build/
