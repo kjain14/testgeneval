@@ -68,7 +68,7 @@ if __name__ == "__main__":
         default="aorwall",
     )
     parser.add_argument(
-        "--num_processes", type=int, help="Number of processes to run", default=1
+        "--num_processes", type=int, help="Number of processes to run", default=16
     )
     parser.add_argument(
         "--temperature", type=float, help="(Optional) Model temperature", default=0.2

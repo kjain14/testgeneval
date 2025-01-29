@@ -179,6 +179,8 @@ async def main(
                     )
 
             for setting in task_instance[KEY_PREDICTIONS]:
+                if len(task_instance[KEY_PREDICTIONS][setting]) == 0:
+                    continue
                 task = asyncio.create_task(
                     run_docker_throttled(
                         task_instance, namespace, log_dir, setting, timeout
