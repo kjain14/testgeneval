@@ -590,12 +590,7 @@ def get_test_directives(instance: dict, keep_as_files: bool = False) -> list:
         return ["test.py"]
 
     # Get test directives from test patch and remove non-test files
-    diff_pat = r"diff --git a/.* b/(.*)"
-    test_patch = instance["test_patch"]
-    directives = re.findall(diff_pat, test_patch)
-    directives = [
-        d for d in directives if not any(d.endswith(ext) for ext in NON_TEST_EXTS)
-    ]
+    directives = [instance["test_src"]]
 
     if keep_as_files:
         return directives
