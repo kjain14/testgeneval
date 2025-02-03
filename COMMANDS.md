@@ -31,6 +31,12 @@ python run_pipeline.py \
 Summarize GPT-4o results:
 python baselines/summarize_results.py --input_file /data/kdjain/results/unittest_swebench/gpt-4o-2024-05-13t\=0.2_full.json --preds_file /data/kdjain/results/unittest_swebench/preds/gpt-4o-2024-05-13__unittest_swebench__0.2__test.jsonl --output_file baseline_data/gpt_4o_summary.json --ids_file baselines/ids.txt
 
+Summarize GPT-4o results (codamosa):
+python baselines/summarize_results.py --input_file results/testgeneval/gpt-4o-2024-08-06t\=0.2_full.json --preds_file results/testgeneval/preds/gpt-4o-2024-08-06__testgeneval__0.2__test.jsonl --output_file baseline_data/gpt_4o_summary_codamosa.json --ids_file baselines/codamosa_ids.txt
+
+Summarize GPT-4o results (pynguin):
+python baselines/summarize_results.py --input_file results/testgeneval/gpt-4o-2024-08-06t\=0.2_full.json --preds_file results/testgeneval/preds/gpt-4o-2024-08-06__testgeneval__0.2__test.jsonl --output_file baseline_data/gpt_4o_summary_pynguin.json --ids_file baselines/pynguin_ids.txt
+
 Summarize CAT-LM results:
 python baselines/summarize_results.py --input_file results/testgeneval/catlmt\=0.2_full.json --preds_file results/testgeneval/preds/catlm__testgeneval__0.2__test.jsonl --output_file baseline_data/catlm_summary.json --ids_file baselines/ids.txt
 

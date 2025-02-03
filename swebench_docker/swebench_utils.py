@@ -329,6 +329,8 @@ def get_eval_report(
             final_results[f"{setting}_av_coverage"] = eval_sm[setting]["coverage"][0]
 
         for k in VALID_K:
+            if k == 0:
+                continue
             if len(tests_passed) >= k:
                 final_results[f"{setting}_pass_at_{k}"] = any(tests_passed[:k])
             if len(tests_passed) >= k:

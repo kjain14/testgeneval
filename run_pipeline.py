@@ -145,50 +145,50 @@ if __name__ == "__main__":
         "gpt-3.5-turbo-0125",
         "Meta-Llama-3.1-405B-Instruct",
     ]
-    # if not os.path.exists(preds_file):
-    if args.model in API_MODELS:
-        model_extra_cmd = ["--model_args", f"temperature={args.temperature}"]
-        model_extra_cmd += ["--azure"] if args.azure else []
-        model_extra_cmd += ["--skip_full"] if args.skip_full else []
-        model_extra_cmd += ["--skip_completion"] if args.skip_completion else []
-        # Run model prediction
-        model_cmd = [
-            "python",
-            "-m",
-            "inference.api.run_api",
-            "--model_name_or_path",
-            args.model,
-            "--dataset_name_or_path",
-            dataset_name_or_path,
-            "--output_dir",
-            pred_dir,
-            "--num_samples",
-            str(args.num_samples_completion),
-        ] + model_extra_cmd
-        subprocess.run(model_cmd)
-    elif args.model != "baseline":
-        model_extra_cmd = ["--skip_full"] if args.skip_full else []
-        model_extra_cmd += ["--skip_completion"] if args.skip_completion else []
-        model_cmd = [
-            "python",
-            "-m",
-            "inference.huggingface.run_huggingface",
-            "--model_name_or_path",
-            args.model,
-            "--dataset_name_or_path",
-            dataset_name_or_path,
-            "--use_auth_token",
-            "--output_dir",
-            pred_dir,
-            "--num_samples_completion",
-            str(args.num_samples_completion),
-            "--num_samples_generation",
-            str(args.num_samples_full),
-            "--temperature",
-            str(args.temperature),
-        ]
-        model_cmd += model_extra_cmd
-        subprocess.run(model_cmd)
+    if not os.path.exists(preds_file):
+        if args.model in API_MODELS:
+            model_extra_cmd = ["--model_args", f"temperature={args.temperature}"]
+            model_extra_cmd += ["--azure"] if args.azure else []
+            model_extra_cmd += ["--skip_full"] if args.skip_full else []
+            model_extra_cmd += ["--skip_completion"] if args.skip_completion else []
+            # Run model prediction
+            model_cmd = [
+                "python",
+                "-m",
+                "inference.api.run_api",
+                "--model_name_or_path",
+                args.model,
+                "--dataset_name_or_path",
+                dataset_name_or_path,
+                "--output_dir",
+                pred_dir,
+                "--num_samples",
+                str(args.num_samples_completion),
+            ] + model_extra_cmd
+            subprocess.run(model_cmd)
+        elif args.model != "baseline":
+            model_extra_cmd = ["--skip_full"] if args.skip_full else []
+            model_extra_cmd += ["--skip_completion"] if args.skip_completion else []
+            model_cmd = [
+                "python",
+                "-m",
+                "inference.huggingface.run_huggingface",
+                "--model_name_or_path",
+                args.model,
+                "--dataset_name_or_path",
+                dataset_name_or_path,
+                "--use_auth_token",
+                "--output_dir",
+                pred_dir,
+                "--num_samples_completion",
+                str(args.num_samples_completion),
+                "--num_samples_generation",
+                str(args.num_samples_full),
+                "--temperature",
+                str(args.temperature),
+            ]
+            model_cmd += model_extra_cmd
+            subprocess.run(model_cmd)
 
     # Run evaluation
     extra_cmd = ["--skip_existing"] if not args.rerun_eval else []
