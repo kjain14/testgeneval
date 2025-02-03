@@ -590,7 +590,7 @@ def get_test_directives(instance: dict, keep_as_files: bool = False) -> list:
         return ["test.py"]
 
     # Get test directives from test patch and remove non-test files
-    directives = [instance["test_src"]]
+    directives = [instance["test_file"]]
 
     if keep_as_files:
         return directives
