@@ -1,5 +1,6 @@
 import argparse
 import json
+from tqdm import tqdm
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -27,14 +28,13 @@ if __name__ == '__main__':
     coverage_baseline = 0
     mutation_baseline = 0
 
-    for i, curr in enumerate(curr_data):
-        print(curr['test_result'].keys())
-        coverage_total += curr['test_result']['report']['coverage']
-        # mutation_total += curr['mutation_score']
+    pass_baseline = 0
+    pass_total = 0
 
-        print('Agent Prediction:\n', curr['test_result']['test_suite'])
-        print('Coverage:', curr['test_result']['report']['coverage'])#, 'Mutation:', curr['test_result']['report']['coverage'])
-        input()
+    for i, curr in tqdm(enumerate(curr_data)):
+        coverage_total += curr['test_result']['report']['coverage']
+        mutation_total += curr['test_result']['report']['mutation_score']
+
 
         instance_id = curr['test_result']['id']
 
@@ -42,15 +42,25 @@ if __name__ == '__main__':
         coverage_baseline_curr = baseline['full']['coverage'][0]
         mutation_baseline_curr = baseline['full']['mutation_score'][0]
 
-        coverage_baseline += coverage_baseline_curr if coverage_baseline != -1 else 0
-        mutation_baseline += mutation_baseline_curr if mutation_baseline != -1 else 0
-        
-        baseline_pred = ''
-        for pred in baseline_preds:
-            if pred['id'] == instance_id:
-                baseline_pred = pred['preds']['full'][0]
-                break
+        coverage_baseline += coverage_baseline_curr if coverage_baseline_curr != -1 else 0
+        mutation_baseline += mutation_baseline_curr if mutation_baseline_curr != -1 else 0
 
-        print('Baseline Prediction:\n', baseline_pred)
-        print('Baseline Coverage:', coverage_baseline_curr, 'Baseline Mutation:', mutation_baseline_curr)
-        input()
+        pass_baseline += 1 if coverage_baseline_curr != -1 else 0
+        pass_total += 1 if curr['test_result']['report']['tests_pass'] else 0
+
+        # baseline_pred = ''
+        # for pred in baseline_preds:
+        #     if pred['id'] == instance_id:
+        #         baseline_pred = pred['preds']['full'][0]
+        #         break
+
+        # print('Baseline Prediction:\n', baseline_pred)
+        # print('Baseline Coverage:', coverage_baseline_curr, 'Baseline Mutation:', mutation_baseline_curr)
+        # input()
+
+    print('Coverage Total:', coverage_total/len(curr_data))
+    print('Coverage Baseline:', coverage_baseline/len(curr_data))
+    print('Mutation Total:', mutation_total/len(curr_data))
+    print('Mutation Baseline:', mutation_baseline/len(curr_data))
+    print('Pass Total:', pass_total/len(curr_data)*100)
+    print('Pass Baseline:', pass_baseline/len(curr_data)*100)
