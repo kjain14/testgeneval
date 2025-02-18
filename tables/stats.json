@@ -1,0 +1,1 @@
+{"agentic_full_gpt": {"t_stat": 8.41511256983041, "p_value": 6.625868885142377e-17}, "agentic_subset_gpt": {"t_stat": 1.8013998131941644, "p_value": 0.07508911509049626}, "agentic_subset_pynguin": {"t_stat": 8.245265787180232, "p_value": 5.024817171414683e-12}, "agentic_subset_codamosa": {"t_stat": 5.956677069807484, "p_value": 1.1311344390204404e-07}}
