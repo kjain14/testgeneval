@@ -1,66 +1,118 @@
 import argparse
 import json
+import os
 from tqdm import tqdm
+
+def load_preds(preds_fp):
+    """
+    Load a predictions file (JSON lines) and return a dictionary keyed by instance id.
+    Assumes that the predicted test suite is stored under entry['preds']['full'][0].
+    """
+    with open(preds_fp, 'r') as f:
+        lines = [json.loads(line) for line in f]
+    preds_dict = {}
+    for entry in lines:
+        preds_dict[entry['id']] = entry
+    return preds_dict
+
+def load_report(report_fp):
+    """Load a report file (a JSON file keyed by instance id)."""
+    with open(report_fp, 'r') as f:
+        return json.load(f)
+
+def load_approach(approach_fp):
+    """
+    Load the approach file (JSON lines format) and return a dictionary keyed by instance id.
+    Each entry is assumed to have its id at entry['test_result']['id'].
+    """
+    approach_dict = {}
+    with open(approach_fp, 'r') as f:
+        for line in f:
+            entry = json.loads(line)
+            instance_id = entry['test_result']['id']
+            approach_dict[instance_id] = entry
+    return approach_dict
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--baseline_full_fp', type=str, required=True)
-    parser.add_argument('--baseline_preds', type=str, required=True)
-
-    parser.add_argument('--approach_fp', type=str, required=True)
-
+    # Baseline 1 inputs:
+    parser.add_argument('--baseline1_report', type=str, default="results/testgeneval/pynguin_full.json",
+                        help="Path to baseline 1 report (JSON keyed by instance id)")
+    parser.add_argument('--baseline1_preds', type=str, default="results/testgeneval/preds/pynguin__testgeneval__0.2__test.jsonl",
+                        help="Path to baseline 1 predictions (JSON lines)")
+    # Baseline 2 inputs:
+    parser.add_argument('--baseline2_report', type=str, default="results/testgeneval/gpt-4o-2024-08-06t=0.2_full.json",
+                        help="Path to baseline 2 report (JSON keyed by instance id)")
+    parser.add_argument('--baseline2_preds', type=str, default="results/testgeneval/preds/gpt-4o-2024-08-06__testgeneval__0.2__test.jsonl",
+                        help="Path to baseline 2 predictions (JSON lines)")
+    # Approach input (single file as before)
+    parser.add_argument('--approach_fp', type=str, default="../OpenHands/evaluation/evaluation_outputs/outputs/kjain14__testgeneval-test/CodeActAgent/gpt-4o_maxiter_25_N_v0.20.0-no-hint-run_1/output.testgeneval.jsonl",
+                        help="Path to approach file (JSON lines, containing test_result with report)")
+    # Output directory for TXT files:
+    parser.add_argument('--output_dir', type=str, default='baseline_data/figure_examples',
+                        help="Directory to write output TXT files")
     args = parser.parse_args()
 
-    # Load the data
-    with open(args.baseline_full_fp, 'r') as f:
-        baseline_full = json.load(f)
+    os.makedirs(args.output_dir, exist_ok=True)
 
-    with open(args.baseline_preds, 'r') as f:
-        baseline_preds = [json.loads(line) for line in f]
+    # Load data
+    baseline1_report = load_report(args.baseline1_report)
+    baseline2_report = load_report(args.baseline2_report)
+    approach_data    = load_approach(args.approach_fp)
 
-    with open(args.approach_fp, 'r') as f:
-        curr_data = [json.loads(line) for line in f]
-    
+    baseline1_preds = load_preds(args.baseline1_preds)
+    baseline2_preds = load_preds(args.baseline2_preds)
 
-    coverage_total = 0
-    mutation_total = 0
+    # Determine instance ids present in all sources.
+    common_ids = (set(baseline1_report.keys()) & set(baseline1_preds.keys()) &
+                  set(baseline2_report.keys()) & set(baseline2_preds.keys()) &
+                  set(approach_data.keys()))
 
-    coverage_baseline = 0
-    mutation_baseline = 0
+    for instance_id in tqdm(common_ids):
+        # Baseline 1: Get predicted test suite, coverage, and mutation score.
+        b1_pred_entry = baseline1_preds[instance_id]
+        b1_pred_suite = b1_pred_entry.get('preds', {}).get('full', [None])[0]
+        b1_report_entry = baseline1_report[instance_id]
+        b1_coverage = b1_report_entry.get('full', {}).get('coverage', [-1])[0]
+        b1_mutation = b1_report_entry.get('full', {}).get('mutation_score', [-1])[0]
 
-    pass_baseline = 0
-    pass_total = 0
+        # Baseline 2: Get predicted test suite, coverage, and mutation score.
+        b2_pred_entry = baseline2_preds[instance_id]
+        b2_pred_suite = b2_pred_entry.get('preds', {}).get('full', [None])[0]
+        b2_report_entry = baseline2_report[instance_id]
+        b2_coverage = b2_report_entry.get('full', {}).get('coverage', [-1])[0]
+        b2_mutation = b2_report_entry.get('full', {}).get('mutation_score', [-1])[0]
 
-    for i, curr in tqdm(enumerate(curr_data)):
-        coverage_total += curr['test_result']['report']['coverage']
-        mutation_total += curr['test_result']['report']['mutation_score']
+        # Approach: Process using the same method as before.
+        a_entry = approach_data[instance_id]
+        a_report = a_entry['test_result']['report']
+        a_coverage = a_report.get('coverage', -1)
+        a_mutation = a_report.get('mutation_score', -1)
+        # The approach file does not include a separate predictions field, so we mark it as N/A.
+        a_pred_suite = a_entry['test_result']['test_suite']
 
+        # Prepare the output content.
+        content = f"Instance ID: {instance_id}\n\n"
+        content += "Baseline 1:\n"
+        content += f"Predicted Test Suite: {b1_pred_suite}\n"
+        content += f"Coverage: {b1_coverage}\n"
+        content += f"Mutation Score: {b1_mutation}\n\n"
 
-        instance_id = curr['test_result']['id']
+        content += "Baseline 2:\n"
+        content += f"Predicted Test Suite: {b2_pred_suite}\n"
+        content += f"Coverage: {b2_coverage}\n"
+        content += f"Mutation Score: {b2_mutation}\n\n"
 
-        baseline = baseline_full[instance_id]
-        coverage_baseline_curr = baseline['full']['coverage'][0]
-        mutation_baseline_curr = baseline['full']['mutation_score'][0]
+        content += "Approach:\n"
+        content += f"Predicted Test Suite: {a_pred_suite}\n"
+        content += f"Coverage: {a_coverage}\n"
+        content += f"Mutation Score: {a_mutation}\n"
 
-        coverage_baseline += coverage_baseline_curr if coverage_baseline_curr != -1 else 0
-        mutation_baseline += mutation_baseline_curr if mutation_baseline_curr != -1 else 0
+        # Write the content to a TXT file for this instance.
+        output_fp = os.path.join(args.output_dir, f"{instance_id}.txt")
+        with open(output_fp, 'w') as f:
+            f.write(content)
 
-        pass_baseline += 1 if coverage_baseline_curr != -1 else 0
-        pass_total += 1 if curr['test_result']['report']['tests_pass'] else 0
-
-        # baseline_pred = ''
-        # for pred in baseline_preds:
-        #     if pred['id'] == instance_id:
-        #         baseline_pred = pred['preds']['full'][0]
-        #         break
-
-        # print('Baseline Prediction:\n', baseline_pred)
-        # print('Baseline Coverage:', coverage_baseline_curr, 'Baseline Mutation:', mutation_baseline_curr)
-        # input()
-
-    print('Coverage Total:', coverage_total/len(curr_data))
-    print('Coverage Baseline:', coverage_baseline/len(curr_data))
-    print('Mutation Total:', mutation_total/len(curr_data))
-    print('Mutation Baseline:', mutation_baseline/len(curr_data))
-    print('Pass Total:', pass_total/len(curr_data)*100)
-    print('Pass Baseline:', pass_baseline/len(curr_data)*100)
+        if a_coverage - b2_coverage > 10 and b1_coverage != -1:
+            print(f"Approach outperforms baseline 1 for {instance_id} (coverage)")
+            input()

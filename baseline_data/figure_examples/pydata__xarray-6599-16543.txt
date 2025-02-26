@@ -1,0 +1,244 @@
+Instance ID: pydata__xarray-6599-16543
+
+Baseline 1:
+Predicted Test Suite: 
+Coverage: -1
+Mutation Score: -1
+
+Baseline 2:
+Predicted Test Suite: 
+import pytest
+import numpy as np
+import pandas as pd
+import xarray as xr
+from xarray.core.computation import (
+    _UFuncSignature,
+    apply_ufunc,
+    broadcast_compat_data,
+    collect_dict_values,
+    join_dict_keys,
+    ordered_set_intersection,
+    ordered_set_union,
+    result_name,
+    unified_dim_sizes,
+    cov,
+    corr,
+    cross,
+    dot,
+    where,
+    polyval,
+    _calc_idxminmax,
+    unify_chunks,
+)
+
+def test_result_name():
+    class MockObject:
+        def __init__(self, name):
+            self.name = name
+
+    obj1 = MockObject("name1")
+    obj2 = MockObject("name1")
+    obj3 = MockObject("name2")
+    assert result_name([obj1, obj2]) == "name1"
+    assert result_name([obj1, obj3]) is None
+    assert result_name([obj1, MockObject(None)]) == "name1"
+
+def test_ordered_set_union():
+    assert list(ordered_set_union([[1, 2], [2, 3], [3, 4]])) == [1, 2, 3, 4]
+
+def test_ordered_set_intersection():
+    assert list(ordered_set_intersection([[1, 2, 3], [2, 3, 4], [3, 4, 5]])) == [3]
+
+def test_join_dict_keys():
+    dict1 = {"a": 1, "b": 2}
+    dict2 = {"b": 3, "c": 4}
+    assert list(join_dict_keys([dict1, dict2], how="inner")) == ["b"]
+    assert list(join_dict_keys([dict1, dict2], how="outer")) == ["a", "b", "c"]
+
+def test_collect_dict_values():
+    dict1 = {"a": 1, "b": 2}
+    dict2 = {"b": 3, "c": 4}
+    keys = ["a", "b", "c"]
+    assert collect_dict_values([dict1, dict2], keys, fill_value=None) == [
+        [1, None],
+        [2, 3],
+        [None, 4],
+    ]
+
+def test_unified_dim_sizes():
+    var1 = xr.Variable(("x", "y"), np.random.rand(3, 4))
+    var2 = xr.Variable(("x", "z"), np.random.rand(3, 5))
+    assert unified_dim_sizes([var1, var2]) == {"x": 3, "y": 4, "z": 5}
+
+def test_broadcast_compat_data():
+    var = xr.Variable(("x", "y"), np.random.rand(3, 4))
+    data = broadcast_compat_data(var, ("x",), ("y",))
+    assert data.shape == (3, 4)
+
+def test_apply_ufunc():
+    da = xr.DataArray(np.random.rand(3, 4), dims=("x", "y"))
+    result = apply_ufunc(np.mean, da, input_core_dims=[["y"]], kwargs={"axis": -1})
+    assert result.shape == (3,)
+
+def test_cov():
+    da_a = xr.DataArray(np.random.rand(3, 4), dims=("x", "y"))
+    da_b = xr.DataArray(np.random.rand(3, 4), dims=("x", "y"))
+    result = cov(da_a, da_b, dim="y")
+    assert result.shape == (3,)
+
+def test_corr():
+    da_a = xr.DataArray(np.random.rand(3, 4), dims=("x", "y"))
+    da_b = xr.DataArray(np.random.rand(3, 4), dims=("x", "y"))
+    result = corr(da_a, da_b, dim="y")
+    assert result.shape == (3,)
+
+def test_cross():
+    a = xr.DataArray([1, 2, 3], dims=["dim_0"])
+    b = xr.DataArray([4, 5, 6], dims=["dim_0"])
+    result = cross(a, b, dim="dim_0")
+    assert result.shape == (3,)
+
+def test_dot():
+    da_a = xr.DataArray(np.random.rand(3, 2), dims=["a", "b"])
+    da_b = xr.DataArray(np.random.rand(3, 2, 2), dims=["a", "b", "c"])
+    result = dot(da_a, da_b, dims=["a"])
+    assert result.shape == (2, 2)
+
+def test_where():
+    cond = xr.DataArray([True, False], dims=["x"])
+    x = xr.DataArray([1, 2], dims=["y"])
+    result = where(cond, x, 0)
+    assert result.shape == (2, 2)
+
+def test_polyval():
+    coord = xr.DataArray([1, 2, 3], dims=["x"])
+    coeffs = xr.DataArray([1, 0, 0], dims=["degree"])
+    result = polyval(coord, coeffs, degree_dim="degree")
+    assert result.shape == (3,)
+
+def test_unify_chunks():
+    da1 = xr.DataArray(np.random.rand(10, 20)).chunk({"dim_0": 5})
+    da2 = xr.DataArray(np.random.rand(10, 20)).chunk({"dim_0": 10})
+    unified_da1, unified_da2 = unify_chunks(da1, da2)
+    assert unified_da1.chunks == unified_da2.chunks
+
+Coverage: 54.817275747508305
+Mutation Score: 31.89
+
+Approach:
+Predicted Test Suite: import pytest
+import numpy as np
+import pandas as pd
+import xarray as xr
+from xarray.core.computation import (
+    _UFuncSignature,
+    apply_ufunc,
+    broadcast_compat_data,
+    collect_dict_values,
+    join_dict_keys,
+    ordered_set_intersection,
+    ordered_set_union,
+    result_name,
+    unified_dim_sizes,
+    cov,
+    corr,
+    cross,
+    dot,
+    where,
+    polyval,
+    _calc_idxminmax,
+    unify_chunks,
+)
+
+def test_result_name():
+    class MockObject:
+        def __init__(self, name):
+            self.name = name
+
+    obj1 = MockObject("name1")
+    obj2 = MockObject("name1")
+    obj3 = MockObject("name2")
+    assert result_name([obj1, obj2]) == "name1"
+    assert result_name([obj1, obj3]) is None
+    assert result_name([obj1, MockObject(None)]) == "name1"
+
+def test_ordered_set_union():
+    assert list(ordered_set_union([[1, 2], [2, 3], [3, 4]])) == [1, 2, 3, 4]
+
+def test_ordered_set_intersection():
+    assert list(ordered_set_intersection([[1, 2, 3], [2, 3, 4], [3, 4, 5]])) == [3]
+
+def test_join_dict_keys():
+    dict1 = {"a": 1, "b": 2}
+    dict2 = {"b": 3, "c": 4}
+    assert list(join_dict_keys([dict1, dict2], how="inner")) == ["b"]
+    assert list(join_dict_keys([dict1, dict2], how="outer")) == ["a", "b", "c"]
+
+def test_collect_dict_values():
+    dict1 = {"a": 1, "b": 2}
+    dict2 = {"b": 3, "c": 4}
+    keys = ["a", "b", "c"]
+    assert collect_dict_values([dict1, dict2], keys, fill_value=None) == [
+        [1, None],
+        [2, 3],
+        [None, 4],
+    ]
+
+def test_unified_dim_sizes():
+    var1 = xr.Variable(("x", "y"), np.random.rand(3, 4))
+    var2 = xr.Variable(("x", "z"), np.random.rand(3, 5))
+    assert unified_dim_sizes([var1, var2]) == {"x": 3, "y": 4, "z": 5}
+
+def test_broadcast_compat_data():
+    var = xr.Variable(("x", "y"), np.random.rand(3, 4))
+    data = broadcast_compat_data(var, ("x",), ("y",))
+    assert data.shape == (3, 4)
+
+def test_apply_ufunc():
+    da = xr.DataArray(np.random.rand(3, 4), dims=("x", "y"))
+    result = apply_ufunc(np.mean, da, input_core_dims=[["y"]], kwargs={"axis": -1})
+    assert result.shape == (3,)
+
+def test_cov():
+    da_a = xr.DataArray(np.random.rand(3, 4), dims=("x", "y"))
+    da_b = xr.DataArray(np.random.rand(3, 4), dims=("x", "y"))
+    result = cov(da_a, da_b, dim="y")
+    assert result.shape == (3,)
+
+def test_corr():
+    da_a = xr.DataArray(np.random.rand(3, 4), dims=("x", "y"))
+    da_b = xr.DataArray(np.random.rand(3, 4), dims=("x", "y"))
+    result = corr(da_a, da_b, dim="y")
+    assert result.shape == (3,)
+
+def test_cross():
+    a = xr.DataArray([1, 2, 3], dims=["dim_0"])
+    b = xr.DataArray([4, 5, 6], dims=["dim_0"])
+    result = cross(a, b, dim="dim_0")
+    assert result.shape == (3,)
+
+def test_dot():
+    da_a = xr.DataArray(np.random.rand(3, 2), dims=["a", "b"])
+    da_b = xr.DataArray(np.random.rand(3, 2, 2), dims=["a", "b", "c"])
+    result = dot(da_a, da_b, dims=["a"])
+    assert result.shape == (2, 2)
+
+def test_where():
+    cond = xr.DataArray([True, False], dims=["x"])
+    x = xr.DataArray([1, 2], dims=["y"])
+    result = where(cond, x, 0)
+    assert result.shape == (2, 2)
+
+def test_polyval():
+    coord = xr.DataArray([1, 2, 3], dims=["x"])
+    coeffs = xr.DataArray([1, 0, 0], dims=["degree"])
+    result = polyval(coord, coeffs, degree_dim="degree")
+    assert result.shape == (3,)
+
+def test_unify_chunks():
+    da1 = xr.DataArray(np.random.rand(10, 20)).chunk({"dim_0": 5})
+    da2 = xr.DataArray(np.random.rand(10, 20)).chunk({"dim_0": 10})
+    unified_da1, unified_da2 = unify_chunks(da1, da2)
+    assert unified_da1.chunks == unified_da2.chunks
+Coverage: 54.817275747508305
+Mutation Score: 29.42

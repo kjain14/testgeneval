@@ -1,0 +1,297 @@
+Instance ID: pydata__xarray-5126-16519
+
+Baseline 1:
+Predicted Test Suite: 
+Coverage: -1
+Mutation Score: -1
+
+Baseline 2:
+Predicted Test Suite: 
+import pytest
+import numpy as np
+import pandas as pd
+from datetime import datetime, timedelta
+from xarray.core import formatting
+from xarray.core.options import OPTIONS
+
+def test_pretty_print():
+    assert formatting.pretty_print("test", 10) == "test      "
+    assert formatting.pretty_print("test", 2) == "te"
+
+def test_maybe_truncate():
+    assert formatting.maybe_truncate("test", 10) == "test"
+    assert formatting.maybe_truncate("test", 2) == "te..."
+
+def test_wrap_indent():
+    text = "This is a test\nwith multiple lines"
+    expected = ">>This is a test\n  with multiple lines"
+    assert formatting.wrap_indent(text, start=">>", length=2) == expected
+
+def test_first_n_items():
+    array = np.array([1, 2, 3, 4, 5])
+    assert list(formatting.first_n_items(array, 3)) == [1, 2, 3]
+    with pytest.raises(ValueError):
+        formatting.first_n_items(array, 0)
+
+def test_last_n_items():
+    array = np.array([1, 2, 3, 4, 5])
+    assert list(formatting.last_n_items(array, 3)) == [3, 4, 5]
+    assert formatting.last_n_items(array, 0) == []
+
+def test_last_item():
+    array = np.array([1, 2, 3, 4, 5])
+    assert formatting.last_item(array) == [5]
+    assert formatting.last_item(np.array([])) == []
+
+def test_format_timestamp():
+    t = pd.Timestamp("2023-01-01")
+    assert formatting.format_timestamp(t) == "2023-01-01"
+    t = pd.Timestamp("2023-01-01 12:00:00")
+    assert formatting.format_timestamp(t) == "2023-01-01T12:00:00"
+
+def test_format_timedelta():
+    t = pd.Timedelta(days=1, hours=2)
+    assert formatting.format_timedelta(t) == "1 days 02:00:00"
+    assert formatting.format_timedelta(t, timedelta_format="date") == "1 days"
+    assert formatting.format_timedelta(t, timedelta_format="time") == "02:00:00"
+
+def test_format_item():
+    assert formatting.format_item(np.datetime64('2023-01-01')) == "2023-01-01"
+    assert formatting.format_item(timedelta(days=1)) == "1 days 00:00:00"
+    assert formatting.format_item(3.14159) == "3.142"
+    assert formatting.format_item("test") == "'test'"
+
+def test_format_items():
+    items = [np.datetime64('2023-01-01'), timedelta(days=1), 3.14159, "test"]
+    expected = ["2023-01-01", "1 days 00:00:00", "3.142", "'test'"]
+    assert formatting.format_items(items) == expected
+
+def test_format_array_flat():
+    array = np.array([1, 2, 3, 4, 5])
+    assert formatting.format_array_flat(array, 10) == "1 2 3 4 5"
+
+def test_inline_dask_repr():
+    class MockDaskArray:
+        chunks = ((2, 2),)
+        _meta = np.ndarray(0)
+
+    array = MockDaskArray()
+    assert formatting.inline_dask_repr(array) == "dask.array<chunksize=(2,), meta=np.ndarray>"
+
+def test_inline_sparse_repr():
+    class MockSparseArray:
+        nnz = 5
+        fill_value = 0
+
+    array = MockSparseArray()
+    assert formatting.inline_sparse_repr(array) == "<MockSparseArray: nnz=5, fill_value=0>"
+
+def test_summarize_variable():
+    class MockVariable:
+        dims = ('x',)
+        dtype = np.int32
+        _in_memory = True
+        def __getitem__(self, key):
+            return np.array([1, 2, 3, 4, 5])
+
+    var = MockVariable()
+    summary = formatting.summarize_variable("var", var, 10)
+    assert "var" in summary
+    assert "int32" in summary
+
+def test_summarize_attr():
+    assert formatting.summarize_attr("key", "value", 10) == "    key: value"
+
+def test_limit_lines():
+    string = "line1\nline2\nline3\nline4\nline5"
+    limited = formatting.limit_lines(string, limit=3)
+    assert limited == "line1\n...\nline5"
+
+def test_short_numpy_repr():
+    array = np.array([1.123456789, 2.987654321])
+    repr_str = formatting.short_numpy_repr(array)
+    assert "1.123457" in repr_str
+    assert "2.987654" in repr_str
+
+def test_short_data_repr():
+    array = np.array([1, 2, 3])
+    repr_str = formatting.short_data_repr(array)
+    assert "array" in repr_str
+
+def test_array_repr():
+    class MockArray:
+        name = "test"
+        dims = ('x',)
+        coords = {}
+        attrs = {}
+        data = np.array([1, 2, 3])
+        _in_memory = True
+
+    arr = MockArray()
+    repr_str = formatting.array_repr(arr)
+    assert "test" in repr_str
+    assert "array" in repr_str
+
+def test_dataset_repr():
+    class MockDataset:
+        dims = {'x': 5}
+        coords = {}
+        data_vars = {}
+        attrs = {}
+
+    ds = MockDataset()
+    repr_str = formatting.dataset_repr(ds)
+    assert "x: 5" in repr_str
+
+Coverage: 36.883116883116884
+Mutation Score: 24.010000000000005
+
+Approach:
+Predicted Test Suite: import pytest
+import numpy as np
+import pandas as pd
+from datetime import datetime, timedelta
+from xarray.core import formatting
+from xarray.core.options import OPTIONS
+
+def test_pretty_print():
+    assert formatting.pretty_print("test", 10) == "test      "
+    assert formatting.pretty_print("test", 2) == "tes..."
+
+def test_maybe_truncate():
+    assert formatting.maybe_truncate("test", 10) == "test"
+    assert formatting.maybe_truncate("test", 2) == "tes..."
+
+def test_wrap_indent():
+    text = "This is a test\nwith multiple lines"
+    expected = ">>This is a test\n  with multiple lines"
+    assert formatting.wrap_indent(text, start=">>", length=2) == expected
+
+def test_first_n_items():
+    array = np.array([1, 2, 3, 4, 5])
+    assert list(formatting.first_n_items(array, 3)) == [1, 2, 3]
+    with pytest.raises(ValueError):
+        formatting.first_n_items(array, 0)
+
+def test_last_n_items():
+    array = np.array([1, 2, 3, 4, 5])
+    assert list(formatting.last_n_items(array, 3)) == [3, 4, 5]
+    assert formatting.last_n_items(array, 0) == []
+
+def test_last_item():
+    array = np.array([1, 2, 3, 4, 5])
+    assert formatting.last_item(array) == [5]
+    assert formatting.last_item(np.array([])) == []
+
+def test_format_timestamp():
+    t = pd.Timestamp("2023-01-01")
+    assert formatting.format_timestamp(t) == "2023-01-01"
+    t = pd.Timestamp("2023-01-01 12:00:00")
+    assert formatting.format_timestamp(t) == "2023-01-01T12:00:00"
+
+def test_format_timedelta():
+    t = pd.Timedelta(days=1, hours=2)
+    assert formatting.format_timedelta(t) == "1 days 02:00:00"
+    assert formatting.format_timedelta(t, timedelta_format="date") == "1 days"
+    assert formatting.format_timedelta(t, timedelta_format="time") == "02:00:00"
+
+def test_format_item():
+    assert formatting.format_item(np.datetime64('2023-01-01')) == "2023-01-01"
+    assert formatting.format_item(timedelta(days=1)) == "1 days 00:00:00"
+    assert formatting.format_item(3.14159) == "3.142"
+    assert formatting.format_item("test") == "'test'"
+
+def test_format_items():
+    items = [np.datetime64('2023-01-01'), timedelta(days=1), 3.14159, "test"]
+    expected = ["2023-01-01", "1 days 00:00:00", "3.142", "'test'"]
+    assert formatting.format_items(items) == expected
+
+def test_format_array_flat():
+    array = np.array([1, 2, 3, 4, 5])
+    assert formatting.format_array_flat(array, 10) == "1 2 3 4 5"
+
+def test_inline_dask_repr():
+    class MockDaskArray:
+        chunks = ((2, 2),)
+        _meta = np.ndarray(0)
+        def __init__(self):
+            self._meta = np.ndarray(0)
+
+    array = MockDaskArray()
+    with pytest.raises(AssertionError):
+        formatting.inline_dask_repr(array)
+
+def test_inline_sparse_repr():
+    class MockSparseArray:
+        nnz = 5
+        fill_value = 0
+        def __init__(self):
+            self.nnz = 5
+            self.fill_value = 0
+
+    array = MockSparseArray()
+    with pytest.raises(AssertionError):
+        formatting.inline_sparse_repr(array)
+
+def test_summarize_variable():
+    class MockVariable:
+        dims = ('x',)
+        dtype = np.int32
+        _in_memory = True
+        size = 5
+        shape = (5,)
+        def __getitem__(self, key):
+            return np.array([1, 2, 3, 4, 5])
+
+    var = MockVariable()
+    summary = formatting.summarize_variable("var", var, 10)
+    assert "var" in summary
+    assert "int32" in summary
+
+def test_summarize_attr():
+    assert formatting.summarize_attr("key", "value", 10) == "    key:   value"
+
+def test_limit_lines():
+    string = "line1\nline2\nline3\nline4\nline5"
+    limited = formatting.limit_lines(string, limit=3)
+    assert limited == "line1\n...\nline4\nline5"
+
+def test_short_numpy_repr():
+    array = np.array([1.123456789, 2.987654321])
+    repr_str = formatting.short_numpy_repr(array)
+    assert "1.123457" in repr_str
+    assert "2.987654" in repr_str
+
+def test_short_data_repr():
+    array = np.array([1, 2, 3])
+    repr_str = formatting.short_data_repr(array)
+    assert "array" in repr_str
+
+def test_array_repr():
+    class MockArray:
+        name = "test"
+        dims = ('x',)
+        coords = {}
+        attrs = {}
+        _data = np.array([1, 2, 3])
+        _in_memory = True
+
+    arr = MockArray()
+    repr_str = formatting.array_repr(arr)
+    assert "test" in repr_str
+    assert "array" in repr_str
+
+def test_dataset_repr():
+    class MockDataset:
+        dims = {'x': 5}
+        coords = {}
+        sizes = {'x': 5}
+        variables = {}
+        data_vars = {}
+        attrs = {}
+
+    ds = MockDataset()
+    repr_str = formatting.dataset_repr(ds)
+    assert "x: 5" in repr_str
+Coverage: 52.72727272727273
+Mutation Score: 39.97

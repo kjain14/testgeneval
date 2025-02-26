@@ -1,0 +1,212 @@
+Instance ID: pydata__xarray-3156-16454
+
+Baseline 1:
+Predicted Test Suite: 
+Coverage: -1
+Mutation Score: -1
+
+Baseline 2:
+Predicted Test Suite: 
+import pytest
+import numpy as np
+import pandas as pd
+from xarray import DataArray, Dataset
+from xarray.core.groupby import (
+    unique_value_groups, _dummy_copy, _is_one_or_none, _consolidate_slices,
+    _inverse_permutation_indices, _DummyGroup, GroupBy, DataArrayGroupBy,
+    DatasetGroupBy
+)
+from xarray.core.variable import Variable
+from xarray.core.pycompat import integer_types
+
+def test_unique_value_groups():
+    ar = np.array([1, 2, 2, 3, 1, 4, 4, 4, 5])
+    values, groups = unique_value_groups(ar)
+    assert np.array_equal(values, np.array([1, 2, 3, 4, 5]))
+    assert groups == [[0, 4], [1, 2], [3], [5, 6, 7], [8]]
+
+def test_dummy_copy_dataset():
+    from xarray.core.dataset import Dataset
+    ds = Dataset({'var1': ('x', [1, 2, 3]), 'var2': ('x', [4, 5, 6])})
+    dummy = _dummy_copy(ds)
+    assert isinstance(dummy, Dataset)
+    assert set(dummy.data_vars.keys()) == set(ds.data_vars.keys())
+
+def test_dummy_copy_dataarray():
+    from xarray.core.dataarray import DataArray
+    da = DataArray([1, 2, 3], dims='x', name='test')
+    dummy = _dummy_copy(da)
+    assert isinstance(dummy, DataArray)
+    assert dummy.name == da.name
+
+def test_is_one_or_none():
+    assert _is_one_or_none(1) is True
+    assert _is_one_or_none(None) is True
+    assert _is_one_or_none(0) is False
+
+def test_consolidate_slices():
+    slices = [slice(0, 2), slice(2, 4), slice(5, 7)]
+    consolidated = _consolidate_slices(slices)
+    assert consolidated == [slice(0, 4), slice(5, 7)]
+
+def test_inverse_permutation_indices():
+    positions = [np.array([0, 1]), np.array([2, 3])]
+    indices = _inverse_permutation_indices(positions)
+    assert np.array_equal(indices, np.array([0, 1, 2, 3]))
+
+def test_dummy_group():
+    obj = Dataset({'x': ('dim', [1, 2, 3])})
+    dummy_group = _DummyGroup(obj, 'dim', obj.coords)
+    assert dummy_group.name == 'dim'
+    assert dummy_group.size == 3
+
+def test_groupby_init():
+    obj = DataArray([1, 2, 3], dims='x')
+    group = DataArray([1, 1, 2], dims='x', name='group')
+    groupby = GroupBy(obj, group)
+    assert groupby._obj.equals(obj)
+    assert groupby._group.equals(group)
+
+def test_groupby_groups():
+    obj = DataArray([1, 2, 3], dims='x')
+    group = DataArray([1, 1, 2], dims='x', name='group')
+    groupby = GroupBy(obj, group)
+    groups = groupby.groups
+    assert groups == {1: [0, 1], 2: [2]}
+
+def test_dataarray_groupby_apply():
+    obj = DataArray([1, 2, 3], dims='x')
+    group = DataArray([1, 1, 2], dims='x', name='group')
+    groupby = DataArrayGroupBy(obj, group)
+    result = groupby.apply(lambda x: x + 1)
+    expected = DataArray([2, 3, 4], dims='x')
+    assert result.equals(expected)
+
+def test_dataset_groupby_apply():
+    obj = Dataset({'a': ('x', [1, 2, 3])})
+    group = DataArray([1, 1, 2], dims='x', name='group')
+    groupby = DatasetGroupBy(obj, group)
+    result = groupby.apply(lambda ds: ds + 1)
+    expected = Dataset({'a': ('x', [2, 3, 4])})
+    assert result.equals(expected)
+
+def test_dataarray_groupby_reduce():
+    obj = DataArray([1, 2, 3], dims='x')
+    group = DataArray([1, 1, 2], dims='x', name='group')
+    groupby = DataArrayGroupBy(obj, group)
+    result = groupby.reduce(np.sum)
+    expected = DataArray([3, 3], dims='group')
+    assert result.equals(expected)
+
+def test_dataset_groupby_reduce():
+    obj = Dataset({'a': ('x', [1, 2, 3])})
+    group = DataArray([1, 1, 2], dims='x', name='group')
+    groupby = DatasetGroupBy(obj, group)
+    result = groupby.reduce(np.sum)
+    expected = Dataset({'a': ('group', [3, 3])})
+    assert result.equals(expected)
+
+Coverage: 42.81437125748503
+Mutation Score: 16.900000000000006
+
+Approach:
+Predicted Test Suite: import pytest
+import numpy as np
+import pandas as pd
+from xarray import DataArray, Dataset
+from xarray.core.groupby import (
+    unique_value_groups, _dummy_copy, _is_one_or_none, _consolidate_slices,
+    _inverse_permutation_indices, _DummyGroup, GroupBy, DataArrayGroupBy,
+    DatasetGroupBy
+)
+from xarray.core.variable import Variable
+from xarray.core.pycompat import integer_types
+
+def test_unique_value_groups():
+    ar = np.array([1, 2, 2, 3, 1, 4, 4, 4, 5])
+    values, groups = unique_value_groups(ar)
+    assert np.array_equal(values, np.array([1, 2, 3, 4, 5]))
+    assert groups == [[0, 4], [1, 2], [3], [5, 6, 7], [8]]
+
+def test_dummy_copy_dataset():
+    from xarray.core.dataset import Dataset
+    ds = Dataset({'var1': ('x', [1, 2, 3]), 'var2': ('x', [4, 5, 6])})
+    dummy = _dummy_copy(ds)
+    assert isinstance(dummy, Dataset)
+    assert set(dummy.data_vars.keys()) == set(ds.data_vars.keys())
+
+def test_dummy_copy_dataarray():
+    from xarray.core.dataarray import DataArray
+    da = DataArray([1, 2, 3], dims='x', name='test')
+    dummy = _dummy_copy(da)
+    assert isinstance(dummy, DataArray)
+    assert dummy.name == da.name
+
+def test_is_one_or_none():
+    assert _is_one_or_none(1) is True
+    assert _is_one_or_none(None) is True
+    assert _is_one_or_none(0) is False
+
+def test_consolidate_slices():
+    slices = [slice(0, 2), slice(2, 4), slice(5, 7)]
+    consolidated = _consolidate_slices(slices)
+    assert consolidated == [slice(0, 4), slice(5, 7)]
+
+def test_inverse_permutation_indices():
+    positions = [np.array([0, 1]), np.array([2, 3])]
+    indices = _inverse_permutation_indices(positions)
+    assert np.array_equal(indices, np.array([0, 1, 2, 3]))
+
+def test_dummy_group():
+    obj = Dataset({'x': ('dim', [1, 2, 3])})
+    dummy_group = _DummyGroup(obj, 'dim', obj.coords)
+    assert dummy_group.name == 'dim'
+    assert dummy_group.size == 3
+
+def test_groupby_init():
+    obj = DataArray([1, 2, 3], dims='x')
+    group = DataArray([1, 1, 2], dims='x', name='group')
+    groupby = GroupBy(obj, group)
+    assert groupby._obj.equals(obj)
+    assert groupby._group.equals(group)
+
+def test_groupby_groups():
+    obj = DataArray([1, 2, 3], dims='x')
+    group = DataArray([1, 1, 2], dims='x', name='group')
+    groupby = GroupBy(obj, group)
+    groups = groupby.groups
+    assert groups == {1: [0, 1], 2: [2]}
+
+def test_dataarray_groupby_apply():
+    obj = DataArray([1, 2, 3], dims='x')
+    group = DataArray([1, 1, 2], dims='x', name='group')
+    groupby = DataArrayGroupBy(obj, group)
+    result = groupby.apply(lambda x: x + 1)
+    expected = DataArray([2, 3, 4], dims='x', coords={'group': [1, 1, 2]})
+    assert result.equals(expected)  # Use identical instead of equals for strict comparison
+
+def test_dataset_groupby_apply():
+    obj = Dataset({'a': ('x', [1, 2, 3])})
+    group = DataArray([1, 1, 2], dims='x', name='group')
+    groupby = DatasetGroupBy(obj, group)
+    result = groupby.apply(lambda ds: ds + 1)
+    expected = Dataset({'a': ('x', [2, 3, 4]), 'group': ('x', [1, 1, 2])})
+    assert result.equals(expected)  # Use identical instead of equals for strict comparison
+
+def test_dataarray_groupby_reduce():
+    obj = DataArray([1, 2, 3], dims='x')
+    group = DataArray([1, 1, 2], dims='x', name='group')
+    groupby = DataArrayGroupBy(obj, group)
+    result = groupby.reduce(np.sum)
+    expected = DataArray([3, 3], dims='group', coords={'group': [1, 2]})
+    assert result.equals(expected)  # Use identical instead of equals for strict comparison
+
+def test_dataset_groupby_reduce():
+    obj = Dataset({'a': ('x', [1, 2, 3])})
+    group = DataArray([1, 1, 2], dims='x', name='group')
+    groupby = DatasetGroupBy(obj, group)
+    result = groupby.reduce(np.sum)
+    expected = Dataset({'a': ('group', [3, 3]), 'group': ('group', [1, 2])})
+    assert result.equals(expected)  # Use identical instead of equals for strict comparison
+Coverage: 65.26946107784431
+Mutation Score: 22.989999999999995

@@ -1,0 +1,285 @@
+Instance ID: pydata__xarray-4802-16505
+
+Baseline 1:
+Predicted Test Suite: 
+Coverage: -1
+Mutation Score: -1
+
+Baseline 2:
+Predicted Test Suite: 
+import pytest
+import numpy as np
+import pandas as pd
+from xarray import Variable
+from xarray.coding import variables
+from xarray.core import dtypes
+
+def test_serialization_warning():
+    with pytest.warns(variables.SerializationWarning):
+        warnings.warn("test warning", variables.SerializationWarning)
+
+def test_variable_coder_encode_not_implemented():
+    coder = variables.VariableCoder()
+    with pytest.raises(NotImplementedError):
+        coder.encode(Variable(["x"], [1, 2, 3]))
+
+def test_variable_coder_decode_not_implemented():
+    coder = variables.VariableCoder()
+    with pytest.raises(NotImplementedError):
+        coder.decode(Variable(["x"], [1, 2, 3]))
+
+def test_elementwise_function_array():
+    array = np.array([1, 2, 3])
+    func = lambda x: x + 1
+    dtype = np.int32
+    elemwise_array = variables._ElementwiseFunctionArray(array, func, dtype)
+
+    assert elemwise_array.dtype == np.dtype(dtype)
+    assert np.array_equal(np.array(elemwise_array), np.array([2, 3, 4]))
+
+def test_lazy_elemwise_func_with_numpy_array():
+    array = np.array([1, 2, 3])
+    func = lambda x: x + 1
+    dtype = np.int32
+    result = variables.lazy_elemwise_func(array, func, dtype)
+
+    assert isinstance(result, variables._ElementwiseFunctionArray)
+    assert np.array_equal(np.array(result), np.array([2, 3, 4]))
+
+def test_lazy_elemwise_func_with_dask_array():
+    da = pytest.importorskip("dask.array")
+    array = da.from_array(np.array([1, 2, 3]), chunks=2)
+    func = lambda x: x + 1
+    dtype = np.int32
+    result = variables.lazy_elemwise_func(array, func, dtype)
+
+    assert isinstance(result, da.Array)
+    assert np.array_equal(result.compute(), np.array([2, 3, 4]))
+
+def test_unpack_for_encoding():
+    var = Variable(["x"], [1, 2, 3], {"attr": "value"}, {"encoding": "value"})
+    dims, data, attrs, encoding = variables.unpack_for_encoding(var)
+
+    assert dims == ("x",)
+    assert np.array_equal(data, [1, 2, 3])
+    assert attrs == {"attr": "value"}
+    assert encoding == {"encoding": "value"}
+
+def test_unpack_for_decoding():
+    var = Variable(["x"], [1, 2, 3], {"attr": "value"}, {"encoding": "value"})
+    dims, data, attrs, encoding = variables.unpack_for_decoding(var)
+
+    assert dims == ("x",)
+    assert np.array_equal(data, [1, 2, 3])
+    assert attrs == {"attr": "value"}
+    assert encoding == {"encoding": "value"}
+
+def test_safe_setitem():
+    dest = {}
+    variables.safe_setitem(dest, "key", "value")
+    assert dest["key"] == "value"
+
+    with pytest.raises(ValueError):
+        variables.safe_setitem(dest, "key", "new_value")
+
+def test_pop_to():
+    source = {"key": "value"}
+    dest = {}
+    value = variables.pop_to(source, dest, "key")
+    assert value == "value"
+    assert "key" in dest
+    assert "key" not in source
+
+def test_apply_mask():
+    data = np.array([1, 2, 3, 4])
+    encoded_fill_values = [2, 3]
+    decoded_fill_value = -1
+    dtype = np.int32
+    result = variables._apply_mask(data, encoded_fill_values, decoded_fill_value, dtype)
+
+    assert np.array_equal(result, np.array([1, -1, -1, 4]))
+
+def test_cf_mask_coder_encode():
+    coder = variables.CFMaskCoder()
+    variable = Variable(["x"], [1, 2, 3], encoding={"_FillValue": 2})
+    encoded_var = coder.encode(variable)
+
+    assert np.array_equal(encoded_var.data, [1, 2, 3])
+    assert "_FillValue" in encoded_var.attrs
+
+def test_cf_mask_coder_decode():
+    coder = variables.CFMaskCoder()
+    variable = Variable(["x"], [1, 2, 3], attrs={"_FillValue": 2})
+    decoded_var = coder.decode(variable)
+
+    assert np.array_equal(decoded_var.data, [1, np.nan, 3])
+
+def test_cf_scale_offset_coder_encode():
+    coder = variables.CFScaleOffsetCoder()
+    variable = Variable(["x"], [10, 20, 30], encoding={"scale_factor": 2, "add_offset": 5})
+    encoded_var = coder.encode(variable)
+
+    assert np.array_equal(encoded_var.data, [2.5, 7.5, 12.5])
+
+def test_cf_scale_offset_coder_decode():
+    coder = variables.CFScaleOffsetCoder()
+    variable = Variable(["x"], [2.5, 7.5, 12.5], attrs={"scale_factor": 2, "add_offset": 5})
+    decoded_var = coder.decode(variable)
+
+    assert np.array_equal(decoded_var.data, [10, 20, 30])
+
+def test_unsigned_integer_coder_encode():
+    coder = variables.UnsignedIntegerCoder()
+    variable = Variable(["x"], [1, 2, 3], encoding={"_Unsigned": "true"})
+    encoded_var = coder.encode(variable)
+
+    assert encoded_var.data.dtype.kind == "i"
+
+def test_unsigned_integer_coder_decode():
+    coder = variables.UnsignedIntegerCoder()
+    variable = Variable(["x"], np.array([1, 2, 3], dtype="i4"), attrs={"_Unsigned": "true"})
+    decoded_var = coder.decode(variable)
+
+    assert decoded_var.data.dtype.kind == "u"
+
+Coverage: 80.55555555555556
+Mutation Score: 41.03
+
+Approach:
+Predicted Test Suite: import pytest
+import numpy as np
+import pandas as pd
+import warnings
+from xarray import Variable
+from xarray.coding import variables
+from xarray.core import dtypes
+
+def test_serialization_warning():
+    with pytest.warns(variables.SerializationWarning):
+        warnings.warn("test warning", variables.SerializationWarning)
+
+def test_variable_coder_encode_not_implemented():
+    coder = variables.VariableCoder()
+    with pytest.raises(NotImplementedError):
+        coder.encode(Variable(["x"], [1, 2, 3]))
+
+def test_variable_coder_decode_not_implemented():
+    coder = variables.VariableCoder()
+    with pytest.raises(NotImplementedError):
+        coder.decode(Variable(["x"], [1, 2, 3]))
+
+def test_elementwise_function_array():
+    array = np.array([1, 2, 3])
+    func = lambda x: x + 1
+    dtype = np.int32
+    elemwise_array = variables._ElementwiseFunctionArray(array, func, dtype)
+
+    assert elemwise_array.dtype == np.dtype(dtype)
+    assert np.array_equal(np.array(elemwise_array), np.array([2, 3, 4]))
+
+def test_lazy_elemwise_func_with_numpy_array():
+    array = np.array([1, 2, 3])
+    func = lambda x: x + 1
+    dtype = np.int32
+    result = variables.lazy_elemwise_func(array, func, dtype)
+
+    assert isinstance(result, variables._ElementwiseFunctionArray)
+    assert np.array_equal(np.array(result), np.array([2, 3, 4]))
+
+def test_lazy_elemwise_func_with_dask_array():
+    da = pytest.importorskip("dask.array")
+    array = da.from_array(np.array([1, 2, 3]), chunks=2)
+    func = lambda x: x + 1
+    dtype = np.int32
+    result = variables.lazy_elemwise_func(array, func, dtype)
+
+    assert isinstance(result, da.Array)
+    assert np.array_equal(result.compute(), np.array([2, 3, 4]))
+
+def test_unpack_for_encoding():
+    var = Variable(["x"], [1, 2, 3], {"attr": "value"}, {"encoding": "value"})
+    dims, data, attrs, encoding = variables.unpack_for_encoding(var)
+
+    assert dims == ("x",)
+    assert np.array_equal(data, [1, 2, 3])
+    assert attrs == {"attr": "value"}
+    assert encoding == {"encoding": "value"}
+
+def test_unpack_for_decoding():
+    var = Variable(["x"], [1, 2, 3], {"attr": "value"}, {"encoding": "value"})
+    dims, data, attrs, encoding = variables.unpack_for_decoding(var)
+
+    assert dims == ("x",)
+    assert np.array_equal(data, [1, 2, 3])
+    assert attrs == {"attr": "value"}
+    assert encoding == {"encoding": "value"}
+
+def test_safe_setitem():
+    dest = {}
+    variables.safe_setitem(dest, "key", "value")
+    assert dest["key"] == "value"
+
+    with pytest.raises(ValueError):
+        variables.safe_setitem(dest, "key", "new_value")
+
+def test_pop_to():
+    source = {"key": "value"}
+    dest = {}
+    value = variables.pop_to(source, dest, "key")
+    assert value == "value"
+    assert "key" in dest
+    assert "key" not in source
+
+def test_apply_mask():
+    data = np.array([1, 2, 3, 4])
+    encoded_fill_values = [2, 3]
+    decoded_fill_value = -1
+    dtype = np.int32
+    result = variables._apply_mask(data, encoded_fill_values, decoded_fill_value, dtype)
+
+    assert np.array_equal(result, np.array([1, -1, -1, 4]))
+
+def test_cf_mask_coder_encode():
+    coder = variables.CFMaskCoder()
+    variable = Variable(["x"], [1, 2, 3], encoding={"_FillValue": 2})
+    encoded_var = coder.encode(variable)
+
+    assert np.array_equal(encoded_var.data, [1, 2, 3])
+    assert "_FillValue" in encoded_var.attrs
+
+def test_cf_mask_coder_decode():
+    coder = variables.CFMaskCoder()
+    variable = Variable(["x"], [1, 2, 3], attrs={"_FillValue": 2})
+    decoded_var = coder.decode(variable)
+
+    assert np.array_equal(decoded_var.data, [1, np.nan, 3])
+
+def test_cf_scale_offset_coder_encode():
+    coder = variables.CFScaleOffsetCoder()
+    variable = Variable(["x"], [10, 20, 30], encoding={"scale_factor": 2, "add_offset": 5})
+    encoded_var = coder.encode(variable)
+
+    assert np.array_equal(encoded_var.data, [2.5, 7.5, 12.5])
+
+def test_cf_scale_offset_coder_decode():
+    coder = variables.CFScaleOffsetCoder()
+    variable = Variable(["x"], [2.5, 7.5, 12.5], attrs={"scale_factor": 2, "add_offset": 5})
+    decoded_var = coder.decode(variable)
+
+    assert np.array_equal(decoded_var.data, [10, 20, 30])
+
+def test_unsigned_integer_coder_encode():
+    coder = variables.UnsignedIntegerCoder()
+    variable = Variable(["x"], [1, 2, 3], encoding={"_Unsigned": "true"})
+    encoded_var = coder.encode(variable)
+
+    assert encoded_var.data.dtype.kind == "i"
+
+def test_unsigned_integer_coder_decode():
+    coder = variables.UnsignedIntegerCoder()
+    variable = Variable(["x"], np.array([1, 2, 3], dtype="i4"), attrs={"_Unsigned": "true"})
+    decoded_var = coder.decode(variable)
+
+    assert decoded_var.data.dtype.kind == "u"
+Coverage: 80.55555555555556
+Mutation Score: 41.03

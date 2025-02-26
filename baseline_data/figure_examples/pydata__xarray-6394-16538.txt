@@ -1,0 +1,266 @@
+Instance ID: pydata__xarray-6394-16538
+
+Baseline 1:
+Predicted Test Suite: 
+Coverage: -1
+Mutation Score: -1
+
+Baseline 2:
+Predicted Test Suite: 
+import pytest
+import numpy as np
+import pandas as pd
+from xarray import DataArray, Dataset
+from xarray.core.groupby import (
+    check_reduce_dims,
+    unique_value_groups,
+    _dummy_copy,
+    _is_one_or_none,
+    _consolidate_slices,
+    _inverse_permutation_indices,
+    _DummyGroup,
+    _ensure_1d,
+    _unique_and_monotonic,
+    _apply_loffset,
+    GroupBy,
+    DataArrayGroupBy,
+    DatasetGroupBy,
+)
+
+def test_check_reduce_dims():
+    with pytest.raises(ValueError):
+        check_reduce_dims('invalid_dim', ['dim1', 'dim2'])
+    check_reduce_dims('dim1', ['dim1', 'dim2'])  # Should not raise
+
+def test_unique_value_groups():
+    ar = np.array([1, 2, 2, 3, 1])
+    values, groups = unique_value_groups(ar)
+    assert np.array_equal(values, np.array([1, 2, 3]))
+    assert groups == [[0, 4], [1, 2], [3]]
+
+def test_dummy_copy():
+    da = DataArray([1, 2, 3], dims='x')
+    dummy = _dummy_copy(da)
+    assert dummy.shape == (0,)
+
+def test_is_one_or_none():
+    assert _is_one_or_none(1)
+    assert _is_one_or_none(None)
+    assert not _is_one_or_none(2)
+
+def test_consolidate_slices():
+    slices = [slice(0, 2), slice(2, 4), slice(4, 6)]
+    result = _consolidate_slices(slices)
+    assert result == [slice(0, 6)]
+
+def test_inverse_permutation_indices():
+    positions = [np.array([0, 1]), np.array([2, 3])]
+    result = _inverse_permutation_indices(positions)
+    assert np.array_equal(result, np.array([0, 1, 2, 3]))
+
+def test_dummy_group():
+    obj = Dataset({'var': ('x', [1, 2, 3])}, coords={'x': [0, 1, 2]})
+    group = _DummyGroup(obj, 'x', obj.coords)
+    assert group.dims == ('x',)
+    assert group.ndim == 1
+    assert group.shape == (3,)
+    assert list(group.values) == [0, 1, 2]
+
+def test_ensure_1d():
+    da = DataArray([[1, 2], [3, 4]], dims=('x', 'y'))
+    group, obj, stacked_dim, inserted_dims = _ensure_1d(da, da)
+    assert stacked_dim is not None
+
+def test_unique_and_monotonic():
+    da = DataArray([1, 2, 3], dims='x')
+    assert _unique_and_monotonic(da)
+    da = DataArray([1, 2, 2], dims='x')
+    assert not _unique_and_monotonic(da)
+
+def test_apply_loffset():
+    grouper = pd.Grouper(freq='D', loffset=pd.Timedelta(days=1))
+    result = pd.Series([1, 2, 3], index=pd.date_range('2023-01-01', periods=3))
+    _apply_loffset(grouper, result)
+    assert result.index[0] == pd.Timestamp('2023-01-02')
+
+def test_groupby_init():
+    da = DataArray([1, 2, 3], dims='x', coords={'x': [0, 1, 2]})
+    group = DataArray([0, 0, 1], dims='x')
+    gb = GroupBy(da, group)
+    assert len(gb) == 2
+
+def test_groupby_getitem():
+    da = DataArray([1, 2, 3], dims='x', coords={'x': [0, 1, 2]})
+    group = DataArray([0, 0, 1], dims='x')
+    gb = GroupBy(da, group)
+    assert gb[0].equals(DataArray([1, 2], dims='x', coords={'x': [0, 1]}))
+
+def test_groupby_iter():
+    da = DataArray([1, 2, 3], dims='x', coords={'x': [0, 1, 2]})
+    group = DataArray([0, 0, 1], dims='x')
+    gb = GroupBy(da, group)
+    for key, subarray in gb:
+        assert isinstance(subarray, DataArray)
+
+def test_dataarray_groupby_map():
+    da = DataArray([1, 2, 3], dims='x', coords={'x': [0, 0, 1]})
+    gb = DataArrayGroupBy(da, da.coords['x'])
+    result = gb.map(lambda x: x.mean())
+    assert result.equals(DataArray([1.5, 3], dims='x', coords={'x': [0, 1]}))
+
+def test_dataset_groupby_map():
+    ds = Dataset({'a': ('x', [1, 2, 3])}, coords={'x': [0, 0, 1]})
+    gb = DatasetGroupBy(ds, ds.coords['x'])
+    result = gb.map(lambda x: x.mean())
+    assert result['a'].equals(DataArray([1.5, 3], dims='x', coords={'x': [0, 1]}))
+
+Coverage: 63.38028169014085
+Mutation Score: 32.790000000000006
+
+Approach:
+Predicted Test Suite: import pytest
+import numpy as np
+import pandas as pd
+from xarray import DataArray, Dataset
+from xarray.core.groupby import (
+    check_reduce_dims,
+    unique_value_groups,
+    _dummy_copy,
+    _is_one_or_none,
+    _consolidate_slices,
+    _inverse_permutation_indices,
+    _DummyGroup,
+    _ensure_1d,
+    _unique_and_monotonic,
+    _apply_loffset,
+    GroupBy,
+    DataArrayGroupBy,
+    DatasetGroupBy,
+)
+
+def test_groupby_fillna():
+    da = DataArray([1, np.nan, 3], dims='x', coords={'x': [0, 0, 1]})
+    gb = DataArrayGroupBy(da, da.coords['x'])
+    result = gb.fillna(0)
+    assert result.equals(DataArray([1, 0, 3], dims='x', coords={'x': [0, 0, 1]}))
+
+def test_groupby_quantile():
+    da = DataArray([1, 2, 3], dims='x', coords={'x': [0, 0, 1]})
+    gb = DataArrayGroupBy(da, da.coords['x'])
+    result = gb.quantile(0.5)
+    assert result.equals(DataArray([1.5, 3], dims='x', coords={'x': [0, 1]}))
+
+def test_groupby_where():
+    da = DataArray([1, 2, 3], dims='x', coords={'x': [0, 0, 1]})
+    gb = DataArrayGroupBy(da, da.coords['x'])
+    result = gb.where(da > 1)
+    assert result.equals(DataArray([np.nan, 2, 3], dims='x', coords={'x': [0, 0, 1]}))
+
+def test_groupby_first():
+    da = DataArray([1, 2, 3], dims='x', coords={'x': [0, 0, 1]})
+    gb = DataArrayGroupBy(da, da.coords['x'])
+    result = gb.first()
+    assert result.equals(DataArray([1, 3], dims='x', coords={'x': [0, 1]}))
+
+def test_groupby_last():
+    da = DataArray([1, 2, 3], dims='x', coords={'x': [0, 0, 1]})
+    gb = DataArrayGroupBy(da, da.coords['x'])
+    result = gb.last()
+    assert result.equals(DataArray([2, 3], dims='x', coords={'x': [0, 1]}))
+
+def test_groupby_assign_coords():
+    da = DataArray([1, 2, 3], dims='x', coords={'x': [0, 0, 1]})
+    gb = DataArrayGroupBy(da, da.coords['x'])
+    result = gb.assign_coords(y=('x', [10, 20, 30]))
+    assert 'y' in result.coords
+    assert result.coords['y'].equals(DataArray([10, 20, 30], dims='x'))
+
+
+def test_check_reduce_dims():
+    with pytest.raises(ValueError):
+        check_reduce_dims('invalid_dim', ['dim1', 'dim2'])
+    check_reduce_dims('dim1', ['dim1', 'dim2'])  # Should not raise
+
+def test_unique_value_groups():
+    ar = np.array([1, 2, 2, 3, 1])
+    values, groups = unique_value_groups(ar)
+    assert np.array_equal(values, np.array([1, 2, 3]))
+    assert groups == [[0, 4], [1, 2], [3]]
+
+def test_dummy_copy():
+    da = DataArray([1, 2, 3], dims='x')
+    dummy = _dummy_copy(da)
+    assert dummy.shape == ()
+
+def test_is_one_or_none():
+    assert _is_one_or_none(1)
+    assert _is_one_or_none(None)
+    assert not _is_one_or_none(2)
+
+def test_consolidate_slices():
+    slices = [slice(0, 2), slice(2, 4), slice(4, 6)]
+    result = _consolidate_slices(slices)
+    assert result == [slice(0, 6)]
+
+def test_inverse_permutation_indices():
+    positions = [np.array([0, 1]), np.array([2, 3])]
+    result = _inverse_permutation_indices(positions)
+    assert np.array_equal(result, np.array([0, 1, 2, 3]))
+
+def test_dummy_group():
+    obj = Dataset({'var': ('x', [1, 2, 3])}, coords={'x': [0, 1, 2]})
+    group = _DummyGroup(obj, 'x', obj.coords)
+    assert group.dims == ('x',)
+    assert group.ndim == 1
+    assert group.shape == (3,)
+    assert list(group.values) == [0, 1, 2]
+
+def test_ensure_1d():
+    da = DataArray([[1, 2], [3, 4]], dims=('x', 'y'))
+    group, obj, stacked_dim, inserted_dims = _ensure_1d(da, da)
+    assert stacked_dim is not None
+
+def test_unique_and_monotonic():
+    da = DataArray([1, 2, 3], dims='x')
+    assert _unique_and_monotonic(da)
+    da = DataArray([1, 2, 2], dims='x')
+    assert not _unique_and_monotonic(da)
+
+def test_apply_loffset():
+    grouper = pd.Grouper(freq='D', loffset=pd.Timedelta(days=1))
+    result = pd.Series([1, 2, 3], index=pd.date_range('2023-01-01', periods=3))
+    _apply_loffset(grouper, result)
+    assert result.index[0] == pd.Timestamp('2023-01-02')
+
+def test_groupby_init():
+    da = DataArray([1, 2, 3], dims='x', coords={'x': [0, 1, 2]})
+    group = DataArray([0, 0, 1], dims='x')
+    gb = GroupBy(da, group)
+    assert len(gb) == 2
+
+def test_groupby_getitem():
+    da = DataArray([1, 2, 3], dims='x', coords={'x': [0, 1, 2]})
+    group = DataArray([0, 0, 1], dims='x')
+    gb = GroupBy(da, group)
+    assert gb[0].equals(DataArray([1, 2], dims='x', coords={'x': [0, 1]}))
+
+def test_groupby_iter():
+    da = DataArray([1, 2, 3], dims='x', coords={'x': [0, 1, 2]})
+    group = DataArray([0, 0, 1], dims='x')
+    gb = GroupBy(da, group)
+    for key, subarray in gb:
+        assert isinstance(subarray, DataArray)
+
+def test_dataarray_groupby_map():
+    da = DataArray([1, 2, 3], dims='x', coords={'x': [0, 0, 1]})
+    gb = DataArrayGroupBy(da, da.coords['x'])
+    result = gb.map(lambda x: x.mean())
+    assert result.equals(DataArray([1.5, 3], dims='x', coords={'x': [0, 1]}))
+
+def test_dataset_groupby_map():
+    ds = Dataset({'a': ('x', [1, 2, 3])}, coords={'x': [0, 0, 1]})
+    gb = DatasetGroupBy(ds, ds.coords['x'])
+    result = gb.map(lambda x: x.mean())
+    assert result['a'].equals(DataArray([1.5, 3], dims='x', coords={'x': [0, 1]}))
+Coverage: 72.3943661971831
+Mutation Score: 34.66

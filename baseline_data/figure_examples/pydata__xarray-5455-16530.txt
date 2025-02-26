@@ -1,0 +1,218 @@
+Instance ID: pydata__xarray-5455-16530
+
+Baseline 1:
+Predicted Test Suite: 
+Coverage: -1
+Mutation Score: -1
+
+Baseline 2:
+Predicted Test Suite: 
+import warnings
+from unittest.mock import MagicMock, patch
+import pytest
+from xarray.backends import plugins
+from xarray.backends.common import BackendEntrypoint
+
+# Mock setup for BACKEND_ENTRYPOINTS
+mock_backend_entrypoint = MagicMock(spec=BackendEntrypoint)
+mock_backend_entrypoint.available = True
+mock_backend_entrypoint.open_dataset_parameters = None
+mock_backend_entrypoint.open_dataset = MagicMock()
+mock_backend_entrypoint.guess_can_open = MagicMock(return_value=True)
+
+mock_backend_entrypoints = {
+    "netcdf4": mock_backend_entrypoint,
+    "h5netcdf": mock_backend_entrypoint,
+    "scipy": mock_backend_entrypoint,
+}
+
+@pytest.fixture
+def mock_pkg_entrypoints():
+    mock_entrypoint = MagicMock()
+    mock_entrypoint.name = "mock_engine"
+    mock_entrypoint.module_name = "mock_module"
+    mock_entrypoint.load = MagicMock(return_value=mock_backend_entrypoint)
+    return [mock_entrypoint]
+
+def test_remove_duplicates(mock_pkg_entrypoints):
+    with warnings.catch_warnings(record=True) as w:
+        result = plugins.remove_duplicates(mock_pkg_entrypoints)
+        assert len(result) == 1
+        assert result[0].name == "mock_engine"
+        assert len(w) == 0
+
+def test_detect_parameters():
+    def mock_open_dataset(self, param1, param2):
+        pass
+
+    result = plugins.detect_parameters(mock_open_dataset)
+    assert result == ("param1", "param2")
+
+    def mock_open_dataset_with_kwargs(self, *args, **kwargs):
+        pass
+
+    with pytest.raises(TypeError):
+        plugins.detect_parameters(mock_open_dataset_with_kwargs)
+
+def test_backends_dict_from_pkg(mock_pkg_entrypoints):
+    with warnings.catch_warnings(record=True) as w:
+        result = plugins.backends_dict_from_pkg(mock_pkg_entrypoints)
+        assert "mock_engine" in result
+        assert len(w) == 0
+
+def test_set_missing_parameters():
+    backend_entrypoints = {"mock_engine": mock_backend_entrypoint}
+    plugins.set_missing_parameters(backend_entrypoints)
+    assert mock_backend_entrypoint.open_dataset_parameters == ("self",)
+
+def test_sort_backends():
+    backend_entrypoints = {
+        "mock_engine": mock_backend_entrypoint,
+        "netcdf4": mock_backend_entrypoint,
+    }
+    result = plugins.sort_backends(backend_entrypoints)
+    assert list(result.keys()) == ["netcdf4", "mock_engine"]
+
+@patch("xarray.backends.plugins.BACKEND_ENTRYPOINTS", mock_backend_entrypoints)
+def test_build_engines(mock_pkg_entrypoints):
+    result = plugins.build_engines(mock_pkg_entrypoints)
+    assert "netcdf4" in result
+    assert "mock_engine" in result
+
+@patch("xarray.backends.plugins.BACKEND_ENTRYPOINTS", mock_backend_entrypoints)
+def test_list_engines(mock_pkg_entrypoints):
+    with patch("pkg_resources.iter_entry_points", return_value=mock_pkg_entrypoints):
+        result = plugins.list_engines()
+        assert "netcdf4" in result
+        assert "mock_engine" in result
+
+@patch("xarray.backends.plugins.BACKEND_ENTRYPOINTS", mock_backend_entrypoints)
+def test_guess_engine(mock_pkg_entrypoints):
+    with patch("pkg_resources.iter_entry_points", return_value=mock_pkg_entrypoints):
+        engine = plugins.guess_engine("mock_store_spec")
+        assert engine == "netcdf4"
+
+    with patch("pkg_resources.iter_entry_points", return_value=[]):
+        with pytest.raises(ValueError):
+            plugins.guess_engine("mock_store_spec")
+
+@patch("xarray.backends.plugins.BACKEND_ENTRYPOINTS", mock_backend_entrypoints)
+def test_get_backend():
+    with patch("pkg_resources.iter_entry_points", return_value=[]):
+        backend = plugins.get_backend("netcdf4")
+        assert backend == mock_backend_entrypoint
+
+        with pytest.raises(ValueError):
+            plugins.get_backend("unknown_engine")
+
+        with pytest.raises(TypeError):
+            plugins.get_backend(123)
+
+Coverage: 48.0
+Mutation Score: 34.55
+
+Approach:
+Predicted Test Suite: import warnings
+from unittest.mock import MagicMock, patch
+import pytest
+from xarray.backends import plugins
+from xarray.backends.common import BackendEntrypoint
+
+# Mock setup for BACKEND_ENTRYPOINTS
+mock_backend_entrypoint = MagicMock(spec=BackendEntrypoint)
+mock_backend_entrypoint.available = True
+mock_backend_entrypoint.open_dataset_parameters = None
+def mock_open_dataset(self, param1, param2):
+    pass
+mock_backend_entrypoint.open_dataset = mock_open_dataset
+mock_backend_entrypoint.guess_can_open = MagicMock(side_effect=[False, True])
+
+mock_backend_entrypoints = {
+    "netcdf4": mock_backend_entrypoint,
+    "h5netcdf": mock_backend_entrypoint,
+    "scipy": mock_backend_entrypoint,
+}
+
+@pytest.fixture
+def mock_pkg_entrypoints():
+    mock_entrypoint = MagicMock()
+    mock_entrypoint.name = "mock_engine"
+    mock_entrypoint.module_name = "mock_module"
+    mock_entrypoint.load = MagicMock(return_value=mock_backend_entrypoint)
+    return [mock_entrypoint]
+
+def test_remove_duplicates(mock_pkg_entrypoints):
+    with warnings.catch_warnings(record=True) as w:
+        result = plugins.remove_duplicates(mock_pkg_entrypoints)
+        assert len(result) == 1
+        assert result[0].name == "mock_engine"
+        assert len(w) == 0
+
+def test_detect_parameters():
+    def mock_open_dataset(self, param1, param2):
+        pass
+
+    result = plugins.detect_parameters(mock_open_dataset)
+    assert result == ("param1", "param2")
+
+    def mock_open_dataset_with_kwargs(self, *args, **kwargs):
+        pass
+
+    with pytest.raises(TypeError):
+        plugins.detect_parameters(mock_open_dataset_with_kwargs)
+
+def test_backends_dict_from_pkg(mock_pkg_entrypoints):
+    with warnings.catch_warnings(record=True) as w:
+        result = plugins.backends_dict_from_pkg(mock_pkg_entrypoints)
+        assert "mock_engine" in result
+        assert len(w) == 0
+
+def test_set_missing_parameters():
+    backend_entrypoints = {"mock_engine": mock_backend_entrypoint}
+    plugins.set_missing_parameters(backend_entrypoints)
+    assert mock_backend_entrypoint.open_dataset_parameters == ("param1", "param2")
+
+def test_sort_backends():
+    backend_entrypoints = {
+        "mock_engine": mock_backend_entrypoint,
+        "netcdf4": mock_backend_entrypoint,
+    }
+    result = plugins.sort_backends(backend_entrypoints)
+    assert list(result.keys()) == ["netcdf4", "mock_engine"]
+
+@patch("xarray.backends.plugins.BACKEND_ENTRYPOINTS", mock_backend_entrypoints)
+def test_build_engines(mock_pkg_entrypoints):
+    result = plugins.build_engines(mock_pkg_entrypoints)
+    assert "netcdf4" in result
+    assert "mock_engine" in result
+
+@patch("xarray.backends.plugins.BACKEND_ENTRYPOINTS", mock_backend_entrypoints)
+def test_list_engines(mock_pkg_entrypoints):
+    with patch("pkg_resources.iter_entry_points", return_value=mock_pkg_entrypoints):
+        result = plugins.list_engines()
+        assert "netcdf4" in result
+        assert "mock_engine" in result
+
+@patch("xarray.backends.plugins.BACKEND_ENTRYPOINTS", mock_backend_entrypoints)
+def test_guess_engine(mock_pkg_entrypoints):
+    with patch("pkg_resources.iter_entry_points", return_value=mock_pkg_entrypoints):
+        engine = plugins.guess_engine("mock_store_spec")
+        assert engine == "netcdf4"
+
+    with patch("pkg_resources.iter_entry_points", return_value=[]):
+        with pytest.raises(ValueError, match='did not find a match in any of xarray'):
+            plugins.guess_engine("mock_store_spec")
+
+@patch("xarray.backends.plugins.BACKEND_ENTRYPOINTS", mock_backend_entrypoints)
+def test_get_backend():
+    with patch("pkg_resources.iter_entry_points", return_value=[]):
+        backend = plugins.get_backend("netcdf4")
+        assert isinstance(backend, MagicMock)
+
+        with pytest.raises(ValueError):
+            plugins.get_backend("unknown_engine")
+
+        with pytest.raises(TypeError):
+            plugins.get_backend(123)
+Coverage: 72.0
+Mutation Score: 47.27

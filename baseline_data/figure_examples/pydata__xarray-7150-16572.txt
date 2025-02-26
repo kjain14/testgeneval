@@ -1,0 +1,270 @@
+Instance ID: pydata__xarray-7150-16572
+
+Baseline 1:
+Predicted Test Suite: 
+Coverage: -1
+Mutation Score: -1
+
+Baseline 2:
+Predicted Test Suite: 
+import os
+import pytest
+import numpy as np
+from unittest.mock import patch, MagicMock
+from xarray.backends.api import (
+    _get_default_engine_remote_uri,
+    _get_default_engine_gz,
+    _get_default_engine_netcdf,
+    _get_default_engine,
+    _validate_dataset_names,
+    _validate_attrs,
+    _resolve_decoders_kwargs,
+    _get_mtime,
+    _protect_dataset_variables_inplace,
+    _finalize_store,
+    _multi_file_closer,
+    load_dataset,
+    load_dataarray,
+    open_dataset,
+    open_dataarray,
+    open_mfdataset,
+    to_netcdf,
+    save_mfdataset,
+    to_zarr,
+)
+from xarray.core.dataset import Dataset
+from xarray.core.dataarray import DataArray
+from xarray.core.indexes import Index
+from xarray.core.utils import is_remote_uri
+from xarray.backends.common import AbstractDataStore
+
+# Mock Dataset and DataArray for testing
+@pytest.fixture
+def mock_dataset():
+    return Dataset()
+
+@pytest.fixture
+def mock_dataarray():
+    return DataArray()
+
+def test_get_default_engine_remote_uri():
+    with patch("xarray.backends.api.is_remote_uri", return_value=True):
+        with patch("xarray.backends.api._get_default_engine_remote_uri", return_value="netcdf4"):
+            assert _get_default_engine("http://example.com") == "netcdf4"
+
+def test_get_default_engine_gz():
+    with patch("xarray.backends.api._get_default_engine_gz", return_value="scipy"):
+        assert _get_default_engine("file.gz") == "scipy"
+
+def test_get_default_engine_netcdf():
+    with patch("xarray.backends.api._get_default_engine_netcdf", return_value="netcdf4"):
+        assert _get_default_engine("file.nc") == "netcdf4"
+
+def test_validate_dataset_names(mock_dataset):
+    mock_dataset.variables = {"valid_name": None}
+    _validate_dataset_names(mock_dataset)
+
+    mock_dataset.variables = {None: None}
+    with pytest.raises(TypeError):
+        _validate_dataset_names(mock_dataset)
+
+def test_validate_attrs(mock_dataset):
+    mock_dataset.attrs = {"valid_attr": 1}
+    mock_dataset.variables = {"var": MagicMock(attrs={"valid_attr": 1})}
+    _validate_attrs(mock_dataset)
+
+    mock_dataset.attrs = {None: 1}
+    with pytest.raises(TypeError):
+        _validate_attrs(mock_dataset)
+
+def test_resolve_decoders_kwargs():
+    decoders = {"mask_and_scale": None, "decode_times": True}
+    result = _resolve_decoders_kwargs(False, ["mask_and_scale"], **decoders)
+    assert result == {"decode_times": True}
+
+def test_get_mtime():
+    with patch("os.path.getmtime", return_value=123456789):
+        assert _get_mtime("file.nc") == 123456789
+
+def test_protect_dataset_variables_inplace(mock_dataset):
+    mock_dataset.variables = {"var": MagicMock(_data=MagicMock())}
+    _protect_dataset_variables_inplace(mock_dataset, cache=True)
+
+def test_finalize_store():
+    mock_store = MagicMock()
+    _finalize_store(None, mock_store)
+    mock_store.close.assert_called_once()
+
+def test_multi_file_closer():
+    mock_closer = MagicMock()
+    _multi_file_closer([mock_closer])
+    mock_closer.assert_called_once()
+
+def test_load_dataset():
+    with patch("xarray.backends.api.open_dataset", return_value=MagicMock(load=MagicMock(return_value="loaded"))):
+        assert load_dataset("file.nc") == "loaded"
+
+def test_load_dataarray():
+    with patch("xarray.backends.api.open_dataarray", return_value=MagicMock(load=MagicMock(return_value="loaded"))):
+        assert load_dataarray("file.nc") == "loaded"
+
+def test_open_dataset(mock_dataset):
+    with patch("xarray.backends.api.plugins.get_backend", return_value=MagicMock(open_dataset=MagicMock(return_value=mock_dataset))):
+        result = open_dataset("file.nc")
+        assert isinstance(result, Dataset)
+
+def test_open_dataarray(mock_dataarray):
+    with patch("xarray.backends.api.open_dataset", return_value=MagicMock(data_vars={"var": mock_dataarray})):
+        result = open_dataarray("file.nc")
+        assert isinstance(result, DataArray)
+
+def test_open_mfdataset():
+    with patch("xarray.backends.api.open_dataset", return_value=MagicMock()):
+        result = open_mfdataset(["file1.nc", "file2.nc"])
+        assert isinstance(result, Dataset)
+
+def test_to_netcdf(mock_dataset):
+    with patch("xarray.backends.api.WRITEABLE_STORES", {"netcdf4": MagicMock()}):
+        to_netcdf(mock_dataset, "file.nc")
+
+def test_save_mfdataset(mock_dataset):
+    with patch("xarray.backends.api.to_netcdf", return_value=(MagicMock(), MagicMock())):
+        save_mfdataset([mock_dataset], ["file1.nc", "file2.nc"])
+
+def test_to_zarr(mock_dataset):
+    with patch("xarray.backends.api.backends.ZarrStore.open_group", return_value=MagicMock()):
+        to_zarr(mock_dataset, "store.zarr")
+
+Coverage: 45.79207920792079
+Mutation Score: 6.150000000000006
+
+Approach:
+Predicted Test Suite: import os
+import pytest
+import numpy as np
+from unittest.mock import patch, MagicMock
+from xarray.backends.api import (
+    _get_default_engine_remote_uri,
+    _get_default_engine_gz,
+    _get_default_engine_netcdf,
+    _get_default_engine,
+    _validate_dataset_names,
+    _validate_attrs,
+    _resolve_decoders_kwargs,
+    _get_mtime,
+    _protect_dataset_variables_inplace,
+    _finalize_store,
+    _multi_file_closer,
+    load_dataset,
+    load_dataarray,
+    open_dataset,
+    open_dataarray,
+    open_mfdataset,
+    to_netcdf,
+    save_mfdataset,
+    to_zarr,
+)
+from xarray.core.dataset import Dataset
+from xarray.core.dataarray import DataArray
+from xarray.core.indexes import Index
+from xarray.core.utils import is_remote_uri
+from xarray.backends.common import AbstractDataStore
+
+# Mock Dataset and DataArray for testing
+@pytest.fixture
+def mock_dataset():
+    return Dataset()
+
+@pytest.fixture
+def mock_dataarray():
+    return DataArray()
+
+def test_get_default_engine_remote_uri():
+    with patch("xarray.backends.api.is_remote_uri", return_value=True):
+        with patch("xarray.backends.api._get_default_engine_remote_uri", return_value="netcdf4"):
+            assert _get_default_engine("http://example.com") == "netcdf4"
+
+def test_get_default_engine_gz():
+    with patch("xarray.backends.api._get_default_engine_gz", return_value="scipy"):
+        assert _get_default_engine("file.gz") == "scipy"
+
+def test_get_default_engine_netcdf():
+    with patch("xarray.backends.api._get_default_engine_netcdf", return_value="netcdf4"):
+        assert _get_default_engine("file.nc") == "netcdf4"
+
+def test_validate_dataset_names(mock_dataset):
+    mock_dataset = Dataset(data_vars={"valid_name": ([], 0)})
+    _validate_dataset_names(mock_dataset)
+
+    mock_dataset = Dataset(data_vars={None: ([], 0)})
+    with pytest.raises(TypeError):
+        _validate_dataset_names(mock_dataset)
+
+def test_validate_attrs(mock_dataset):
+    mock_dataset.attrs = {"valid_attr": 1}
+    mock_dataset = Dataset(data_vars={"var": ([], 0)}, attrs={"valid_attr": 1})
+    _validate_attrs(mock_dataset)
+
+    mock_dataset = Dataset(attrs={None: 1})
+    with pytest.raises(TypeError):
+        _validate_attrs(mock_dataset)
+
+def test_resolve_decoders_kwargs():
+    decoders = {"mask_and_scale": None, "decode_times": True}
+    result = _resolve_decoders_kwargs(False, ["mask_and_scale"], **decoders)
+    assert result == {"decode_times": True, "mask_and_scale": False}
+
+def test_get_mtime():
+    with patch("os.path.getmtime", return_value=123456789):
+        assert _get_mtime("file.nc") == 123456789
+
+def test_protect_dataset_variables_inplace(mock_dataset):
+    mock_dataset = Dataset(data_vars={"var": ("x", np.array([1, 2, 3]))})
+    _protect_dataset_variables_inplace(mock_dataset, cache=True)
+
+def test_finalize_store():
+    mock_store = MagicMock()
+    _finalize_store(None, mock_store)
+    mock_store.close.assert_called_once()
+
+def test_multi_file_closer():
+    mock_closer = MagicMock()
+    _multi_file_closer([mock_closer])
+    mock_closer.assert_called_once()
+
+def test_load_dataset():
+    with patch("xarray.backends.api.open_dataset", return_value=MagicMock(load=MagicMock(return_value="loaded"))):
+        assert load_dataset("file.nc").load() == "loaded"
+
+def test_load_dataarray():
+    with patch("xarray.backends.api.open_dataarray", return_value=MagicMock(load=MagicMock(return_value="loaded"))):
+        assert load_dataarray("file.nc").load() == "loaded"
+
+def test_open_dataset(mock_dataset):
+    with patch("xarray.backends.api.plugins.get_backend", return_value=MagicMock(open_dataset=MagicMock(return_value=mock_dataset))):
+        result = open_dataset("file.nc")
+        assert isinstance(result, Dataset)
+
+def test_open_dataarray(mock_dataarray):
+    with patch("xarray.backends.api.open_dataset", return_value=MagicMock(data_vars={"var": mock_dataarray})):
+        result = open_dataarray("file.nc")
+        assert isinstance(result, DataArray)
+
+def test_open_mfdataset():
+    with patch("xarray.backends.api.open_dataset", return_value=Dataset()):
+        result = open_mfdataset(["file1.nc", "file2.nc"], combine="nested", concat_dim="time")
+        assert isinstance(result, Dataset)
+
+def test_to_netcdf(mock_dataset):
+    with patch("xarray.backends.api.WRITEABLE_STORES", {"netcdf4": MagicMock()}):
+        to_netcdf(mock_dataset, "file.nc")
+
+def test_save_mfdataset(mock_dataset):
+    with patch("xarray.backends.api.to_netcdf", return_value=(MagicMock(), MagicMock())):
+        save_mfdataset([mock_dataset, mock_dataset], ["file1.nc", "file2.nc"])
+
+def test_to_zarr(mock_dataset):
+    with patch("xarray.backends.api.backends.ZarrStore.open_group", return_value=MagicMock()):
+        to_zarr(mock_dataset, "store.zarr")
+Coverage: 57.67326732673267
+Mutation Score: 9.719999999999999

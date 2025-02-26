@@ -1,0 +1,306 @@
+Instance ID: pydata__xarray-4750-16496
+
+Baseline 1:
+Predicted Test Suite: 
+Coverage: -1
+Mutation Score: -1
+
+Baseline 2:
+Predicted Test Suite: 
+import pytest
+import numpy as np
+import pandas as pd
+from datetime import datetime, timedelta
+from pandas.errors import OutOfBoundsDatetime
+from xarray.core import formatting
+from xarray.core.options import OPTIONS
+
+def test_pretty_print():
+    assert formatting.pretty_print("test", 10) == "test      "
+    assert formatting.pretty_print("test", 2) == "te"
+
+def test_maybe_truncate():
+    assert formatting.maybe_truncate("test", 2) == "te..."
+    assert formatting.maybe_truncate("test", 10) == "test"
+
+def test_wrap_indent():
+    text = "line1\nline2"
+    expected = "startline1\n      line2"
+    assert formatting.wrap_indent(text, start="start", length=6) == expected
+
+def test_first_n_items():
+    array = np.array([1, 2, 3, 4, 5])
+    assert list(formatting.first_n_items(array, 3)) == [1, 2, 3]
+
+def test_last_n_items():
+    array = np.array([1, 2, 3, 4, 5])
+    assert list(formatting.last_n_items(array, 3)) == [3, 4, 5]
+
+def test_last_item():
+    array = np.array([1, 2, 3, 4, 5])
+    assert formatting.last_item(array) == [5]
+    empty_array = np.array([])
+    assert formatting.last_item(empty_array) == []
+
+def test_format_timestamp():
+    assert formatting.format_timestamp("2023-01-01") == "2023-01-01"
+    assert formatting.format_timestamp("2023-01-01 12:00:00") == "2023-01-01T12:00:00"
+
+def test_format_timedelta():
+    assert formatting.format_timedelta("1 days 12:00:00", "date") == "1 days"
+    assert formatting.format_timedelta("1 days 12:00:00", "time") == "12:00:00"
+
+def test_format_item():
+    assert formatting.format_item(np.datetime64('2023-01-01')) == "2023-01-01"
+    assert formatting.format_item(np.timedelta64(1, 'D')) == "1 days"
+    assert formatting.format_item(3.14159) == "3.142"
+
+def test_format_items():
+    items = [np.datetime64('2023-01-01'), np.timedelta64(1, 'D'), 3.14159]
+    expected = ["2023-01-01", "1 days", "3.142"]
+    assert formatting.format_items(items) == expected
+
+def test_format_array_flat():
+    array = np.array([1, 2, 3, 4, 5])
+    result = formatting.format_array_flat(array, max_width=10)
+    assert result in ["1 2 3 4 5", "1 ... 5"]
+
+def test_inline_dask_repr():
+    class MockDaskArray:
+        chunks = ((3,), (3,))
+        _meta = np.ndarray([])
+
+    array = MockDaskArray()
+    assert formatting.inline_dask_repr(array) == "dask.array<chunksize=(3,)>"
+
+def test_inline_sparse_repr():
+    class MockSparseArray:
+        nnz = 5
+        fill_value = 0
+
+    array = MockSparseArray()
+    assert formatting.inline_sparse_repr(array) == "<MockSparseArray: nnz=5, fill_value=0>"
+
+def test_summarize_variable():
+    class MockVar:
+        dims = ('x',)
+        dtype = np.dtype('float64')
+        _in_memory = True
+        _data = np.array([1, 2, 3])
+
+    var = MockVar()
+    result = formatting.summarize_variable('var', var, col_width=10)
+    assert "var" in result
+    assert "float64" in result
+
+def test_summarize_attr():
+    result = formatting.summarize_attr('key', 'value', col_width=20)
+    assert "key:" in result
+    assert "value" in result
+
+def test_limit_lines():
+    text = "line1\nline2\nline3\nline4\nline5"
+    result = formatting.limit_lines(text, limit=3)
+    assert result == "line1\n...\nline5"
+
+def test_short_numpy_repr():
+    array = np.array([1.123456789, 2.123456789, 3.123456789])
+    result = formatting.short_numpy_repr(array)
+    assert "1.123457" in result
+
+def test_short_data_repr():
+    array = np.array([1, 2, 3])
+    result = formatting.short_data_repr(array)
+    assert "1" in result
+
+def test_array_repr():
+    class MockArray:
+        name = 'mock'
+        dims = ('x',)
+        sizes = {'x': 3}
+        _data = np.array([1, 2, 3])
+        attrs = {'attr1': 'value1'}
+
+    arr = MockArray()
+    result = formatting.array_repr(arr)
+    assert "mock" in result
+    assert "attr1" in result
+
+def test_dataset_repr():
+    class MockDataset:
+        dims = {'x': 3}
+        coords = {}
+        data_vars = {'var1': np.array([1, 2, 3])}
+        attrs = {'attr1': 'value1'}
+
+    ds = MockDataset()
+    result = formatting.dataset_repr(ds)
+    assert "Dimensions" in result
+    assert "var1" in result
+    assert "attr1" in result
+
+def test_diff_array_repr():
+    class MockArray:
+        dims = ('x',)
+        data = np.array([1, 2, 3])
+        attrs = {}
+
+    a = MockArray()
+    b = MockArray()
+    b.data = np.array([1, 2, 4])
+    result = formatting.diff_array_repr(a, b, compat='equals')
+    assert "Differing values" in result
+
+Coverage: 43.54838709677419
+Mutation Score: 33.19
+
+Approach:
+Predicted Test Suite: import pytest
+import numpy as np
+import pandas as pd
+from datetime import datetime, timedelta
+from pandas.errors import OutOfBoundsDatetime
+from xarray.core import formatting
+from xarray.core.options import OPTIONS
+
+def test_pretty_print():
+    assert formatting.pretty_print("test", 10) == "test      "
+    assert formatting.pretty_print("test", 2) == "tes..."
+
+def test_maybe_truncate():
+    assert formatting.maybe_truncate("test", 2) == "tes..."
+    assert formatting.maybe_truncate("test", 10) == "test"
+
+def test_wrap_indent():
+    text = "line1\nline2"
+    expected = "startline1\n      line2"
+    assert formatting.wrap_indent(text, start="start", length=6) == expected
+
+def test_first_n_items():
+    array = np.array([1, 2, 3, 4, 5])
+    assert list(formatting.first_n_items(array, 3)) == [1, 2, 3]
+
+def test_last_n_items():
+    array = np.array([1, 2, 3, 4, 5])
+    assert list(formatting.last_n_items(array, 3)) == [3, 4, 5]
+
+def test_last_item():
+    array = np.array([1, 2, 3, 4, 5])
+    assert formatting.last_item(array) == [5]
+    empty_array = np.array([])
+    assert formatting.last_item(empty_array) == []
+
+def test_format_timestamp():
+    assert formatting.format_timestamp("2023-01-01") == "2023-01-01"
+    assert formatting.format_timestamp("2023-01-01 12:00:00") == "2023-01-01T12:00:00"
+
+def test_format_timedelta():
+    assert formatting.format_timedelta("1 days 12:00:00", "date") == "1 days"
+    assert formatting.format_timedelta("1 days 12:00:00", "time") == "12:00:00"
+
+def test_format_item():
+    assert formatting.format_item(np.datetime64('2023-01-01')) == "2023-01-01"
+    assert formatting.format_item(np.timedelta64(1, 'D')) == "1 days 00:00:00"
+    assert formatting.format_item(3.14159) == "3.142"
+
+def test_format_items():
+    items = [np.datetime64('2023-01-01'), np.timedelta64(1, 'D'), 3.14159]
+    expected = ["2023-01-01", "1 days 00:00:00", "3.142"]
+    assert formatting.format_items(items) == expected
+
+def test_format_array_flat():
+    array = np.array([1, 2, 3, 4, 5])
+    result = formatting.format_array_flat(array, max_width=10)
+    assert result in ["1 2 3 4 5", "1 ... 5"]
+
+def test_inline_dask_repr():
+    class MockDaskArray:
+        chunks = ((3,), (3,))
+        _meta = np.ndarray([])
+
+    array = MockDaskArray()
+    with pytest.raises(AssertionError):
+        formatting.inline_dask_repr(array)
+
+def test_inline_sparse_repr():
+    class MockSparseArray:
+        nnz = 5
+        fill_value = 0
+
+    array = MockSparseArray()
+    with pytest.raises(AssertionError):
+        formatting.inline_sparse_repr(array)
+
+def test_summarize_variable():
+    class MockVar:
+        dims = ('x',)
+        dtype = np.dtype('float64')
+        _in_memory = True
+        _data = np.array([1, 2, 3])
+
+    var = MockVar()
+    result = formatting.summarize_variable('var', var, col_width=10)
+    assert "var" in result
+    assert "float64" in result
+
+def test_summarize_attr():
+    result = formatting.summarize_attr('key', 'value', col_width=20)
+    assert "key:" in result
+    assert "value" in result
+
+def test_limit_lines():
+    text = "line1\nline2\nline3\nline4\nline5"
+    result = formatting.limit_lines(text, limit=3)
+    assert result == "line1\n...\nline4\nline5"
+
+def test_short_numpy_repr():
+    array = np.array([1.123456789, 2.123456789, 3.123456789])
+    result = formatting.short_numpy_repr(array)
+    assert "1.123457" in result
+
+def test_short_data_repr():
+    array = np.array([1, 2, 3])
+    result = formatting.short_data_repr(array)
+    assert "[3 values with dtype=int64]" in result
+    assert "1" in result
+
+def test_array_repr():
+    class MockArray:
+        name = 'mock'
+        dims = ('x',)
+        sizes = {'x': 3}
+        _data = np.array([1, 2, 3])
+        attrs = {'attr1': 'value1'}
+
+    arr = MockArray()
+    result = formatting.array_repr(arr)
+    assert "mock" in result
+    assert "attr1" in result
+
+def test_dataset_repr():
+    class MockDataset:
+        dims = {'x': 3}
+        coords = {}
+        data_vars = {'var1': np.array([1, 2, 3])}
+        attrs = {'attr1': 'value1'}
+
+    ds = MockDataset()
+    ds.variables = {'var1': np.array([1, 2, 3])}
+    result = formatting.dataset_repr(ds)
+    assert "Dimensions" in result
+    assert "var1" in result
+    assert "attr1" in result
+
+def test_diff_array_repr():
+    class MockArray:
+        dims = ('x',)
+        data = np.array([1, 2, 3])
+        attrs = {}
+
+    a = MockArray()
+    b = MockArray()
+    b.data = np.array([1, 2, 4])
+    result = formatting.diff_array_repr(a, b, compat='equals')
+    assert "Differing values" in result
+Coverage: 46.505376344086024
+Mutation Score: 41.55

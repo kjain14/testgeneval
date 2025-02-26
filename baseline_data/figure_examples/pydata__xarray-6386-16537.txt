@@ -1,0 +1,228 @@
+Instance ID: pydata__xarray-6386-16537
+
+Baseline 1:
+Predicted Test Suite: 
+Coverage: -1
+Mutation Score: -1
+
+Baseline 2:
+Predicted Test Suite: 
+import pytest
+import numpy as np
+import pandas as pd
+from xarray import DataArray, Dataset
+from xarray.core.groupby import (
+    check_reduce_dims,
+    unique_value_groups,
+    _dummy_copy,
+    _is_one_or_none,
+    _consolidate_slices,
+    _inverse_permutation_indices,
+    _DummyGroup,
+    _ensure_1d,
+    _unique_and_monotonic,
+    GroupBy,
+    DataArrayGroupBy,
+    DatasetGroupBy,
+)
+
+def test_check_reduce_dims_valid():
+    dimensions = ['x', 'y', 'z']
+    check_reduce_dims(['x', 'y'], dimensions)  # Should not raise
+
+def test_check_reduce_dims_invalid():
+    dimensions = ['x', 'y', 'z']
+    with pytest.raises(ValueError):
+        check_reduce_dims(['x', 'a'], dimensions)
+
+def test_unique_value_groups():
+    ar = np.array([1, 2, 1, 3, 2, 1])
+    values, groups = unique_value_groups(ar)
+    assert np.array_equal(values, [1, 2, 3])
+    assert groups == [[0, 2, 5], [1, 4], [3]]
+
+def test_dummy_copy_dataarray():
+    da = DataArray([1, 2, 3], dims='x')
+    dummy = _dummy_copy(da)
+    assert isinstance(dummy, DataArray)
+    assert dummy.shape == (0,)
+
+def test_dummy_copy_dataset():
+    ds = Dataset({'a': ('x', [1, 2, 3])})
+    dummy = _dummy_copy(ds)
+    assert isinstance(dummy, Dataset)
+    assert 'a' in dummy.data_vars
+
+def test_is_one_or_none():
+    assert _is_one_or_none(1)
+    assert _is_one_or_none(None)
+    assert not _is_one_or_none(2)
+
+def test_consolidate_slices():
+    slices = [slice(0, 2), slice(2, 4), slice(4, 6)]
+    consolidated = _consolidate_slices(slices)
+    assert consolidated == [slice(0, 6)]
+
+def test_inverse_permutation_indices():
+    positions = [np.array([2, 0, 1])]
+    indices = _inverse_permutation_indices(positions)
+    assert np.array_equal(indices, [1, 2, 0])
+
+def test_dummy_group():
+    obj = Dataset({'a': ('x', [1, 2, 3])})
+    group = _DummyGroup(obj, 'x', obj.coords)
+    assert group.name == 'x'
+    assert group.size == 3
+    assert group.dims == ('x',)
+    assert list(group.values) == [0, 1, 2]
+
+def test_ensure_1d():
+    da = DataArray([[1, 2], [3, 4]], dims=('x', 'y'))
+    group, obj, stacked_dim, inserted_dims = _ensure_1d(da, da)
+    assert group.ndim == 1
+    assert stacked_dim is not None
+
+def test_unique_and_monotonic():
+    da = DataArray([1, 2, 3], dims='x')
+    assert _unique_and_monotonic(da)
+
+def test_groupby_init():
+    da = DataArray([1, 2, 3], dims='x')
+    group = DataArray([0, 1, 0], dims='x')
+    gb = GroupBy(da, group)
+    assert len(gb) == 2
+
+def test_groupby_iter():
+    da = DataArray([1, 2, 3], dims='x')
+    group = DataArray([0, 1, 0], dims='x')
+    gb = GroupBy(da, group)
+    groups = list(gb)
+    assert len(groups) == 2
+    assert np.array_equal(groups[0][1], [1, 3])
+
+def test_dataarray_groupby_map():
+    da = DataArray([1, 2, 3], dims='x')
+    group = DataArray([0, 1, 0], dims='x')
+    gb = DataArrayGroupBy(da, group)
+    result = gb.map(lambda x: x.mean())
+    assert np.array_equal(result, [2, 2])
+
+def test_dataset_groupby_map():
+    ds = Dataset({'a': ('x', [1, 2, 3])})
+    group = DataArray([0, 1, 0], dims='x')
+    gb = DatasetGroupBy(ds, group)
+    result = gb.map(lambda x: x.mean())
+    assert np.array_equal(result['a'], [2, 2])
+
+Coverage: 61.690140845070424
+Mutation Score: 25.53
+
+Approach:
+Predicted Test Suite: import pytest
+import numpy as np
+import pandas as pd
+from xarray import DataArray, Dataset
+from xarray.core.groupby import (
+    check_reduce_dims,
+    unique_value_groups,
+    _dummy_copy,
+    _is_one_or_none,
+    _consolidate_slices,
+    _inverse_permutation_indices,
+    _DummyGroup,
+    _ensure_1d,
+    _unique_and_monotonic,
+    GroupBy,
+    DataArrayGroupBy,
+    DatasetGroupBy,
+)
+
+def test_check_reduce_dims_valid():
+    dimensions = ['x', 'y', 'z']
+    check_reduce_dims(['x', 'y'], dimensions)  # Should not raise
+
+def test_check_reduce_dims_invalid():
+    dimensions = ['x', 'y', 'z']
+    with pytest.raises(ValueError):
+        check_reduce_dims(['x', 'a'], dimensions)
+
+def test_unique_value_groups():
+    ar = np.array([1, 2, 1, 3, 2, 1])
+    values, groups = unique_value_groups(ar)
+    assert np.array_equal(values, [1, 2, 3])
+    assert groups == [[0, 2, 5], [1, 4], [3]]
+
+def test_dummy_copy_dataarray():
+    da = DataArray([1, 2, 3], dims='x')
+    dummy = _dummy_copy(da)
+    assert isinstance(dummy, DataArray)
+    assert dummy.shape == ()
+
+def test_dummy_copy_dataset():
+    ds = Dataset({'a': ('x', [1, 2, 3])})
+    dummy = _dummy_copy(ds)
+    assert isinstance(dummy, Dataset)
+    assert 'a' in dummy.data_vars
+
+def test_is_one_or_none():
+    assert _is_one_or_none(1)
+    assert _is_one_or_none(None)
+    assert not _is_one_or_none(2)
+
+def test_consolidate_slices():
+    slices = [slice(0, 2), slice(2, 4), slice(4, 6)]
+    consolidated = _consolidate_slices(slices)
+    assert consolidated == [slice(0, 6)]
+
+def test_inverse_permutation_indices():
+    positions = [np.array([2, 0, 1])]
+    indices = _inverse_permutation_indices(positions)
+    assert np.array_equal(indices, [1, 2, 0])
+
+def test_dummy_group():
+    obj = Dataset({'a': ('x', [1, 2, 3])})
+    group = _DummyGroup(obj, 'x', obj.coords)
+    assert group.name == 'x'
+    assert group.size == 3
+    assert group.dims == ('x',)
+    assert list(group.values) == [0, 1, 2]
+
+def test_ensure_1d():
+    da = DataArray([[1, 2], [3, 4]], dims=('x', 'y'))
+    group, obj, stacked_dim, inserted_dims = _ensure_1d(da, da)
+    assert group.ndim == 1
+    assert stacked_dim is not None
+
+def test_unique_and_monotonic():
+    da = DataArray([1, 2, 3], dims='x')
+    assert _unique_and_monotonic(da)
+
+def test_groupby_init():
+    da = DataArray([1, 2, 3], dims='x')
+    group = DataArray([0, 1, 0], dims='x')
+    gb = GroupBy(da, group)
+    assert len(gb) == 2
+
+def test_groupby_iter():
+    da = DataArray([1, 2, 3], dims='x')
+    group = DataArray([0, 1, 0], dims='x')
+    gb = GroupBy(da, group)
+    groups = list(gb)
+    assert len(groups) == 2
+    assert np.array_equal(groups[0][1], [1, 3])
+
+def test_dataarray_groupby_map():
+    da = DataArray([1, 2, 3], dims='x')
+    group = DataArray([0, 1, 0], dims='x')
+    gb = DataArrayGroupBy(da, group)
+    result = gb.map(lambda x: x.mean())
+    assert np.array_equal(result, [2, 2])
+
+def test_dataset_groupby_map():
+    ds = Dataset({'a': ('x', [1, 2, 3])})
+    group = DataArray([0, 1, 0], dims='x')
+    gb = DatasetGroupBy(ds, group)
+    result = gb.map(lambda x: x.mean())
+    assert np.array_equal(result['a'], [2, 2])
+Coverage: 62.25352112676056
+Mutation Score: 25.53

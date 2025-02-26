@@ -1,0 +1,334 @@
+Instance ID: pydata__xarray-6135-16536
+
+Baseline 1:
+Predicted Test Suite: 
+Coverage: -1
+Mutation Score: -1
+
+Baseline 2:
+Predicted Test Suite: 
+import pytest
+from datetime import datetime, timedelta
+import numpy as np
+import pandas as pd
+from xarray.coding.cftime_offsets import (
+    _MONTH_ABBREVIATIONS,
+    BaseCFTimeOffset,
+    Day,
+    Hour,
+    Microsecond,
+    Millisecond,
+    Minute,
+    MonthBegin,
+    MonthEnd,
+    QuarterBegin,
+    QuarterEnd,
+    Second,
+    Tick,
+    YearBegin,
+    YearEnd,
+    _days_in_month,
+    cftime_range,
+    date_range,
+    date_range_like,
+    get_date_type,
+    to_cftime_datetime,
+    to_offset,
+)
+
+try:
+    import cftime
+except ImportError:
+    cftime = None
+
+
+def test_get_date_type():
+    if cftime is not None:
+        assert get_date_type("noleap") == cftime.DatetimeNoLeap
+        assert get_date_type("360_day") == cftime.Datetime360Day
+        assert get_date_type("gregorian", use_cftime=False) == pd.Timestamp
+        with pytest.raises(KeyError):
+            get_date_type("unknown_calendar")
+
+
+def test_BaseCFTimeOffset_init():
+    offset = BaseCFTimeOffset(2)
+    assert offset.n == 2
+    with pytest.raises(TypeError):
+        BaseCFTimeOffset("not_an_int")
+
+
+def test_BaseCFTimeOffset_eq():
+    offset1 = BaseCFTimeOffset(2)
+    offset2 = BaseCFTimeOffset(2)
+    offset3 = BaseCFTimeOffset(3)
+    assert offset1 == offset2
+    assert offset1 != offset3
+
+
+def test_BaseCFTimeOffset_add():
+    offset = BaseCFTimeOffset(2)
+    with pytest.raises(NotImplementedError):
+        offset + 1
+
+
+def test_BaseCFTimeOffset_sub():
+    offset = BaseCFTimeOffset(2)
+    with pytest.raises(NotImplementedError):
+        offset - 1
+
+
+def test_Tick_mul():
+    tick = Day(1)
+    assert tick * 2 == Day(2)
+    assert 2 * tick == Day(2)
+    with pytest.raises(NotImplementedError):
+        tick * 2.5
+
+
+def test_Tick_next_higher_resolution():
+    tick = Day(1)
+    assert tick._next_higher_resolution() == Hour(24)
+
+
+def test_MonthBegin_apply():
+    if cftime is not None:
+        date = cftime.DatetimeNoLeap(2000, 1, 15)
+        offset = MonthBegin(1)
+        assert offset.__apply__(date) == cftime.DatetimeNoLeap(2000, 2, 1)
+
+
+def test_MonthEnd_apply():
+    if cftime is not None:
+        date = cftime.DatetimeNoLeap(2000, 1, 15)
+        offset = MonthEnd(1)
+        assert offset.__apply__(date) == cftime.DatetimeNoLeap(2000, 1, 31)
+
+
+def test_QuarterBegin_apply():
+    if cftime is not None:
+        date = cftime.DatetimeNoLeap(2000, 1, 15)
+        offset = QuarterBegin(1, month=1)
+        assert offset.__apply__(date) == cftime.DatetimeNoLeap(2000, 4, 1)
+
+
+def test_QuarterEnd_apply():
+    if cftime is not None:
+        date = cftime.DatetimeNoLeap(2000, 1, 15)
+        offset = QuarterEnd(1, month=3)
+        assert offset.__apply__(date) == cftime.DatetimeNoLeap(2000, 3, 31)
+
+
+def test_YearBegin_apply():
+    if cftime is not None:
+        date = cftime.DatetimeNoLeap(2000, 6, 15)
+        offset = YearBegin(1, month=1)
+        assert offset.__apply__(date) == cftime.DatetimeNoLeap(2001, 1, 1)
+
+
+def test_YearEnd_apply():
+    if cftime is not None:
+        date = cftime.DatetimeNoLeap(2000, 6, 15)
+        offset = YearEnd(1, month=12)
+        assert offset.__apply__(date) == cftime.DatetimeNoLeap(2000, 12, 31)
+
+
+def test_to_offset():
+    assert isinstance(to_offset("D"), Day)
+    assert isinstance(to_offset("2H"), Hour)
+    with pytest.raises(ValueError):
+        to_offset("invalid_freq")
+
+
+def test_to_cftime_datetime():
+    if cftime is not None:
+        date_str = "2000-01-01"
+        assert isinstance(to_cftime_datetime(date_str, "noleap"), cftime.DatetimeNoLeap)
+        with pytest.raises(ValueError):
+            to_cftime_datetime(date_str)
+
+
+def test_cftime_range():
+    if cftime is not None:
+        index = cftime_range(start="2000-01-01", periods=3, freq="D", calendar="noleap")
+        assert len(index) == 3
+        assert index[0] == cftime.DatetimeNoLeap(2000, 1, 1)
+
+
+def test_date_range():
+    index = date_range(start="2000-01-01", periods=3, freq="D", calendar="standard")
+    assert len(index) == 3
+    assert index[0] == pd.Timestamp("2000-01-01")
+
+
+def test_date_range_like():
+    source = pd.date_range(start="2000-01-01", periods=3, freq="D")
+    result = date_range_like(source, calendar="noleap", use_cftime=True)
+    assert len(result) == 3
+    assert isinstance(result[0], cftime.DatetimeNoLeap)
+
+Coverage: 65.13157894736842
+Mutation Score: 33.379999999999995
+
+Approach:
+Predicted Test Suite: import pytest
+from datetime import datetime, timedelta
+import numpy as np
+import pandas as pd
+from xarray.coding.cftime_offsets import (
+    _MONTH_ABBREVIATIONS,
+    BaseCFTimeOffset,
+    Day,
+    Hour,
+    Microsecond,
+    Millisecond,
+    Minute,
+    MonthBegin,
+    MonthEnd,
+    QuarterBegin,
+    QuarterEnd,
+    Second,
+    Tick,
+    YearBegin,
+    YearEnd,
+    _days_in_month,
+    cftime_range,
+    date_range,
+    date_range_like,
+    get_date_type,
+    to_cftime_datetime,
+    to_offset,
+)
+
+try:
+    import cftime
+except ImportError:
+    cftime = None
+
+
+def test_get_date_type():
+    if cftime is not None:
+        assert get_date_type("noleap") == cftime.DatetimeNoLeap
+        assert get_date_type("360_day") == cftime.Datetime360Day
+        assert get_date_type("gregorian", use_cftime=False) == pd.Timestamp
+        with pytest.raises(KeyError):
+            get_date_type("unknown_calendar")
+
+
+def test_BaseCFTimeOffset_init():
+    offset = BaseCFTimeOffset(2)
+    assert offset.n == 2
+    with pytest.raises(TypeError):
+        BaseCFTimeOffset("not_an_int")
+
+
+def test_BaseCFTimeOffset_eq():
+    offset1 = BaseCFTimeOffset(2)
+    offset2 = BaseCFTimeOffset(2)
+    offset3 = BaseCFTimeOffset(3)
+    assert offset1 == offset2
+    assert offset1 != offset3
+
+
+def test_BaseCFTimeOffset_add():
+    offset = BaseCFTimeOffset(2)
+    with pytest.raises(NotImplementedError):
+        offset + 1
+
+
+def test_BaseCFTimeOffset_sub():
+    offset = BaseCFTimeOffset(2)
+    with pytest.raises(NotImplementedError):
+        offset - 1
+
+
+def test_Tick_mul():
+    tick = Day(1)
+    assert tick * 2 == Day(2)
+    assert 2 * tick == Day(2)
+    with pytest.raises(NotImplementedError):
+        tick * 2.5
+
+
+def test_Tick_next_higher_resolution():
+    tick = Day(1)
+    assert tick._next_higher_resolution() == Hour(24)
+
+
+def test_MonthBegin_apply():
+    if cftime is not None:
+        date = cftime.DatetimeNoLeap(2000, 1, 15)
+        offset = MonthBegin(1)
+        assert offset.__apply__(date) == cftime.DatetimeNoLeap(2000, 2, 1)
+
+
+def test_MonthEnd_apply():
+    if cftime is not None:
+        date = cftime.DatetimeNoLeap(2000, 1, 15)
+        offset = MonthEnd(1)
+        assert offset.__apply__(date) == cftime.DatetimeNoLeap(2000, 1, 31)
+
+
+def test_QuarterBegin_apply():
+    if cftime is not None:
+        date = cftime.DatetimeNoLeap(2000, 1, 15)
+        offset = QuarterBegin(1, month=1)
+        assert offset.__apply__(date) == cftime.DatetimeNoLeap(2000, 4, 1)
+
+
+def test_QuarterEnd_apply():
+    if cftime is not None:
+        date = cftime.DatetimeNoLeap(2000, 1, 15)
+        offset = QuarterEnd(1, month=3)
+        assert offset.__apply__(date) == cftime.DatetimeNoLeap(2000, 3, 31)
+
+
+def test_YearBegin_apply():
+    if cftime is not None:
+        date = cftime.DatetimeNoLeap(2000, 6, 15)
+        offset = YearBegin(1, month=1)
+        assert offset.__apply__(date) == cftime.DatetimeNoLeap(2001, 1, 1)
+
+
+def test_YearEnd_apply():
+    if cftime is not None:
+        date = cftime.DatetimeNoLeap(2000, 6, 15)
+        offset = YearEnd(1, month=12)
+        assert offset.__apply__(date) == cftime.DatetimeNoLeap(2000, 12, 31)
+
+
+def test_to_offset():
+    assert isinstance(to_offset("D"), Day)
+    assert isinstance(to_offset("2H"), Hour)
+    with pytest.raises(ValueError):
+        to_offset("invalid_freq")
+
+
+def test_to_cftime_datetime():
+    if cftime is not None:
+        date_str = "2000-01-01"
+        assert isinstance(to_cftime_datetime(date_str, "noleap"), cftime.DatetimeNoLeap)
+        with pytest.raises(ValueError):
+            to_cftime_datetime(date_str)
+
+
+def test_cftime_range():
+    if cftime is not None:
+        index = cftime_range(start="2000-01-01", periods=3, freq="D", calendar="noleap")
+        assert len(index) == 3
+        assert index[0] == cftime.DatetimeNoLeap(2000, 1, 1)
+
+
+def test_date_range():
+    index = date_range(start="2000-01-01", periods=3, freq="D", calendar="standard")
+    assert len(index) == 3
+    assert index[0] == pd.Timestamp("2000-01-01")
+
+
+def test_date_range_like():
+    source = pd.date_range(start="2000-01-01", periods=3, freq="D")
+    result = date_range_like(source, calendar="noleap", use_cftime=True)
+    assert len(result) == 3
+    assert isinstance(result[0], cftime.DatetimeNoLeap)
+Coverage: 65.13157894736842
+Mutation Score: 35.989999999999995

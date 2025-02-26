@@ -1,0 +1,361 @@
+Instance ID: pydata__xarray-6400-16539
+
+Baseline 1:
+Predicted Test Suite: 
+Coverage: -1
+Mutation Score: -1
+
+Baseline 2:
+Predicted Test Suite: 
+import pytest
+import numpy as np
+import pandas as pd
+from xarray.core import formatting
+from pandas.errors import OutOfBoundsDatetime
+
+def test_pretty_print():
+    assert formatting.pretty_print("test", 10) == "test      "
+    assert formatting.pretty_print("longstring", 5) == "longs"
+
+def test_maybe_truncate():
+    assert formatting.maybe_truncate("short", 10) == "short"
+    assert formatting.maybe_truncate("this is a very long string", 10) == "this is..."
+
+def test_wrap_indent():
+    text = "line1\nline2"
+    result = formatting.wrap_indent(text, start=">>", length=2)
+    assert result == ">>line1\n  line2"
+
+def test_first_n_items():
+    array = np.array([1, 2, 3, 4, 5])
+    assert list(formatting.first_n_items(array, 3)) == [1, 2, 3]
+
+def test_last_n_items():
+    array = np.array([1, 2, 3, 4, 5])
+    assert list(formatting.last_n_items(array, 3)) == [3, 4, 5]
+
+def test_last_item():
+    array = np.array([1, 2, 3, 4, 5])
+    assert formatting.last_item(array) == [5]
+
+def test_calc_max_rows_first():
+    assert formatting.calc_max_rows_first(5) == 3
+
+def test_calc_max_rows_last():
+    assert formatting.calc_max_rows_last(5) == 2
+
+def test_format_timestamp():
+    ts = pd.Timestamp("2023-01-01")
+    assert formatting.format_timestamp(ts) == "2023-01-01"
+
+def test_format_timedelta():
+    td = pd.Timedelta(days=2, hours=3)
+    assert formatting.format_timedelta(td) == "2 days 03:00:00"
+
+def test_format_item():
+    assert formatting.format_item(np.datetime64("2023-01-01")) == "2023-01-01"
+    assert formatting.format_item(np.timedelta64(2, 'D')) == "2 days 00:00:00"
+    assert formatting.format_item("string") == "'string'"
+
+def test_format_items():
+    items = [np.datetime64("2023-01-01"), np.timedelta64(2, 'D'), "string"]
+    formatted = formatting.format_items(items)
+    assert formatted == ["2023-01-01", "2 days 00:00:00", "'string'"]
+
+def test_format_array_flat():
+    array = np.array([1, 2, 3, 4, 5])
+    result = formatting.format_array_flat(array, max_width=10)
+    assert result == "1 2 3 ... 5"
+
+def test_inline_dask_repr():
+    class MockDaskArray:
+        chunks = ((3,), (3,))
+        _meta = np.ndarray(0)
+
+    array = MockDaskArray()
+    assert formatting.inline_dask_repr(array) == "dask.array<chunksize=(3,)>"
+
+def test_inline_sparse_repr():
+    class MockSparseArray:
+        nnz = 10
+        fill_value = 0
+
+    array = MockSparseArray()
+    assert formatting.inline_sparse_repr(array) == "<MockSparseArray: nnz=10, fill_value=0>"
+
+def test_summarize_variable():
+    class MockVariable:
+        dims = ("x",)
+        dtype = np.dtype("float64")
+        _data = np.array([1, 2, 3])
+        _in_memory = True
+
+    var = MockVariable()
+    result = formatting.summarize_variable("var", var, col_width=10)
+    assert "var" in result
+
+def test_summarize_attr():
+    result = formatting.summarize_attr("key", "value", col_width=10)
+    assert "key:" in result
+
+def test_empty_repr():
+    assert formatting.EMPTY_REPR == "    *empty*"
+
+def test_calculate_col_width():
+    col_items = ["a", "b", "c"]
+    assert formatting._calculate_col_width(col_items) == 7 + 6
+
+def test_limit_lines():
+    string = "line1\nline2\nline3\nline4\nline5"
+    result = formatting.limit_lines(string, limit=3)
+    assert result == "line1\n...\nline5"
+
+def test_short_numpy_repr():
+    array = np.array([1.123456789, 2.987654321])
+    result = formatting.short_numpy_repr(array)
+    assert "1.123457" in result
+
+def test_short_data_repr():
+    array = np.array([1, 2, 3])
+    result = formatting.short_data_repr(array)
+    assert "array" in result
+
+def test_array_repr():
+    class MockArray:
+        name = "mock"
+        dims = ("x",)
+        variable = np.array([1, 2, 3])
+        coords = {}
+        attrs = {}
+
+    arr = MockArray()
+    result = formatting.array_repr(arr)
+    assert "mock" in result
+
+def test_dataset_repr():
+    class MockDataset:
+        variables = {"var": np.array([1, 2, 3])}
+        coords = {}
+        dims = {"x": 3}
+        data_vars = {"var": np.array([1, 2, 3])}
+        attrs = {}
+
+    ds = MockDataset()
+    result = formatting.dataset_repr(ds)
+    assert "<xarray." in result
+
+def test_diff_dim_summary():
+    class MockObj:
+        dims = {"x": 3}
+        sizes = {"x": 3}
+
+    a = MockObj()
+    b = MockObj()
+    result = formatting.diff_dim_summary(a, b)
+    assert result == ""
+
+def test_diff_array_repr():
+    class MockArray:
+        dims = ("x",)
+        data = np.array([1, 2, 3])
+        coords = {}
+        attrs = {}
+
+    a = MockArray()
+    b = MockArray()
+    result = formatting.diff_array_repr(a, b, compat="equals")
+    assert "not equal" in result
+
+def test_diff_dataset_repr():
+    class MockDataset:
+        dims = {"x": 3}
+        coords = {}
+        data_vars = {"var": np.array([1, 2, 3])}
+        attrs = {}
+
+    a = MockDataset()
+    b = MockDataset()
+    result = formatting.diff_dataset_repr(a, b, compat="equals")
+    assert "not equal" in result
+
+Coverage: 34.5771144278607
+Mutation Score: 26.25
+
+Approach:
+Predicted Test Suite: import pytest
+import numpy as np
+import pandas as pd
+from xarray.core import formatting
+from pandas.errors import OutOfBoundsDatetime
+
+def test_pretty_print():
+    assert formatting.pretty_print("test", 10) == "test      "
+    assert formatting.pretty_print("longstring", 5) == "long..."
+
+def test_maybe_truncate():
+    assert formatting.maybe_truncate("short", 10) == "short"
+    assert formatting.maybe_truncate("this is a very long string", 10) == "this is..."
+
+def test_wrap_indent():
+    text = "line1\nline2"
+    result = formatting.wrap_indent(text, start=">>", length=2)
+    assert result == ">>line1\n  line2"
+
+def test_first_n_items():
+    array = np.array([1, 2, 3, 4, 5])
+    assert list(formatting.first_n_items(array, 3)) == [1, 2, 3]
+
+def test_last_n_items():
+    array = np.array([1, 2, 3, 4, 5])
+    assert list(formatting.last_n_items(array, 3)) == [3, 4, 5]
+
+def test_last_item():
+    array = np.array([1, 2, 3, 4, 5])
+    assert formatting.last_item(array) == [5]
+
+def test_calc_max_rows_first():
+    assert formatting.calc_max_rows_first(5) == 3
+
+def test_calc_max_rows_last():
+    assert formatting.calc_max_rows_last(5) == 2
+
+def test_format_timestamp():
+    ts = pd.Timestamp("2023-01-01")
+    assert formatting.format_timestamp(ts) == "2023-01-01"
+
+def test_format_timedelta():
+    td = pd.Timedelta(days=2, hours=3)
+    assert formatting.format_timedelta(td) == "2 days 03:00:00"
+
+def test_format_item():
+    assert formatting.format_item(np.datetime64("2023-01-01")) == "2023-01-01"
+    assert formatting.format_item(np.timedelta64(2, 'D')) == "2 days 00:00:00"
+    assert formatting.format_item("string") == "'string'"
+
+def test_format_items():
+    items = [np.datetime64("2023-01-01"), np.timedelta64(2, 'D'), "string"]
+    formatted = formatting.format_items(items)
+    assert formatted == ["2023-01-01", "2 days 00:00:00", "'string'"]
+
+def test_format_array_flat():
+    array = np.array([1, 2, 3, 4, 5])
+    result = formatting.format_array_flat(array, max_width=10)
+    assert result == "1 2 3 4 5"
+
+def test_inline_dask_repr():
+    class MockDaskArray:
+        chunks = ((3,), (3,))
+        _meta = np.ndarray(0)
+
+    array = MockDaskArray()
+    assert formatting.inline_dask_repr(array) == "dask.array<chunksize=(3,), meta=np.ndarray>"
+
+def test_inline_sparse_repr():
+    class MockSparseArray:
+        nnz = 10
+        fill_value = 0
+
+    array = MockSparseArray()
+    assert formatting.inline_sparse_repr(array) == "<MockSparseArray: nnz=10, fill_value=0>"
+
+def test_summarize_variable():
+    class MockVariable:
+        dims = ("x",)
+        dtype = np.dtype("float64")
+        _data = np.array([1, 2, 3])
+        _in_memory = True
+
+    var = MockVariable()
+    result = formatting.summarize_variable("var", var, col_width=10, max_width=20)
+    assert "var" in result
+
+def test_summarize_attr():
+    result = formatting.summarize_attr("key", "value", col_width=10)
+    assert "key:" in result
+
+def test_empty_repr():
+    assert formatting.EMPTY_REPR == "    *empty*"
+
+def test_calculate_col_width():
+    col_items = ["a", "b", "c"]
+    assert formatting._calculate_col_width(col_items) == 7 + 6
+
+def test_limit_lines():
+    string = "line1\nline2\nline3\nline4\nline5"
+    result = formatting.limit_lines(string, limit=3)
+    assert result == "line1\n...\nline4\nline5"
+
+def test_short_numpy_repr():
+    array = np.array([1.123456789, 2.987654321])
+    result = formatting.short_numpy_repr(array)
+    assert "1.123457" in result
+
+def test_short_data_repr():
+    array = np.array([1, 2, 3])
+    result = formatting.short_data_repr(array)
+    assert "[3 values with dtype=int64]" in result
+    assert "array" in result
+
+def test_array_repr():
+    class MockArray:
+        name = "mock"
+        dims = ("x",)
+        variable = np.array([1, 2, 3])
+        coords = {}
+        attrs = {}
+
+    arr = MockArray()
+    result = formatting.array_repr(arr)
+    assert "<xarray.MockArray" in result
+    assert "mock" in result
+
+def test_dataset_repr():
+    class MockDataset:
+        variables = {"var": np.array([1, 2, 3])}
+        coords = {}
+        dims = {"x": 3}
+        data_vars = {"var": np.array([1, 2, 3])}
+        attrs = {}
+
+    ds = MockDataset()
+    result = formatting.dataset_repr(ds)
+    assert "Dimensions: (x: 3)" in result
+    assert "<xarray." in result
+
+def test_diff_dim_summary():
+    class MockObj:
+        dims = {"x": 3}
+        sizes = {"x": 3}
+
+    a = MockObj()
+    b = MockObj()
+    result = formatting.diff_dim_summary(a, b)
+    assert result == ""
+
+def test_diff_array_repr():
+    class MockArray:
+        dims = ("x",)
+        data = np.array([1, 2, 3])
+        coords = {}
+        attrs = {}
+
+    a = MockArray()
+    b = MockArray()
+    result = formatting.diff_array_repr(a, b, compat="equals")
+    assert "Differing values:" in result
+    assert "not equal" in result
+
+def test_diff_dataset_repr():
+    class MockDataset:
+        dims = {"x": 3}
+        coords = {}
+        data_vars = {"var": np.array([1, 2, 3])}
+        attrs = {}
+
+    a = MockDataset()
+    b = MockDataset()
+    result = formatting.diff_dataset_repr(a, b, compat="equals")
+    assert "Differing data variables:" in result
+    assert "not equal" in result
+Coverage: 39.30348258706468
+Mutation Score: 34.09
