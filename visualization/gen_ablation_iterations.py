@@ -1,11 +1,14 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.optimize import curve_fit
 import json
+
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.optimize import curve_fit
+
 
 # Define the exponential growth function
 def exp_growth(x, A, B, C):
     return A * (1 - np.exp(-B * x)) + C
+
 
 def gen_ablation_iterations(x, y, title):
     # Initial guess: A controls the maximum increase, B controls growth speed, C is the starting point
@@ -22,11 +25,11 @@ def gen_ablation_iterations(x, y, title):
 
     # Plot data points and best-fit curve
     plt.figure(figsize=(8, 5))
-    plt.scatter(x, y, color='blue', label='Data Points')
-    plt.plot(x_fit, y_fit, 'r-', label='Exponential Growth Fit')
-    plt.xlabel('# Iterations')
+    plt.scatter(x, y, color="blue", label="Data points")
+    plt.plot(x_fit, y_fit, "r-", label="Best fit curve")
+    plt.xlabel("# Iterations")
     plt.ylabel(title.capitalize())
-    plt.title(f'{title.capitalize()} vs # Iterations')
+    plt.title(f"{title.capitalize()} vs # Iterations")
     plt.legend()
     plt.savefig(f"{title}_iterations.png")
 
@@ -37,10 +40,10 @@ if __name__ == "__main__":
         5: "../OpenHands/evaluation/evaluation_outputs/outputs/kjain14__testgeneval-test/CodeActAgent/gpt-4o_maxiter_25_N_v0.20.0-no-hint-run_1/output_5.testgeneval.jsonl",
         10: "../OpenHands/evaluation/evaluation_outputs/outputs/kjain14__testgeneval-test/CodeActAgent/gpt-4o_maxiter_25_N_v0.20.0-no-hint-run_1/output_10.testgeneval.jsonl",
         15: "../OpenHands/evaluation/evaluation_outputs/outputs/kjain14__testgeneval-test/CodeActAgent/gpt-4o_maxiter_25_N_v0.20.0-no-hint-run_1/output_15.testgeneval.jsonl",
-        25: "../OpenHands/evaluation/evaluation_outputs/outputs/kjain14__testgeneval-test/CodeActAgent/gpt-4o_maxiter_25_N_v0.20.0-no-hint-run_1/output_approach.testgeneval.jsonl"
+        25: "../OpenHands/evaluation/evaluation_outputs/outputs/kjain14__testgeneval-test/CodeActAgent/gpt-4o_maxiter_25_N_v0.20.0-no-hint-run_1/output_approach.testgeneval.jsonl",
     }
 
-    MAPPING = {0: {"cov": 34.8, "pass": 84.3}}
+    MAPPING = {0: {"cov": 34.8, "pass": 64.0}}
 
     for key, value in FILES.items():
         with open(value, "r") as f:
@@ -54,7 +57,6 @@ if __name__ == "__main__":
 
         MAPPING[key] = {"cov": cov / len(data), "pass": tests_pass / len(data)}
 
-    
     x = [i for i in [0, 1, 5, 10, 15, 25]]
     y_cov = [MAPPING[i]["cov"] for i in x]
     y_pass = [MAPPING[i]["pass"] for i in x]
