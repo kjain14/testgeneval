@@ -1,11 +1,1457 @@
 Instance ID: pydata__xarray-3905-16478
 
-Baseline 1:
+Baseline 1 (Pynguin):
 Predicted Test Suite: 
 Coverage: -1
 Mutation Score: -1
 
-Baseline 2:
+Baseline 2 (CodaMosa):
+Predicted Test Suite: import datetime as module_2
+import numpy as module_0
+import numpy as module_1
+import pytest
+import xarray.core.formatting as module_0
+import xarray.core.formatting as module_1
+
+def test_case_1():
+    try:
+        hashable_0 = None
+        int_0 = 3362
+        var_0 = module_0.summarize_variable(hashable_0, int_0, int_0)
+    except BaseException:
+        pass
+
+
+def test_case_2():
+    try:
+        hashable_0 = None
+        int_0 = -1243
+        str_0 = 'a7?{ljyfm$$r; /G$'
+        var_0 = module_0.summarize_variable(hashable_0, int_0, int_0, str_0)
+    except BaseException:
+        pass
+
+
+def test_case_3():
+    try:
+        float_0 = 217.4517
+        var_0 = module_0.wrap_indent(float_0)
+    except BaseException:
+        pass
+
+
+def test_case_4():
+    try:
+        int_0 = 500
+        list_0 = [int_0, int_0, int_0]
+        list_1 = [list_0]
+        list_2 = [list_1, list_1, int_0]
+        var_0 = module_0.last_item(list_2)
+    except BaseException:
+        pass
+
+
+def test_case_5():
+    try:
+        bool_0 = False
+        var_0 = module_0.format_timestamp(bool_0)
+    except BaseException:
+        pass
+
+
+def test_case_6():
+    try:
+        int_0 = 1011
+        var_0 = module_0.inline_dask_repr(int_0)
+    except BaseException:
+        pass
+
+
+def test_case_7():
+    try:
+        bytes_0 = b'r\xf5'
+        var_0 = module_0.inline_sparse_repr(bytes_0)
+    except BaseException:
+        pass
+
+
+def test_case_8():
+    try:
+        float_0 = 3945.527
+        var_0 = module_0.inline_variable_array_repr(float_0, float_0)
+    except BaseException:
+        pass
+
+
+def test_case_9():
+    try:
+        int_0 = 500
+        str_0 = 'S;TUs'
+        bool_0 = True
+        var_0 = module_0.summarize_datavar(int_0, str_0, bool_0)
+    except BaseException:
+        pass
+
+
+def test_case_10():
+    try:
+        str_0 = '%Znt'
+        dict_0 = {str_0: str_0, str_0: str_0, str_0: str_0}
+        set_0 = None
+        dict_1 = {str_0: dict_0, str_0: dict_0, set_0: dict_0, set_0: set_0}
+        var_0 = module_0.coords_repr(dict_0, dict_1)
+    except BaseException:
+        pass
+
+
+def test_case_11():
+    try:
+        str_0 = ']U"'
+        var_0 = module_0.coords_repr(str_0)
+    except BaseException:
+        pass
+
+
+def test_case_12():
+    try:
+        int_0 = -738
+        list_0 = [int_0]
+        bytes_0 = b'\x9c`@;\x040\xaa\xb1\xc0\xf8O\x8a/\xad\xc6\x86S\x82\xd8'
+        bytes_1 = b'\xb1\xe2\xf3\x03\x13EP*V_6\x11\xd0\x04'
+        tuple_0 = (list_0, list_0, bytes_0, bytes_1)
+        var_0 = module_0.indexes_repr(tuple_0)
+    except BaseException:
+        pass
+
+
+def test_case_13():
+    try:
+        int_0 = 2
+        str_0 = 'fJGMb:)x$K~uK|L'
+        list_0 = [str_0, str_0, str_0, str_0]
+        dict_0 = {int_0: str_0}
+        var_0 = module_0.indexes_repr(dict_0)
+        assert var_0 == "2: 'fJGMb:)x$K~uK|L'"
+        assert module_0.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+        assert module_0.dask_array_type == ()
+        assert module_0.sparse_array_type == ()
+        assert module_0.EMPTY_REPR == '    *empty*'
+        var_1 = module_0.format_timestamp(list_0)
+    except BaseException:
+        pass
+
+
+def test_case_14():
+    try:
+        float_0 = None
+        var_0 = module_0.array_repr(float_0)
+    except BaseException:
+        pass
+
+
+def test_case_15():
+    try:
+        timedelta64_0 = module_1.timedelta64()
+        list_0 = [timedelta64_0, timedelta64_0]
+        str_0 = '2/J'
+        int_0 = -2446
+        var_0 = module_0.pretty_print(str_0, int_0)
+        assert var_0 == '...'
+        assert module_1.newaxis is None
+        assert module_1.little_endian is True
+        assert module_1.Inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.infty == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.Infinity == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.CLIP == 0
+        assert module_1.RAISE == 2
+        assert module_1.WRAP == 1
+        assert module_1.MAXDIMS == 32
+        assert module_1.BUFSIZE == 8192
+        assert module_1.ALLOW_THREADS == 1
+        assert module_1.MAY_SHARE_BOUNDS == 0
+        assert module_1.MAY_SHARE_EXACT == -1
+        assert module_1.ERR_CALL == 3
+        assert module_1.ERR_DEFAULT == 521
+        assert module_1.ERR_IGNORE == 0
+        assert module_1.ERR_LOG == 5
+        assert module_1.ERR_PRINT == 4
+        assert module_1.ERR_RAISE == 2
+        assert module_1.ERR_WARN == 1
+        assert module_1.FLOATING_POINT_SUPPORT == 1
+        assert module_1.FPE_DIVIDEBYZERO == 1
+        assert module_1.FPE_INVALID == 8
+        assert module_1.FPE_OVERFLOW == 2
+        assert module_1.FPE_UNDERFLOW == 4
+        assert module_1.NINF == pytest.approx(-1e309, abs=0.01, rel=0.01)
+        assert module_1.NZERO == pytest.approx(-0.0, abs=0.01, rel=0.01)
+        assert module_1.PINF == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.PZERO == pytest.approx(0.0, abs=0.01, rel=0.01)
+        assert module_1.SHIFT_DIVIDEBYZERO == 0
+        assert module_1.SHIFT_INVALID == 9
+        assert module_1.SHIFT_OVERFLOW == 3
+        assert module_1.SHIFT_UNDERFLOW == 6
+        assert module_1.UFUNC_BUFSIZE_DEFAULT == 8192
+        assert module_1.UFUNC_PYVALS_NAME == 'UFUNC_PYVALS'
+        assert module_1.e == pytest.approx(2.718281828459045, abs=0.01, rel=0.01)
+        assert module_1.euler_gamma == pytest.approx(0.5772156649015329, abs=0.01, rel=0.01)
+        assert module_1.pi == pytest.approx(3.141592653589793, abs=0.01, rel=0.01)
+        assert len(module_1.sctypeDict) == 136
+        assert len(module_1.sctypes) == 5
+        assert len(module_1.ScalarType) == 31
+        assert len(module_1.cast) == 24
+        assert len(module_1.nbytes) == 24
+        assert module_1.typecodes == {'Character': 'c', 'Integer': 'bhilqp', 'UnsignedInteger': 'BHILQP', 'Float': 'efdg', 'Complex': 'FDG', 'AllInteger': 'bBhHiIlLqQpP', 'AllFloat': 'efdgFDG', 'Datetime': 'Mm', 'All': '?bhilqpBHILQPefdgFDGSUVOMm'}
+        assert module_1.tracemalloc_domain == 389047
+        assert module_1.mgrid.sparse is False
+        assert module_1.ogrid.sparse is True
+        assert len(module_1.r_) == 0
+        assert len(module_1.c_) == 0
+        assert module_1.s_.maketuple is False
+        assert module_1.index_exp.maketuple is True
+        assert module_1.oldnumeric == 'removed'
+        assert module_1.numarray == 'removed'
+        assert module_1.use_hugepage == 1
+        assert module_1.kernel_version == (6, 8)
+        assert module_0.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+        assert module_0.dask_array_type == ()
+        assert module_0.sparse_array_type == ()
+        assert module_0.EMPTY_REPR == '    *empty*'
+        str_1 = 'T6B<Y.F8O\x0cGUH+f\r'
+        dict_0 = {str_1: list_0}
+        var_1 = module_0.unindexed_dims_repr(list_0, dict_0)
+        assert var_1 == 'Dimensions without coordinates: 0 generic time units, 0 generic time units'
+        str_2 = 'OkM'
+        dict_1 = {str_1: list_0, str_2: dict_0, str_1: var_1}
+        str_3 = '00:00:00.000000715'
+        dict_2 = {}
+        list_1 = [dict_1, str_1, dict_2, dict_2]
+        var_2 = module_0.format_item(str_3, list_1, list_1)
+        assert var_2 == "'00:00:00.000000715'"
+        var_3 = module_0.inline_sparse_repr(dict_1)
+    except BaseException:
+        pass
+
+
+def test_case_16():
+    try:
+        datetime64_0 = module_1.datetime64()
+        int_0 = -312
+        var_0 = module_0.format_array_flat(datetime64_0, int_0)
+        assert var_0 == '...'
+        assert module_1.newaxis is None
+        assert module_1.little_endian is True
+        assert module_1.Inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.infty == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.Infinity == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.CLIP == 0
+        assert module_1.RAISE == 2
+        assert module_1.WRAP == 1
+        assert module_1.MAXDIMS == 32
+        assert module_1.BUFSIZE == 8192
+        assert module_1.ALLOW_THREADS == 1
+        assert module_1.MAY_SHARE_BOUNDS == 0
+        assert module_1.MAY_SHARE_EXACT == -1
+        assert module_1.ERR_CALL == 3
+        assert module_1.ERR_DEFAULT == 521
+        assert module_1.ERR_IGNORE == 0
+        assert module_1.ERR_LOG == 5
+        assert module_1.ERR_PRINT == 4
+        assert module_1.ERR_RAISE == 2
+        assert module_1.ERR_WARN == 1
+        assert module_1.FLOATING_POINT_SUPPORT == 1
+        assert module_1.FPE_DIVIDEBYZERO == 1
+        assert module_1.FPE_INVALID == 8
+        assert module_1.FPE_OVERFLOW == 2
+        assert module_1.FPE_UNDERFLOW == 4
+        assert module_1.NINF == pytest.approx(-1e309, abs=0.01, rel=0.01)
+        assert module_1.NZERO == pytest.approx(-0.0, abs=0.01, rel=0.01)
+        assert module_1.PINF == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.PZERO == pytest.approx(0.0, abs=0.01, rel=0.01)
+        assert module_1.SHIFT_DIVIDEBYZERO == 0
+        assert module_1.SHIFT_INVALID == 9
+        assert module_1.SHIFT_OVERFLOW == 3
+        assert module_1.SHIFT_UNDERFLOW == 6
+        assert module_1.UFUNC_BUFSIZE_DEFAULT == 8192
+        assert module_1.UFUNC_PYVALS_NAME == 'UFUNC_PYVALS'
+        assert module_1.e == pytest.approx(2.718281828459045, abs=0.01, rel=0.01)
+        assert module_1.euler_gamma == pytest.approx(0.5772156649015329, abs=0.01, rel=0.01)
+        assert module_1.pi == pytest.approx(3.141592653589793, abs=0.01, rel=0.01)
+        assert len(module_1.sctypeDict) == 136
+        assert len(module_1.sctypes) == 5
+        assert len(module_1.ScalarType) == 31
+        assert len(module_1.cast) == 24
+        assert len(module_1.nbytes) == 24
+        assert module_1.typecodes == {'Character': 'c', 'Integer': 'bhilqp', 'UnsignedInteger': 'BHILQP', 'Float': 'efdg', 'Complex': 'FDG', 'AllInteger': 'bBhHiIlLqQpP', 'AllFloat': 'efdgFDG', 'Datetime': 'Mm', 'All': '?bhilqpBHILQPefdgFDGSUVOMm'}
+        assert module_1.tracemalloc_domain == 389047
+        assert module_1.mgrid.sparse is False
+        assert module_1.ogrid.sparse is True
+        assert len(module_1.r_) == 0
+        assert len(module_1.c_) == 0
+        assert module_1.s_.maketuple is False
+        assert module_1.index_exp.maketuple is True
+        assert module_1.oldnumeric == 'removed'
+        assert module_1.numarray == 'removed'
+        assert module_1.use_hugepage == 1
+        assert module_1.kernel_version == (6, 8)
+        assert module_0.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+        assert module_0.dask_array_type == ()
+        assert module_0.sparse_array_type == ()
+        assert module_0.EMPTY_REPR == '    *empty*'
+        list_0 = []
+        var_1 = module_0.format_items(list_0)
+        assert var_1 == []
+        timedelta64_0 = module_1.timedelta64()
+        var_2 = module_0.unindexed_dims_repr(timedelta64_0, datetime64_0)
+    except BaseException:
+        pass
+
+
+def test_case_17():
+    try:
+        int_0 = 733
+        str_0 = 'k\x0bf~>_<CQ>?Q7'
+        var_0 = module_0.limit_lines(str_0, limit=int_0)
+        assert var_0 == 'k\x0bf~>_<CQ>?Q7'
+        assert module_0.EMPTY_REPR == '    *empty*'
+        dict_0 = {int_0: int_0, int_0: int_0, int_0: int_0}
+        var_1 = module_0.coords_repr(dict_0)
+    except BaseException:
+        pass
+
+
+def test_case_18():
+    try:
+        str_0 = None
+        int_0 = -322
+        var_0 = module_0.limit_lines(str_0, limit=int_0)
+    except BaseException:
+        pass
+
+
+def test_case_19():
+    try:
+        int_0 = 251
+        var_0 = module_0.short_data_repr(int_0)
+    except BaseException:
+        pass
+
+
+def test_case_20():
+    try:
+        int_0 = 2670
+        timedelta64_0 = module_1.timedelta64()
+        str_0 = 'N>I"=2v{Hc5pNV2LCk/v'
+        set_0 = None
+        var_0 = module_0.coords_repr(set_0, str_0)
+        assert var_0 == 'Coordinates:\n    *empty*'
+        assert module_1.newaxis is None
+        assert module_1.little_endian is True
+        assert module_1.Inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.infty == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.Infinity == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.CLIP == 0
+        assert module_1.RAISE == 2
+        assert module_1.WRAP == 1
+        assert module_1.MAXDIMS == 32
+        assert module_1.BUFSIZE == 8192
+        assert module_1.ALLOW_THREADS == 1
+        assert module_1.MAY_SHARE_BOUNDS == 0
+        assert module_1.MAY_SHARE_EXACT == -1
+        assert module_1.ERR_CALL == 3
+        assert module_1.ERR_DEFAULT == 521
+        assert module_1.ERR_IGNORE == 0
+        assert module_1.ERR_LOG == 5
+        assert module_1.ERR_PRINT == 4
+        assert module_1.ERR_RAISE == 2
+        assert module_1.ERR_WARN == 1
+        assert module_1.FLOATING_POINT_SUPPORT == 1
+        assert module_1.FPE_DIVIDEBYZERO == 1
+        assert module_1.FPE_INVALID == 8
+        assert module_1.FPE_OVERFLOW == 2
+        assert module_1.FPE_UNDERFLOW == 4
+        assert module_1.NINF == pytest.approx(-1e309, abs=0.01, rel=0.01)
+        assert module_1.NZERO == pytest.approx(-0.0, abs=0.01, rel=0.01)
+        assert module_1.PINF == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.PZERO == pytest.approx(0.0, abs=0.01, rel=0.01)
+        assert module_1.SHIFT_DIVIDEBYZERO == 0
+        assert module_1.SHIFT_INVALID == 9
+        assert module_1.SHIFT_OVERFLOW == 3
+        assert module_1.SHIFT_UNDERFLOW == 6
+        assert module_1.UFUNC_BUFSIZE_DEFAULT == 8192
+        assert module_1.UFUNC_PYVALS_NAME == 'UFUNC_PYVALS'
+        assert module_1.e == pytest.approx(2.718281828459045, abs=0.01, rel=0.01)
+        assert module_1.euler_gamma == pytest.approx(0.5772156649015329, abs=0.01, rel=0.01)
+        assert module_1.pi == pytest.approx(3.141592653589793, abs=0.01, rel=0.01)
+        assert len(module_1.sctypeDict) == 136
+        assert len(module_1.sctypes) == 5
+        assert len(module_1.ScalarType) == 31
+        assert len(module_1.cast) == 24
+        assert len(module_1.nbytes) == 24
+        assert module_1.typecodes == {'Character': 'c', 'Integer': 'bhilqp', 'UnsignedInteger': 'BHILQP', 'Float': 'efdg', 'Complex': 'FDG', 'AllInteger': 'bBhHiIlLqQpP', 'AllFloat': 'efdgFDG', 'Datetime': 'Mm', 'All': '?bhilqpBHILQPefdgFDGSUVOMm'}
+        assert module_1.tracemalloc_domain == 389047
+        assert module_1.mgrid.sparse is False
+        assert module_1.ogrid.sparse is True
+        assert len(module_1.r_) == 0
+        assert len(module_1.c_) == 0
+        assert module_1.s_.maketuple is False
+        assert module_1.index_exp.maketuple is True
+        assert module_1.oldnumeric == 'removed'
+        assert module_1.numarray == 'removed'
+        assert module_1.use_hugepage == 1
+        assert module_1.kernel_version == (6, 8)
+        assert module_0.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+        assert module_0.dask_array_type == ()
+        assert module_0.sparse_array_type == ()
+        assert module_0.EMPTY_REPR == '    *empty*'
+        var_1 = module_0.limit_lines(str_0, limit=int_0)
+        assert var_1 == 'N>I"=2v{Hc5pNV2LCk/v'
+        int_1 = 2304
+        tuple_0 = (int_1, timedelta64_0)
+        var_2 = module_0.short_numpy_repr(tuple_0)
+        assert var_2 == 'array([2304,    0], dtype=timedelta64)'
+        str_1 = 'h02%{q\na=+U\\j]'
+        str_2 = ''
+        str_3 = '`K'
+        dict_0 = {str_1: str_2, str_3: var_2, str_2: var_1, str_1: str_1}
+        var_3 = module_0.dataset_repr(dict_0)
+    except BaseException:
+        pass
+
+
+def test_case_21():
+    try:
+        int_0 = None
+        bool_0 = True
+        list_0 = [int_0, bool_0, int_0, int_0]
+        var_0 = module_0.diff_array_repr(int_0, bool_0, list_0)
+    except BaseException:
+        pass
+
+
+def test_case_22():
+    try:
+        dict_0 = None
+        str_0 = '*QEl'
+        var_0 = module_0.diff_dataset_repr(dict_0, str_0, dict_0)
+    except BaseException:
+        pass
+
+
+def test_case_23():
+    try:
+        int_0 = 676
+        str_0 = None
+        dict_0 = {str_0: int_0}
+        var_0 = module_0.format_item(dict_0)
+        assert var_0 == '{None: 676}'
+        assert module_0.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+        assert module_0.dask_array_type == ()
+        assert module_0.sparse_array_type == ()
+        assert module_0.EMPTY_REPR == '    *empty*'
+        list_0 = []
+        bool_0 = True
+        var_1 = module_0.wrap_indent(int_0, list_0, bool_0)
+    except BaseException:
+        pass
+
+
+def test_case_24():
+    try:
+        bytes_0 = b'\x0c"\xf6\x1f\t\x9b\x9e\x17\xfa\xbc\xac\xc8>\xaeL\xc1j\xdf'
+        float_0 = -1801.034
+        var_0 = module_0.last_n_items(bytes_0, float_0)
+    except BaseException:
+        pass
+
+
+def test_case_25():
+    try:
+        hashable_0 = None
+        int_0 = 2
+        str_0 = 'fJGMb:)x$K~uK|L'
+        var_0 = module_0.summarize_variable(hashable_0, int_0, int_0, str_0, int_0)
+    except BaseException:
+        pass
+
+
+def test_case_26():
+    try:
+        timedelta64_0 = module_1.timedelta64()
+        var_0 = module_0.format_items(timedelta64_0)
+    except BaseException:
+        pass
+
+
+def test_case_27():
+    try:
+        int_0 = None
+        str_0 = 'Resampling only supported along single dimensions.'
+        str_1 = "]^#|';"
+        str_2 = 'Pmf^9Q4u//~aAsZ>3\x0b'
+        dict_0 = {str_0: str_0, str_1: str_2}
+        list_0 = None
+        list_1 = [dict_0, list_0, int_0]
+        var_0 = module_0.summarize_attr(int_0, dict_0, list_1)
+    except BaseException:
+        pass
+
+
+def test_case_28():
+    try:
+        int_0 = -1274
+        var_0 = module_0.short_numpy_repr(int_0)
+        assert var_0 == 'array(-1274)'
+        assert module_0.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+        assert module_0.dask_array_type == ()
+        assert module_0.sparse_array_type == ()
+        assert module_0.EMPTY_REPR == '    *empty*'
+        str_0 = ';?|GBMC]HVL'
+        list_0 = []
+        var_1 = module_0.summarize_attr(str_0, list_0)
+        assert var_1 == '    ;?|GBMC]HVL: []'
+        timedelta64_0 = module_1.timedelta64()
+        assert module_1.newaxis is None
+        assert module_1.little_endian is True
+        assert module_1.Inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.infty == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.Infinity == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.CLIP == 0
+        assert module_1.RAISE == 2
+        assert module_1.WRAP == 1
+        assert module_1.MAXDIMS == 32
+        assert module_1.BUFSIZE == 8192
+        assert module_1.ALLOW_THREADS == 1
+        assert module_1.MAY_SHARE_BOUNDS == 0
+        assert module_1.MAY_SHARE_EXACT == -1
+        assert module_1.ERR_CALL == 3
+        assert module_1.ERR_DEFAULT == 521
+        assert module_1.ERR_IGNORE == 0
+        assert module_1.ERR_LOG == 5
+        assert module_1.ERR_PRINT == 4
+        assert module_1.ERR_RAISE == 2
+        assert module_1.ERR_WARN == 1
+        assert module_1.FLOATING_POINT_SUPPORT == 1
+        assert module_1.FPE_DIVIDEBYZERO == 1
+        assert module_1.FPE_INVALID == 8
+        assert module_1.FPE_OVERFLOW == 2
+        assert module_1.FPE_UNDERFLOW == 4
+        assert module_1.NINF == pytest.approx(-1e309, abs=0.01, rel=0.01)
+        assert module_1.NZERO == pytest.approx(-0.0, abs=0.01, rel=0.01)
+        assert module_1.PINF == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.PZERO == pytest.approx(0.0, abs=0.01, rel=0.01)
+        assert module_1.SHIFT_DIVIDEBYZERO == 0
+        assert module_1.SHIFT_INVALID == 9
+        assert module_1.SHIFT_OVERFLOW == 3
+        assert module_1.SHIFT_UNDERFLOW == 6
+        assert module_1.UFUNC_BUFSIZE_DEFAULT == 8192
+        assert module_1.UFUNC_PYVALS_NAME == 'UFUNC_PYVALS'
+        assert module_1.e == pytest.approx(2.718281828459045, abs=0.01, rel=0.01)
+        assert module_1.euler_gamma == pytest.approx(0.5772156649015329, abs=0.01, rel=0.01)
+        assert module_1.pi == pytest.approx(3.141592653589793, abs=0.01, rel=0.01)
+        assert len(module_1.sctypeDict) == 136
+        assert len(module_1.sctypes) == 5
+        assert len(module_1.ScalarType) == 31
+        assert len(module_1.cast) == 24
+        assert len(module_1.nbytes) == 24
+        assert module_1.typecodes == {'Character': 'c', 'Integer': 'bhilqp', 'UnsignedInteger': 'BHILQP', 'Float': 'efdg', 'Complex': 'FDG', 'AllInteger': 'bBhHiIlLqQpP', 'AllFloat': 'efdgFDG', 'Datetime': 'Mm', 'All': '?bhilqpBHILQPefdgFDGSUVOMm'}
+        assert module_1.tracemalloc_domain == 389047
+        assert module_1.mgrid.sparse is False
+        assert module_1.ogrid.sparse is True
+        assert len(module_1.r_) == 0
+        assert len(module_1.c_) == 0
+        assert module_1.s_.maketuple is False
+        assert module_1.index_exp.maketuple is True
+        assert module_1.oldnumeric == 'removed'
+        assert module_1.numarray == 'removed'
+        assert module_1.use_hugepage == 1
+        assert module_1.kernel_version == (6, 8)
+        var_2 = module_0.format_items(timedelta64_0)
+    except BaseException:
+        pass
+
+
+def test_case_29():
+    try:
+        list_0 = []
+        str_0 = 'Creating a MultiIndex from a product without refactorizing levels.\n\n    Keeping levels the same gives back the original labels when we unstack.\n\n    Parameters\n    ----------\n    levels : sequence of pd.Index\n        Values for each MultiIndex level.\n    names : optional sequence of objects\n        Names for each level.\n\n    Returns\n    -------\n    pandas.MultiIndex\n    '
+        var_0 = module_0.wrap_indent(str_0)
+        assert var_0 == 'Creating a MultiIndex from a product without refactorizing levels.\n\n    Keeping levels the same gives back the original labels when we unstack.\n\n    Parameters\n    ----------\n    levels : sequence of pd.Index\n        Values for each MultiIndex level.\n    names : optional sequence of objects\n        Names for each level.\n\n    Returns\n    -------\n    pandas.MultiIndex\n    '
+        assert module_0.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+        assert module_0.dask_array_type == ()
+        assert module_0.sparse_array_type == ()
+        assert module_0.EMPTY_REPR == '    *empty*'
+        int_0 = 743
+        var_1 = module_0.format_timestamp(int_0)
+        assert var_1 == '1970-01-01T00:00:00.000000743'
+        var_2 = module_0.short_numpy_repr(list_0)
+        assert var_2 == 'array([], dtype=float64)'
+        timedelta64_0 = module_1.timedelta64(*list_0)
+        assert module_1.newaxis is None
+        assert module_1.little_endian is True
+        assert module_1.Inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.infty == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.Infinity == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.CLIP == 0
+        assert module_1.RAISE == 2
+        assert module_1.WRAP == 1
+        assert module_1.MAXDIMS == 32
+        assert module_1.BUFSIZE == 8192
+        assert module_1.ALLOW_THREADS == 1
+        assert module_1.MAY_SHARE_BOUNDS == 0
+        assert module_1.MAY_SHARE_EXACT == -1
+        assert module_1.ERR_CALL == 3
+        assert module_1.ERR_DEFAULT == 521
+        assert module_1.ERR_IGNORE == 0
+        assert module_1.ERR_LOG == 5
+        assert module_1.ERR_PRINT == 4
+        assert module_1.ERR_RAISE == 2
+        assert module_1.ERR_WARN == 1
+        assert module_1.FLOATING_POINT_SUPPORT == 1
+        assert module_1.FPE_DIVIDEBYZERO == 1
+        assert module_1.FPE_INVALID == 8
+        assert module_1.FPE_OVERFLOW == 2
+        assert module_1.FPE_UNDERFLOW == 4
+        assert module_1.NINF == pytest.approx(-1e309, abs=0.01, rel=0.01)
+        assert module_1.NZERO == pytest.approx(-0.0, abs=0.01, rel=0.01)
+        assert module_1.PINF == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.PZERO == pytest.approx(0.0, abs=0.01, rel=0.01)
+        assert module_1.SHIFT_DIVIDEBYZERO == 0
+        assert module_1.SHIFT_INVALID == 9
+        assert module_1.SHIFT_OVERFLOW == 3
+        assert module_1.SHIFT_UNDERFLOW == 6
+        assert module_1.UFUNC_BUFSIZE_DEFAULT == 8192
+        assert module_1.UFUNC_PYVALS_NAME == 'UFUNC_PYVALS'
+        assert module_1.e == pytest.approx(2.718281828459045, abs=0.01, rel=0.01)
+        assert module_1.euler_gamma == pytest.approx(0.5772156649015329, abs=0.01, rel=0.01)
+        assert module_1.pi == pytest.approx(3.141592653589793, abs=0.01, rel=0.01)
+        assert len(module_1.sctypeDict) == 136
+        assert len(module_1.sctypes) == 5
+        assert len(module_1.ScalarType) == 31
+        assert len(module_1.cast) == 24
+        assert len(module_1.nbytes) == 24
+        assert module_1.typecodes == {'Character': 'c', 'Integer': 'bhilqp', 'UnsignedInteger': 'BHILQP', 'Float': 'efdg', 'Complex': 'FDG', 'AllInteger': 'bBhHiIlLqQpP', 'AllFloat': 'efdgFDG', 'Datetime': 'Mm', 'All': '?bhilqpBHILQPefdgFDGSUVOMm'}
+        assert module_1.tracemalloc_domain == 389047
+        assert module_1.mgrid.sparse is False
+        assert module_1.ogrid.sparse is True
+        assert len(module_1.r_) == 0
+        assert len(module_1.c_) == 0
+        assert module_1.s_.maketuple is False
+        assert module_1.index_exp.maketuple is True
+        assert module_1.oldnumeric == 'removed'
+        assert module_1.numarray == 'removed'
+        assert module_1.use_hugepage == 1
+        assert module_1.kernel_version == (6, 8)
+        var_3 = module_0.format_items(timedelta64_0)
+    except BaseException:
+        pass
+
+
+def test_case_30():
+    try:
+        str_0 = '.>x'
+        str_1 = None
+        dict_0 = {str_0: str_1, str_0: str_1}
+        set_0 = {str_0, str_1}
+        var_0 = module_0.unindexed_dims_repr(dict_0, set_0)
+        assert var_0 is None
+        assert module_0.EMPTY_REPR == '    *empty*'
+        int_0 = 480
+        dict_1 = None
+        float_0 = -2359.0377
+        var_1 = module_0.diff_array_repr(int_0, dict_1, float_0)
+    except BaseException:
+        pass
+
+
+def test_case_31():
+    try:
+        str_0 = '>pK#g\\%xXQ5>$F'
+        dict_0 = {}
+        float_0 = None
+        var_0 = module_0.format_timestamp(float_0)
+        assert var_0 == 'NaT'
+        assert module_0.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+        assert module_0.dask_array_type == ()
+        assert module_0.sparse_array_type == ()
+        assert module_0.EMPTY_REPR == '    *empty*'
+        int_0 = -1241
+        var_1 = module_0.set_numpy_options()
+        assert var_1.args == ()
+        assert var_1.kwds == {}
+        var_2 = module_0.limit_lines(str_0, limit=int_0)
+        assert var_2 == '...'
+        var_3 = module_0.format_items(dict_0)
+    except BaseException:
+        pass
+
+
+def test_case_32():
+    try:
+        int_0 = 717
+        var_0 = module_0.maybe_truncate(int_0)
+        assert var_0 == '717'
+        assert module_0.EMPTY_REPR == '    *empty*'
+        float_0 = None
+        bytes_0 = None
+        str_0 = 'allclose'
+        var_1 = module_0.diff_array_repr(bytes_0, float_0, str_0)
+    except BaseException:
+        pass
+
+
+def test_case_33():
+    try:
+        float_0 = None
+        list_0 = []
+        list_1 = [list_0, list_0, float_0]
+        float_1 = -1801.034
+        var_0 = module_0.first_n_items(list_1, float_1)
+    except BaseException:
+        pass
+
+
+def test_case_34():
+    try:
+        int_0 = 733
+        dict_0 = {int_0: int_0, int_0: int_0, int_0: int_0}
+        var_0 = module_0.coords_repr(dict_0)
+    except BaseException:
+        pass
+
+
+def test_case_35():
+    try:
+        timedelta64_0 = module_1.timedelta64()
+        var_0 = module_0.last_item(timedelta64_0)
+        assert var_0 == [0]
+        assert module_1.newaxis is None
+        assert module_1.little_endian is True
+        assert module_1.Inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.infty == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.Infinity == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.CLIP == 0
+        assert module_1.RAISE == 2
+        assert module_1.WRAP == 1
+        assert module_1.MAXDIMS == 32
+        assert module_1.BUFSIZE == 8192
+        assert module_1.ALLOW_THREADS == 1
+        assert module_1.MAY_SHARE_BOUNDS == 0
+        assert module_1.MAY_SHARE_EXACT == -1
+        assert module_1.ERR_CALL == 3
+        assert module_1.ERR_DEFAULT == 521
+        assert module_1.ERR_IGNORE == 0
+        assert module_1.ERR_LOG == 5
+        assert module_1.ERR_PRINT == 4
+        assert module_1.ERR_RAISE == 2
+        assert module_1.ERR_WARN == 1
+        assert module_1.FLOATING_POINT_SUPPORT == 1
+        assert module_1.FPE_DIVIDEBYZERO == 1
+        assert module_1.FPE_INVALID == 8
+        assert module_1.FPE_OVERFLOW == 2
+        assert module_1.FPE_UNDERFLOW == 4
+        assert module_1.NINF == pytest.approx(-1e309, abs=0.01, rel=0.01)
+        assert module_1.NZERO == pytest.approx(-0.0, abs=0.01, rel=0.01)
+        assert module_1.PINF == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.PZERO == pytest.approx(0.0, abs=0.01, rel=0.01)
+        assert module_1.SHIFT_DIVIDEBYZERO == 0
+        assert module_1.SHIFT_INVALID == 9
+        assert module_1.SHIFT_OVERFLOW == 3
+        assert module_1.SHIFT_UNDERFLOW == 6
+        assert module_1.UFUNC_BUFSIZE_DEFAULT == 8192
+        assert module_1.UFUNC_PYVALS_NAME == 'UFUNC_PYVALS'
+        assert module_1.e == pytest.approx(2.718281828459045, abs=0.01, rel=0.01)
+        assert module_1.euler_gamma == pytest.approx(0.5772156649015329, abs=0.01, rel=0.01)
+        assert module_1.pi == pytest.approx(3.141592653589793, abs=0.01, rel=0.01)
+        assert len(module_1.sctypeDict) == 136
+        assert len(module_1.sctypes) == 5
+        assert len(module_1.ScalarType) == 31
+        assert len(module_1.cast) == 24
+        assert len(module_1.nbytes) == 24
+        assert module_1.typecodes == {'Character': 'c', 'Integer': 'bhilqp', 'UnsignedInteger': 'BHILQP', 'Float': 'efdg', 'Complex': 'FDG', 'AllInteger': 'bBhHiIlLqQpP', 'AllFloat': 'efdgFDG', 'Datetime': 'Mm', 'All': '?bhilqpBHILQPefdgFDGSUVOMm'}
+        assert module_1.tracemalloc_domain == 389047
+        assert module_1.mgrid.sparse is False
+        assert module_1.ogrid.sparse is True
+        assert len(module_1.r_) == 0
+        assert len(module_1.c_) == 0
+        assert module_1.s_.maketuple is False
+        assert module_1.index_exp.maketuple is True
+        assert module_1.oldnumeric == 'removed'
+        assert module_1.numarray == 'removed'
+        assert module_1.use_hugepage == 1
+        assert module_1.kernel_version == (6, 8)
+        assert module_0.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+        assert module_0.dask_array_type == ()
+        assert module_0.sparse_array_type == ()
+        assert module_0.EMPTY_REPR == '    *empty*'
+        var_1 = module_0.set_numpy_options()
+        assert var_1.args == ()
+        assert var_1.kwds == {}
+        str_0 = 'E!6#i;x\x0c%B4\x0bE]\t'
+        var_2 = module_0.last_n_items(timedelta64_0, str_0)
+    except BaseException:
+        pass
+
+
+def test_case_36():
+    try:
+        int_0 = 743
+        var_0 = module_0.format_timestamp(int_0)
+        assert var_0 == '1970-01-01T00:00:00.000000743'
+        assert module_0.EMPTY_REPR == '    *empty*'
+        str_0 = '5WG^2?Gjv\x0c_Si]|>-3'
+        tuple_0 = ()
+        str_1 = "D'};`cc[Xj$9@=AC\t"
+        var_1 = module_0.coords_repr(tuple_0, tuple_0)
+        assert var_1 == 'Coordinates:\n    *empty*'
+        assert module_0.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+        assert module_0.dask_array_type == ()
+        assert module_0.sparse_array_type == ()
+        var_2 = module_0.format_item(str_1, str_0, tuple_0)
+        assert var_2 == "D'};`cc[Xj$9@=AC\t"
+        str_2 = 'JGdut!Bw%jQM\x0ci"-'
+        str_3 = ',\x0bGn'
+        dict_0 = {str_2: var_2, str_2: tuple_0, str_3: var_0}
+        var_3 = module_0.format_timestamp(dict_0)
+    except BaseException:
+        pass
+
+
+def test_case_37():
+    try:
+        timedelta64_0 = module_1.timedelta64()
+        bytes_0 = b'\x8fv\xec\x90J\x03\xa7\x0b]\x8c=\xb2\xbdC--\x05\xe7\xb7'
+        datetime64_0 = module_1.datetime64()
+        bool_0 = True
+        var_0 = module_0.last_n_items(datetime64_0, bool_0)
+        assert len(var_0) == 1
+        assert module_1.newaxis is None
+        assert module_1.little_endian is True
+        assert module_1.Inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.infty == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.Infinity == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.CLIP == 0
+        assert module_1.RAISE == 2
+        assert module_1.WRAP == 1
+        assert module_1.MAXDIMS == 32
+        assert module_1.BUFSIZE == 8192
+        assert module_1.ALLOW_THREADS == 1
+        assert module_1.MAY_SHARE_BOUNDS == 0
+        assert module_1.MAY_SHARE_EXACT == -1
+        assert module_1.ERR_CALL == 3
+        assert module_1.ERR_DEFAULT == 521
+        assert module_1.ERR_IGNORE == 0
+        assert module_1.ERR_LOG == 5
+        assert module_1.ERR_PRINT == 4
+        assert module_1.ERR_RAISE == 2
+        assert module_1.ERR_WARN == 1
+        assert module_1.FLOATING_POINT_SUPPORT == 1
+        assert module_1.FPE_DIVIDEBYZERO == 1
+        assert module_1.FPE_INVALID == 8
+        assert module_1.FPE_OVERFLOW == 2
+        assert module_1.FPE_UNDERFLOW == 4
+        assert module_1.NINF == pytest.approx(-1e309, abs=0.01, rel=0.01)
+        assert module_1.NZERO == pytest.approx(-0.0, abs=0.01, rel=0.01)
+        assert module_1.PINF == pytest.approx(1e309, abs=0.01, rel=0.01)
+        assert module_1.PZERO == pytest.approx(0.0, abs=0.01, rel=0.01)
+        assert module_1.SHIFT_DIVIDEBYZERO == 0
+        assert module_1.SHIFT_INVALID == 9
+        assert module_1.SHIFT_OVERFLOW == 3
+        assert module_1.SHIFT_UNDERFLOW == 6
+        assert module_1.UFUNC_BUFSIZE_DEFAULT == 8192
+        assert module_1.UFUNC_PYVALS_NAME == 'UFUNC_PYVALS'
+        assert module_1.e == pytest.approx(2.718281828459045, abs=0.01, rel=0.01)
+        assert module_1.euler_gamma == pytest.approx(0.5772156649015329, abs=0.01, rel=0.01)
+        assert module_1.pi == pytest.approx(3.141592653589793, abs=0.01, rel=0.01)
+        assert len(module_1.sctypeDict) == 136
+        assert len(module_1.sctypes) == 5
+        assert len(module_1.ScalarType) == 31
+        assert len(module_1.cast) == 24
+        assert len(module_1.nbytes) == 24
+        assert module_1.typecodes == {'Character': 'c', 'Integer': 'bhilqp', 'UnsignedInteger': 'BHILQP', 'Float': 'efdg', 'Complex': 'FDG', 'AllInteger': 'bBhHiIlLqQpP', 'AllFloat': 'efdgFDG', 'Datetime': 'Mm', 'All': '?bhilqpBHILQPefdgFDGSUVOMm'}
+        assert module_1.tracemalloc_domain == 389047
+        assert module_1.mgrid.sparse is False
+        assert module_1.ogrid.sparse is True
+        assert len(module_1.r_) == 0
+        assert len(module_1.c_) == 0
+        assert module_1.s_.maketuple is False
+        assert module_1.index_exp.maketuple is True
+        assert module_1.oldnumeric == 'removed'
+        assert module_1.numarray == 'removed'
+        assert module_1.use_hugepage == 1
+        assert module_1.kernel_version == (6, 8)
+        assert module_0.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+        assert module_0.dask_array_type == ()
+        assert module_0.sparse_array_type == ()
+        assert module_0.EMPTY_REPR == '    *empty*'
+        dict_0 = {bytes_0: bytes_0}
+        hashable_0 = None
+        int_0 = True
+        var_1 = module_0.set_numpy_options()
+        assert var_1.args == ()
+        assert var_1.kwds == {}
+        var_2 = module_0.summarize_variable(hashable_0, dict_0, int_0)
+    except BaseException:
+        pass# Automatically generated by Pynguin.
+
+
+def test_case_38():
+    pass
+
+
+def test_case_39():
+    int_0 = 2636
+    timedelta64_0 = module_0.timedelta64()
+    var_0 = module_1.format_array_flat(timedelta64_0, int_0)
+    assert var_0 == '00:00:00'
+    assert module_0.newaxis is None
+    assert module_0.little_endian is True
+    assert module_0.Inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.infty == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.Infinity == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.CLIP == 0
+    assert module_0.RAISE == 2
+    assert module_0.WRAP == 1
+    assert module_0.MAXDIMS == 32
+    assert module_0.BUFSIZE == 8192
+    assert module_0.ALLOW_THREADS == 1
+    assert module_0.MAY_SHARE_BOUNDS == 0
+    assert module_0.MAY_SHARE_EXACT == -1
+    assert module_0.ERR_CALL == 3
+    assert module_0.ERR_DEFAULT == 521
+    assert module_0.ERR_IGNORE == 0
+    assert module_0.ERR_LOG == 5
+    assert module_0.ERR_PRINT == 4
+    assert module_0.ERR_RAISE == 2
+    assert module_0.ERR_WARN == 1
+    assert module_0.FLOATING_POINT_SUPPORT == 1
+    assert module_0.FPE_DIVIDEBYZERO == 1
+    assert module_0.FPE_INVALID == 8
+    assert module_0.FPE_OVERFLOW == 2
+    assert module_0.FPE_UNDERFLOW == 4
+    assert module_0.NINF == pytest.approx(-1e309, abs=0.01, rel=0.01)
+    assert module_0.NZERO == pytest.approx(-0.0, abs=0.01, rel=0.01)
+    assert module_0.PINF == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.PZERO == pytest.approx(0.0, abs=0.01, rel=0.01)
+    assert module_0.SHIFT_DIVIDEBYZERO == 0
+    assert module_0.SHIFT_INVALID == 9
+    assert module_0.SHIFT_OVERFLOW == 3
+    assert module_0.SHIFT_UNDERFLOW == 6
+    assert module_0.UFUNC_BUFSIZE_DEFAULT == 8192
+    assert module_0.UFUNC_PYVALS_NAME == 'UFUNC_PYVALS'
+    assert module_0.e == pytest.approx(2.718281828459045, abs=0.01, rel=0.01)
+    assert module_0.euler_gamma == pytest.approx(0.5772156649015329, abs=0.01, rel=0.01)
+    assert module_0.pi == pytest.approx(3.141592653589793, abs=0.01, rel=0.01)
+    assert len(module_0.sctypeDict) == 136
+    assert len(module_0.sctypes) == 5
+    assert len(module_0.ScalarType) == 31
+    assert len(module_0.cast) == 24
+    assert len(module_0.nbytes) == 24
+    assert module_0.typecodes == {'Character': 'c', 'Integer': 'bhilqp', 'UnsignedInteger': 'BHILQP', 'Float': 'efdg', 'Complex': 'FDG', 'AllInteger': 'bBhHiIlLqQpP', 'AllFloat': 'efdgFDG', 'Datetime': 'Mm', 'All': '?bhilqpBHILQPefdgFDGSUVOMm'}
+    assert module_0.tracemalloc_domain == 389047
+    assert module_0.mgrid.sparse is False
+    assert module_0.ogrid.sparse is True
+    assert len(module_0.r_) == 0
+    assert len(module_0.c_) == 0
+    assert module_0.s_.maketuple is False
+    assert module_0.index_exp.maketuple is True
+    assert module_0.oldnumeric == 'removed'
+    assert module_0.numarray == 'removed'
+    assert module_0.use_hugepage == 1
+    assert module_0.kernel_version == (6, 8)
+    assert module_1.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+    assert module_1.dask_array_type == ()
+    assert module_1.sparse_array_type == ()
+    assert module_1.EMPTY_REPR == '    *empty*'
+
+
+def test_case_40():
+    timedelta64_0 = module_0.timedelta64()
+    var_0 = module_1.format_item(timedelta64_0)
+    assert var_0 == '0 days 00:00:00'
+    assert module_0.newaxis is None
+    assert module_0.little_endian is True
+    assert module_0.Inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.infty == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.Infinity == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.CLIP == 0
+    assert module_0.RAISE == 2
+    assert module_0.WRAP == 1
+    assert module_0.MAXDIMS == 32
+    assert module_0.BUFSIZE == 8192
+    assert module_0.ALLOW_THREADS == 1
+    assert module_0.MAY_SHARE_BOUNDS == 0
+    assert module_0.MAY_SHARE_EXACT == -1
+    assert module_0.ERR_CALL == 3
+    assert module_0.ERR_DEFAULT == 521
+    assert module_0.ERR_IGNORE == 0
+    assert module_0.ERR_LOG == 5
+    assert module_0.ERR_PRINT == 4
+    assert module_0.ERR_RAISE == 2
+    assert module_0.ERR_WARN == 1
+    assert module_0.FLOATING_POINT_SUPPORT == 1
+    assert module_0.FPE_DIVIDEBYZERO == 1
+    assert module_0.FPE_INVALID == 8
+    assert module_0.FPE_OVERFLOW == 2
+    assert module_0.FPE_UNDERFLOW == 4
+    assert module_0.NINF == pytest.approx(-1e309, abs=0.01, rel=0.01)
+    assert module_0.NZERO == pytest.approx(-0.0, abs=0.01, rel=0.01)
+    assert module_0.PINF == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.PZERO == pytest.approx(0.0, abs=0.01, rel=0.01)
+    assert module_0.SHIFT_DIVIDEBYZERO == 0
+    assert module_0.SHIFT_INVALID == 9
+    assert module_0.SHIFT_OVERFLOW == 3
+    assert module_0.SHIFT_UNDERFLOW == 6
+    assert module_0.UFUNC_BUFSIZE_DEFAULT == 8192
+    assert module_0.UFUNC_PYVALS_NAME == 'UFUNC_PYVALS'
+    assert module_0.e == pytest.approx(2.718281828459045, abs=0.01, rel=0.01)
+    assert module_0.euler_gamma == pytest.approx(0.5772156649015329, abs=0.01, rel=0.01)
+    assert module_0.pi == pytest.approx(3.141592653589793, abs=0.01, rel=0.01)
+    assert len(module_0.sctypeDict) == 136
+    assert len(module_0.sctypes) == 5
+    assert len(module_0.ScalarType) == 31
+    assert len(module_0.cast) == 24
+    assert len(module_0.nbytes) == 24
+    assert module_0.typecodes == {'Character': 'c', 'Integer': 'bhilqp', 'UnsignedInteger': 'BHILQP', 'Float': 'efdg', 'Complex': 'FDG', 'AllInteger': 'bBhHiIlLqQpP', 'AllFloat': 'efdgFDG', 'Datetime': 'Mm', 'All': '?bhilqpBHILQPefdgFDGSUVOMm'}
+    assert module_0.tracemalloc_domain == 389047
+    assert module_0.mgrid.sparse is False
+    assert module_0.ogrid.sparse is True
+    assert len(module_0.r_) == 0
+    assert len(module_0.c_) == 0
+    assert module_0.s_.maketuple is False
+    assert module_0.index_exp.maketuple is True
+    assert module_0.oldnumeric == 'removed'
+    assert module_0.numarray == 'removed'
+    assert module_0.use_hugepage == 1
+    assert module_0.kernel_version == (6, 8)
+    assert module_1.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+    assert module_1.dask_array_type == ()
+    assert module_1.sparse_array_type == ()
+    assert module_1.EMPTY_REPR == '    *empty*'
+
+
+def test_case_41():
+    int_0 = 42
+    var_0 = module_1.format_item(int_0)
+    assert var_0 == '42'
+    assert module_1.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+    assert module_1.dask_array_type == ()
+    assert module_1.sparse_array_type == ()
+    assert module_1.EMPTY_REPR == '    *empty*'
+
+
+def test_case_42():
+    tuple_0 = ()
+    bytes_0 = b'\xe9\x18\x10\x1a\xf7c\x00h\x97D\xe3\xb2\x81\xfd\x02q\xe1B'
+    var_0 = module_1.coords_repr(tuple_0, bytes_0)
+    assert var_0 == 'Coordinates:\n    *empty*'
+    assert module_1.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+    assert module_1.dask_array_type == ()
+    assert module_1.sparse_array_type == ()
+    assert module_1.EMPTY_REPR == '    *empty*'
+
+
+def test_case_43():
+    int_0 = 2957
+    var_0 = module_1.short_numpy_repr(int_0)
+    assert var_0 == 'array(2957)'
+    assert module_1.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+    assert module_1.dask_array_type == ()
+    assert module_1.sparse_array_type == ()
+    assert module_1.EMPTY_REPR == '    *empty*'
+
+
+def test_case_44():
+    complex_0 = None
+    list_0 = [complex_0, complex_0, complex_0, complex_0]
+    var_0 = module_1.format_items(list_0)
+    assert var_0 == ['None', 'None', 'None', 'None']
+    assert module_1.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+    assert module_1.dask_array_type == ()
+    assert module_1.sparse_array_type == ()
+    assert module_1.EMPTY_REPR == '    *empty*'
+
+
+def test_case_45():
+    float_0 = -2131.363978
+    var_0 = module_1.format_item(float_0)
+    assert var_0 == '-2.131e+03'
+    assert module_1.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+    assert module_1.dask_array_type == ()
+    assert module_1.sparse_array_type == ()
+    assert module_1.EMPTY_REPR == '    *empty*'
+
+
+def test_case_46():
+    int_0 = 3111
+    var_0 = module_1.format_timestamp(int_0)
+    assert var_0 == '1970-01-01T00:00:00.000003111'
+    assert module_1.EMPTY_REPR == '    *empty*'
+
+
+def test_case_47():
+    float_0 = None
+    var_0 = module_1.format_timestamp(float_0)
+    assert var_0 == 'NaT'
+    assert module_1.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+    assert module_1.dask_array_type == ()
+    assert module_1.sparse_array_type == ()
+    assert module_1.EMPTY_REPR == '    *empty*'
+
+
+def test_case_48():
+    bytes_0 = b'r\xf5'
+    list_0 = [bytes_0]
+    var_0 = module_1.format_items(list_0)
+    assert var_0 == ["b'r\\xf5'"]
+    assert module_1.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+    assert module_1.dask_array_type == ()
+    assert module_1.sparse_array_type == ()
+    assert module_1.EMPTY_REPR == '    *empty*'
+
+
+def test_case_49():
+    set_0 = None
+    var_0 = module_1.format_timedelta(set_0)
+    assert var_0 == 'NaT'
+    assert module_1.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+    assert module_1.dask_array_type == ()
+    assert module_1.sparse_array_type == ()
+    assert module_1.EMPTY_REPR == '    *empty*'
+
+
+def test_case_50():
+    int_0 = 2670
+    timedelta64_0 = module_0.timedelta64()
+    var_0 = module_1.last_item(timedelta64_0)
+    assert var_0 == [0]
+    assert module_0.newaxis is None
+    assert module_0.little_endian is True
+    assert module_0.Inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.infty == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.Infinity == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.CLIP == 0
+    assert module_0.RAISE == 2
+    assert module_0.WRAP == 1
+    assert module_0.MAXDIMS == 32
+    assert module_0.BUFSIZE == 8192
+    assert module_0.ALLOW_THREADS == 1
+    assert module_0.MAY_SHARE_BOUNDS == 0
+    assert module_0.MAY_SHARE_EXACT == -1
+    assert module_0.ERR_CALL == 3
+    assert module_0.ERR_DEFAULT == 521
+    assert module_0.ERR_IGNORE == 0
+    assert module_0.ERR_LOG == 5
+    assert module_0.ERR_PRINT == 4
+    assert module_0.ERR_RAISE == 2
+    assert module_0.ERR_WARN == 1
+    assert module_0.FLOATING_POINT_SUPPORT == 1
+    assert module_0.FPE_DIVIDEBYZERO == 1
+    assert module_0.FPE_INVALID == 8
+    assert module_0.FPE_OVERFLOW == 2
+    assert module_0.FPE_UNDERFLOW == 4
+    assert module_0.NINF == pytest.approx(-1e309, abs=0.01, rel=0.01)
+    assert module_0.NZERO == pytest.approx(-0.0, abs=0.01, rel=0.01)
+    assert module_0.PINF == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.PZERO == pytest.approx(0.0, abs=0.01, rel=0.01)
+    assert module_0.SHIFT_DIVIDEBYZERO == 0
+    assert module_0.SHIFT_INVALID == 9
+    assert module_0.SHIFT_OVERFLOW == 3
+    assert module_0.SHIFT_UNDERFLOW == 6
+    assert module_0.UFUNC_BUFSIZE_DEFAULT == 8192
+    assert module_0.UFUNC_PYVALS_NAME == 'UFUNC_PYVALS'
+    assert module_0.e == pytest.approx(2.718281828459045, abs=0.01, rel=0.01)
+    assert module_0.euler_gamma == pytest.approx(0.5772156649015329, abs=0.01, rel=0.01)
+    assert module_0.pi == pytest.approx(3.141592653589793, abs=0.01, rel=0.01)
+    assert len(module_0.sctypeDict) == 136
+    assert len(module_0.sctypes) == 5
+    assert len(module_0.ScalarType) == 31
+    assert len(module_0.cast) == 24
+    assert len(module_0.nbytes) == 24
+    assert module_0.typecodes == {'Character': 'c', 'Integer': 'bhilqp', 'UnsignedInteger': 'BHILQP', 'Float': 'efdg', 'Complex': 'FDG', 'AllInteger': 'bBhHiIlLqQpP', 'AllFloat': 'efdgFDG', 'Datetime': 'Mm', 'All': '?bhilqpBHILQPefdgFDGSUVOMm'}
+    assert module_0.tracemalloc_domain == 389047
+    assert module_0.mgrid.sparse is False
+    assert module_0.ogrid.sparse is True
+    assert len(module_0.r_) == 0
+    assert len(module_0.c_) == 0
+    assert module_0.s_.maketuple is False
+    assert module_0.index_exp.maketuple is True
+    assert module_0.oldnumeric == 'removed'
+    assert module_0.numarray == 'removed'
+    assert module_0.use_hugepage == 1
+    assert module_0.kernel_version == (6, 8)
+    assert module_1.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+    assert module_1.dask_array_type == ()
+    assert module_1.sparse_array_type == ()
+    assert module_1.EMPTY_REPR == '    *empty*'
+    var_1 = module_1.pretty_print(int_0, int_0)
+    assert var_1 == '2670                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          '
+
+
+def test_case_51():
+    timedelta64_0 = module_0.timedelta64()
+    int_0 = -592
+    var_0 = module_1.format_array_flat(timedelta64_0, int_0)
+    assert var_0 == '...'
+    assert module_0.newaxis is None
+    assert module_0.little_endian is True
+    assert module_0.Inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.infty == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.Infinity == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.CLIP == 0
+    assert module_0.RAISE == 2
+    assert module_0.WRAP == 1
+    assert module_0.MAXDIMS == 32
+    assert module_0.BUFSIZE == 8192
+    assert module_0.ALLOW_THREADS == 1
+    assert module_0.MAY_SHARE_BOUNDS == 0
+    assert module_0.MAY_SHARE_EXACT == -1
+    assert module_0.ERR_CALL == 3
+    assert module_0.ERR_DEFAULT == 521
+    assert module_0.ERR_IGNORE == 0
+    assert module_0.ERR_LOG == 5
+    assert module_0.ERR_PRINT == 4
+    assert module_0.ERR_RAISE == 2
+    assert module_0.ERR_WARN == 1
+    assert module_0.FLOATING_POINT_SUPPORT == 1
+    assert module_0.FPE_DIVIDEBYZERO == 1
+    assert module_0.FPE_INVALID == 8
+    assert module_0.FPE_OVERFLOW == 2
+    assert module_0.FPE_UNDERFLOW == 4
+    assert module_0.NINF == pytest.approx(-1e309, abs=0.01, rel=0.01)
+    assert module_0.NZERO == pytest.approx(-0.0, abs=0.01, rel=0.01)
+    assert module_0.PINF == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.PZERO == pytest.approx(0.0, abs=0.01, rel=0.01)
+    assert module_0.SHIFT_DIVIDEBYZERO == 0
+    assert module_0.SHIFT_INVALID == 9
+    assert module_0.SHIFT_OVERFLOW == 3
+    assert module_0.SHIFT_UNDERFLOW == 6
+    assert module_0.UFUNC_BUFSIZE_DEFAULT == 8192
+    assert module_0.UFUNC_PYVALS_NAME == 'UFUNC_PYVALS'
+    assert module_0.e == pytest.approx(2.718281828459045, abs=0.01, rel=0.01)
+    assert module_0.euler_gamma == pytest.approx(0.5772156649015329, abs=0.01, rel=0.01)
+    assert module_0.pi == pytest.approx(3.141592653589793, abs=0.01, rel=0.01)
+    assert len(module_0.sctypeDict) == 136
+    assert len(module_0.sctypes) == 5
+    assert len(module_0.ScalarType) == 31
+    assert len(module_0.cast) == 24
+    assert len(module_0.nbytes) == 24
+    assert module_0.typecodes == {'Character': 'c', 'Integer': 'bhilqp', 'UnsignedInteger': 'BHILQP', 'Float': 'efdg', 'Complex': 'FDG', 'AllInteger': 'bBhHiIlLqQpP', 'AllFloat': 'efdgFDG', 'Datetime': 'Mm', 'All': '?bhilqpBHILQPefdgFDGSUVOMm'}
+    assert module_0.tracemalloc_domain == 389047
+    assert module_0.mgrid.sparse is False
+    assert module_0.ogrid.sparse is True
+    assert len(module_0.r_) == 0
+    assert len(module_0.c_) == 0
+    assert module_0.s_.maketuple is False
+    assert module_0.index_exp.maketuple is True
+    assert module_0.oldnumeric == 'removed'
+    assert module_0.numarray == 'removed'
+    assert module_0.use_hugepage == 1
+    assert module_0.kernel_version == (6, 8)
+    assert module_1.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+    assert module_1.dask_array_type == ()
+    assert module_1.sparse_array_type == ()
+    assert module_1.EMPTY_REPR == '    *empty*'
+
+
+def test_case_52():
+    int_0 = 2670
+    timedelta64_0 = module_0.timedelta64()
+    list_0 = []
+    var_0 = module_1.short_numpy_repr(list_0)
+    assert var_0 == 'array([], dtype=float64)'
+    assert module_0.newaxis is None
+    assert module_0.little_endian is True
+    assert module_0.Inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.infty == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.Infinity == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.CLIP == 0
+    assert module_0.RAISE == 2
+    assert module_0.WRAP == 1
+    assert module_0.MAXDIMS == 32
+    assert module_0.BUFSIZE == 8192
+    assert module_0.ALLOW_THREADS == 1
+    assert module_0.MAY_SHARE_BOUNDS == 0
+    assert module_0.MAY_SHARE_EXACT == -1
+    assert module_0.ERR_CALL == 3
+    assert module_0.ERR_DEFAULT == 521
+    assert module_0.ERR_IGNORE == 0
+    assert module_0.ERR_LOG == 5
+    assert module_0.ERR_PRINT == 4
+    assert module_0.ERR_RAISE == 2
+    assert module_0.ERR_WARN == 1
+    assert module_0.FLOATING_POINT_SUPPORT == 1
+    assert module_0.FPE_DIVIDEBYZERO == 1
+    assert module_0.FPE_INVALID == 8
+    assert module_0.FPE_OVERFLOW == 2
+    assert module_0.FPE_UNDERFLOW == 4
+    assert module_0.NINF == pytest.approx(-1e309, abs=0.01, rel=0.01)
+    assert module_0.NZERO == pytest.approx(-0.0, abs=0.01, rel=0.01)
+    assert module_0.PINF == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.PZERO == pytest.approx(0.0, abs=0.01, rel=0.01)
+    assert module_0.SHIFT_DIVIDEBYZERO == 0
+    assert module_0.SHIFT_INVALID == 9
+    assert module_0.SHIFT_OVERFLOW == 3
+    assert module_0.SHIFT_UNDERFLOW == 6
+    assert module_0.UFUNC_BUFSIZE_DEFAULT == 8192
+    assert module_0.UFUNC_PYVALS_NAME == 'UFUNC_PYVALS'
+    assert module_0.e == pytest.approx(2.718281828459045, abs=0.01, rel=0.01)
+    assert module_0.euler_gamma == pytest.approx(0.5772156649015329, abs=0.01, rel=0.01)
+    assert module_0.pi == pytest.approx(3.141592653589793, abs=0.01, rel=0.01)
+    assert len(module_0.sctypeDict) == 136
+    assert len(module_0.sctypes) == 5
+    assert len(module_0.ScalarType) == 31
+    assert len(module_0.cast) == 24
+    assert len(module_0.nbytes) == 24
+    assert module_0.typecodes == {'Character': 'c', 'Integer': 'bhilqp', 'UnsignedInteger': 'BHILQP', 'Float': 'efdg', 'Complex': 'FDG', 'AllInteger': 'bBhHiIlLqQpP', 'AllFloat': 'efdgFDG', 'Datetime': 'Mm', 'All': '?bhilqpBHILQPefdgFDGSUVOMm'}
+    assert module_0.tracemalloc_domain == 389047
+    assert module_0.mgrid.sparse is False
+    assert module_0.ogrid.sparse is True
+    assert len(module_0.r_) == 0
+    assert len(module_0.c_) == 0
+    assert module_0.s_.maketuple is False
+    assert module_0.index_exp.maketuple is True
+    assert module_0.oldnumeric == 'removed'
+    assert module_0.numarray == 'removed'
+    assert module_0.use_hugepage == 1
+    assert module_0.kernel_version == (6, 8)
+    assert module_1.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+    assert module_1.dask_array_type == ()
+    assert module_1.sparse_array_type == ()
+    assert module_1.EMPTY_REPR == '    *empty*'
+    int_1 = 2298
+    tuple_0 = (int_1, timedelta64_0)
+    float_0 = -2938.2
+    var_1 = module_1.format_item(float_0)
+    assert var_1 == '-2.938e+03'
+    var_2 = module_1.short_numpy_repr(tuple_0)
+    assert var_2 == 'array([2298,    0], dtype=timedelta64)'
+    var_3 = module_1.last_item(timedelta64_0)
+    assert var_3 == [0]
+    var_4 = module_1.pretty_print(int_0, int_0)
+    assert var_4 == '2670                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          '
+    var_5 = module_1.format_array_flat(timedelta64_0, int_0)
+    assert var_5 == '00:00:00'
+    float_1 = 0.0
+    var_6 = module_1.format_timestamp(float_1)
+    assert var_6 == '1970-01-01'
+
+
+def test_case_53():
+    int_0 = 1
+    int_1 = 2
+    int_2 = 30
+    timedelta_0 = module_2.timedelta()
+    var_0 = module_1.format_timedelta(timedelta_0)
+    assert var_0 == '1 days 02:30:00'
+    assert var_0 == '0 days 00:00:00'
+    assert module_1.EMPTY_REPR == '    *empty*'
+    int_3 = 4
+    str_0 = 'date'
+    var_1 = module_1.format_timedelta(timedelta_0, str_0)
+    assert var_1 == '3 days'
+    assert var_1 == '0 days'
+    assert module_2.MINYEAR == 1
+    assert module_2.MAXYEAR == 9999
+    assert module_1.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+    assert module_1.dask_array_type == ()
+    assert module_1.sparse_array_type == ()
+    int_4 = 5
+    int_5 = 45
+    timedelta_1 = module_2.timedelta()
+    str_1 = 'time'
+    var_2 = module_1.format_timedelta(timedelta_1, str_1)
+    assert var_2 == '05:45:00'
+    assert var_2 == '00:00:00'
+    int_6 = -1
+    int_7 = -2
+    timedelta_2 = module_2.timedelta()
+    var_3 = module_1.format_timedelta(timedelta_2)
+    assert var_3 == '-2 days +22:00:00'
+    assert var_3 == '0 days 00:00:00'
+
+
+def test_case_54():
+    datetime64_0 = module_0.datetime64()
+    int_0 = -312
+    var_0 = module_1.format_array_flat(datetime64_0, int_0)
+    assert var_0 == '...'
+    assert module_0.newaxis is None
+    assert module_0.little_endian is True
+    assert module_0.Inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.inf == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.infty == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.Infinity == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.CLIP == 0
+    assert module_0.RAISE == 2
+    assert module_0.WRAP == 1
+    assert module_0.MAXDIMS == 32
+    assert module_0.BUFSIZE == 8192
+    assert module_0.ALLOW_THREADS == 1
+    assert module_0.MAY_SHARE_BOUNDS == 0
+    assert module_0.MAY_SHARE_EXACT == -1
+    assert module_0.ERR_CALL == 3
+    assert module_0.ERR_DEFAULT == 521
+    assert module_0.ERR_IGNORE == 0
+    assert module_0.ERR_LOG == 5
+    assert module_0.ERR_PRINT == 4
+    assert module_0.ERR_RAISE == 2
+    assert module_0.ERR_WARN == 1
+    assert module_0.FLOATING_POINT_SUPPORT == 1
+    assert module_0.FPE_DIVIDEBYZERO == 1
+    assert module_0.FPE_INVALID == 8
+    assert module_0.FPE_OVERFLOW == 2
+    assert module_0.FPE_UNDERFLOW == 4
+    assert module_0.NINF == pytest.approx(-1e309, abs=0.01, rel=0.01)
+    assert module_0.NZERO == pytest.approx(-0.0, abs=0.01, rel=0.01)
+    assert module_0.PINF == pytest.approx(1e309, abs=0.01, rel=0.01)
+    assert module_0.PZERO == pytest.approx(0.0, abs=0.01, rel=0.01)
+    assert module_0.SHIFT_DIVIDEBYZERO == 0
+    assert module_0.SHIFT_INVALID == 9
+    assert module_0.SHIFT_OVERFLOW == 3
+    assert module_0.SHIFT_UNDERFLOW == 6
+    assert module_0.UFUNC_BUFSIZE_DEFAULT == 8192
+    assert module_0.UFUNC_PYVALS_NAME == 'UFUNC_PYVALS'
+    assert module_0.e == pytest.approx(2.718281828459045, abs=0.01, rel=0.01)
+    assert module_0.euler_gamma == pytest.approx(0.5772156649015329, abs=0.01, rel=0.01)
+    assert module_0.pi == pytest.approx(3.141592653589793, abs=0.01, rel=0.01)
+    assert len(module_0.sctypeDict) == 136
+    assert len(module_0.sctypes) == 5
+    assert len(module_0.ScalarType) == 31
+    assert len(module_0.cast) == 24
+    assert len(module_0.nbytes) == 24
+    assert module_0.typecodes == {'Character': 'c', 'Integer': 'bhilqp', 'UnsignedInteger': 'BHILQP', 'Float': 'efdg', 'Complex': 'FDG', 'AllInteger': 'bBhHiIlLqQpP', 'AllFloat': 'efdgFDG', 'Datetime': 'Mm', 'All': '?bhilqpBHILQPefdgFDGSUVOMm'}
+    assert module_0.tracemalloc_domain == 389047
+    assert module_0.mgrid.sparse is False
+    assert module_0.ogrid.sparse is True
+    assert len(module_0.r_) == 0
+    assert len(module_0.c_) == 0
+    assert module_0.s_.maketuple is False
+    assert module_0.index_exp.maketuple is True
+    assert module_0.oldnumeric == 'removed'
+    assert module_0.numarray == 'removed'
+    assert module_0.use_hugepage == 1
+    assert module_0.kernel_version == (6, 8)
+    assert module_1.OPTIONS == {'display_width': 80, 'arithmetic_join': 'inner', 'enable_cftimeindex': True, 'file_cache_maxsize': 128, 'warn_for_unclosed_files': False, 'cmap_sequential': 'viridis', 'cmap_divergent': 'RdBu_r', 'keep_attrs': 'default', 'display_style': 'html'}
+    assert module_1.dask_array_type == ()
+    assert module_1.sparse_array_type == ()
+    assert module_1.EMPTY_REPR == '    *empty*'
+
+Coverage: 44.04432132963989
+Mutation Score: 1.5400000000000063
+
+Baseline 3 (GPT-4o):
 Predicted Test Suite: 
 import pytest
 import numpy as np
@@ -271,3 +1717,584 @@ def test_dataset_repr():
     assert "Dimensions" in result
 Coverage: 36.56509695290859
 Mutation Score: 24.650000000000006
+Output: On branch main
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        deleted:    .coveragerc
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        xarray/tests/test_formatting.py
+
+no changes added to commit (use "git add" and/or "git commit -a")
+commit 704907922b2cd5c864ba611c117f8ea241167e2d
+Author: TestGenEval <>
+Date:   Wed Dec 11 12:13:30 2024 +0000
+
+    Testing fixes
+
+diff --git a/xarray/core/formatting.py b/xarray/core/formatting.py
+index 3a9dd772..28eaae5f 100644
+--- a/xarray/core/formatting.py
++++ b/xarray/core/formatting.py
+@@ -3,7 +3,7 @@
+ import contextlib
+ import functools
+ from datetime import datetime, timedelta
+-from itertools import zip_longest
++from itertools import chain, zip_longest
+ from typing import Hashable
+
+ import numpy as np
+@@ -422,6 +422,17 @@ def set_numpy_options(*args, **kwargs):
+         np.set_printoptions(**original)
+
+
++def limit_lines(string: str, *, limit: int):
++    """
++    If the string is more lines than the limit,
++    this returns the middle lines replaced by an ellipsis
++    """
++    lines = string.splitlines()
++    if len(lines) > limit:
++        string = "\n".join(chain(lines[: limit // 2], ["..."], lines[-limit // 2 :]))
++    return string
++
++
+ def short_numpy_repr(array):
+     array = np.asarray(array)
+
+@@ -447,7 +458,7 @@ def short_data_repr(array):
+     elif hasattr(internal_data, "__array_function__") or isinstance(
+         internal_data, dask_array_type
+     ):
+-        return repr(array.data)
++        return limit_lines(repr(array.data), limit=40)
+     elif array._in_memory or array.size < 1e5:
+         return short_numpy_repr(array)
+     else:
+diff --git a/xarray/tests/test_formatting.py b/xarray/tests/test_formatting.py
+deleted file mode 100644
+index 6881c0bc..00000000
+--- a/xarray/tests/test_formatting.py
++++ /dev/null
+@@ -1,414 +0,0 @@
+-import sys
+-from textwrap import dedent
+-
+-import numpy as np
+-import pandas as pd
+-import pytest
+-
+-import xarray as xr
+-from xarray.core import formatting
+-
+-from . import raises_regex
+-
+-
+-class TestFormatting:
+-    def test_get_indexer_at_least_n_items(self):
+-        cases = [
+-            ((20,), (slice(10),), (slice(-10, None),)),
+-            ((3, 20), (0, slice(10)), (-1, slice(-10, None))),
+-            ((2, 10), (0, slice(10)), (-1, slice(-10, None))),
+-            ((2, 5), (slice(2), slice(None)), (slice(-2, None), slice(None))),
+-            ((1, 2, 5), (0, slice(2), slice(None)), (-1, slice(-2, None), slice(None))),
+-            ((2, 3, 5), (0, slice(2), slice(None)), (-1, slice(-2, None), slice(None))),
+-            (
+-                (1, 10, 1),
+-                (0, slice(10), slice(None)),
+-                (-1, slice(-10, None), slice(None)),
+-            ),
+-            (
+-                (2, 5, 1),
+-                (slice(2), slice(None), slice(None)),
+-                (slice(-2, None), slice(None), slice(None)),
+-            ),
+-            ((2, 5, 3), (0, slice(4), slice(None)), (-1, slice(-4, None), slice(None))),
+-            (
+-                (2, 3, 3),
+-                (slice(2), slice(None), slice(None)),
+-                (slice(-2, None), slice(None), slice(None)),
+-            ),
+-        ]
+-        for shape, start_expected, end_expected in cases:
+-            actual = formatting._get_indexer_at_least_n_items(shape, 10, from_end=False)
+-            assert start_expected == actual
+-            actual = formatting._get_indexer_at_least_n_items(shape, 10, from_end=True)
+-            assert end_expected == actual
+-
+-    def test_first_n_items(self):
+-        array = np.arange(100).reshape(10, 5, 2)
+-        for n in [3, 10, 13, 100, 200]:
+-            actual = formatting.first_n_items(array, n)
+-            expected = array.flat[:n]
+-            assert (expected == actual).all()
+-
+-        with raises_regex(ValueError, "at least one item"):
+-            formatting.first_n_items(array, 0)
+-
+-    def test_last_n_items(self):
+-        array = np.arange(100).reshape(10, 5, 2)
+-        for n in [3, 10, 13, 100, 200]:
+-            actual = formatting.last_n_items(array, n)
+-            expected = array.flat[-n:]
+-            assert (expected == actual).all()
+-
+-        with raises_regex(ValueError, "at least one item"):
+-            formatting.first_n_items(array, 0)
+-
+-    def test_last_item(self):
+-        array = np.arange(100)
+-
+-        reshape = ((10, 10), (1, 100), (2, 2, 5, 5))
+-        expected = np.array([99])
+-
+-        for r in reshape:
+-            result = formatting.last_item(array.reshape(r))
+-            assert result == expected
+-
+-    def test_format_item(self):
+-        cases = [
+-            (pd.Timestamp("2000-01-01T12"), "2000-01-01T12:00:00"),
+-            (pd.Timestamp("2000-01-01"), "2000-01-01"),
+-            (pd.Timestamp("NaT"), "NaT"),
+-            (pd.Timedelta("10 days 1 hour"), "10 days 01:00:00"),
+-            (pd.Timedelta("-3 days"), "-3 days +00:00:00"),
+-            (pd.Timedelta("3 hours"), "0 days 03:00:00"),
+-            (pd.Timedelta("NaT"), "NaT"),
+-            ("foo", "'foo'"),
+-            (b"foo", "b'foo'"),
+-            (1, "1"),
+-            (1.0, "1.0"),
+-        ]
+-        for item, expected in cases:
+-            actual = formatting.format_item(item)
+-            assert expected == actual
+-
+-    def test_format_items(self):
+-        cases = [
+-            (np.arange(4) * np.timedelta64(1, "D"), "0 days 1 days 2 days 3 days"),
+-            (
+-                np.arange(4) * np.timedelta64(3, "h"),
+-                "00:00:00 03:00:00 06:00:00 09:00:00",
+-            ),
+-            (
+-                np.arange(4) * np.timedelta64(500, "ms"),
+-                "00:00:00 00:00:00.500000 00:00:01 00:00:01.500000",
+-            ),
+-            (pd.to_timedelta(["NaT", "0s", "1s", "NaT"]), "NaT 00:00:00 00:00:01 NaT"),
+-            (
+-                pd.to_timedelta(["1 day 1 hour", "1 day", "0 hours"]),
+-                "1 days 01:00:00 1 days 00:00:00 0 days 00:00:00",
+-            ),
+-            ([1, 2, 3], "1 2 3"),
+-        ]
+-        for item, expected in cases:
+-            actual = " ".join(formatting.format_items(item))
+-            assert expected == actual
+-
+-    def test_format_array_flat(self):
+-        actual = formatting.format_array_flat(np.arange(100), 2)
+-        expected = "..."
+-        assert expected == actual
+-
+-        actual = formatting.format_array_flat(np.arange(100), 9)
+-        expected = "0 ... 99"
+-        assert expected == actual
+-
+-        actual = formatting.format_array_flat(np.arange(100), 10)
+-        expected = "0 1 ... 99"
+-        assert expected == actual
+-
+-        actual = formatting.format_array_flat(np.arange(100), 13)
+-        expected = "0 1 ... 98 99"
+-        assert expected == actual
+-
+-        actual = formatting.format_array_flat(np.arange(100), 15)
+-        expected = "0 1 2 ... 98 99"
+-        assert expected == actual
+-
+-        # NB: Probably not ideal; an alternative would be cutting after the
+-        # first ellipsis
+-        actual = formatting.format_array_flat(np.arange(100.0), 11)
+-        expected = "0.0 ... ..."
+-        assert expected == actual
+-
+-        actual = formatting.format_array_flat(np.arange(100.0), 12)
+-        expected = "0.0 ... 99.0"
+-        assert expected == actual
+-
+-        actual = formatting.format_array_flat(np.arange(3), 5)
+-        expected = "0 1 2"
+-        assert expected == actual
+-
+-        actual = formatting.format_array_flat(np.arange(4.0), 11)
+-        expected = "0.0 ... 3.0"
+-        assert expected == actual
+-
+-        actual = formatting.format_array_flat(np.arange(0), 0)
+-        expected = ""
+-        assert expected == actual
+-
+-        actual = formatting.format_array_flat(np.arange(1), 1)
+-        expected = "0"
+-        assert expected == actual
+-
+-        actual = formatting.format_array_flat(np.arange(2), 3)
+-        expected = "0 1"
+-        assert expected == actual
+-
+-        actual = formatting.format_array_flat(np.arange(4), 7)
+-        expected = "0 1 2 3"
+-        assert expected == actual
+-
+-        actual = formatting.format_array_flat(np.arange(5), 7)
+-        expected = "0 ... 4"
+-        assert expected == actual
+-
+-        long_str = [" ".join(["hello world" for _ in range(100)])]
+-        actual = formatting.format_array_flat(np.asarray([long_str]), 21)
+-        expected = "'hello world hello..."
+-        assert expected == actual
+-
+-    def test_pretty_print(self):
+-        assert formatting.pretty_print("abcdefghij", 8) == "abcde..."
+-        assert formatting.pretty_print("ß", 1) == "ß"
+-
+-    def test_maybe_truncate(self):
+-        assert formatting.maybe_truncate("ß", 10) == "ß"
+-
+-    def test_format_timestamp_out_of_bounds(self):
+-        from datetime import datetime
+-
+-        date = datetime(1300, 12, 1)
+-        expected = "1300-12-01"
+-        result = formatting.format_timestamp(date)
+-        assert result == expected
+-
+-        date = datetime(2300, 12, 1)
+-        expected = "2300-12-01"
+-        result = formatting.format_timestamp(date)
+-        assert result == expected
+-
+-    def test_attribute_repr(self):
+-        short = formatting.summarize_attr("key", "Short string")
+-        long = formatting.summarize_attr("key", 100 * "Very long string ")
+-        newlines = formatting.summarize_attr("key", "\n\n\n")
+-        tabs = formatting.summarize_attr("key", "\t\t\t")
+-        assert short == "    key: Short string"
+-        assert len(long) <= 80
+-        assert long.endswith("...")
+-        assert "\n" not in newlines
+-        assert "\t" not in tabs
+-
+-    def test_diff_array_repr(self):
+-        da_a = xr.DataArray(
+-            np.array([[1, 2, 3], [4, 5, 6]], dtype="int64"),
+-            dims=("x", "y"),
+-            coords={
+-                "x": np.array(["a", "b"], dtype="U1"),
+-                "y": np.array([1, 2, 3], dtype="int64"),
+-            },
+-            attrs={"units": "m", "description": "desc"},
+-        )
+-
+-        da_b = xr.DataArray(
+-            np.array([1, 2], dtype="int64"),
+-            dims="x",
+-            coords={
+-                "x": np.array(["a", "c"], dtype="U1"),
+-                "label": ("x", np.array([1, 2], dtype="int64")),
+-            },
+-            attrs={"units": "kg"},
+-        )
+-
+-        byteorder = "<" if sys.byteorder == "little" else ">"
+-        expected = dedent(
+-            """\
+-        Left and right DataArray objects are not identical
+-        Differing dimensions:
+-            (x: 2, y: 3) != (x: 2)
+-        Differing values:
+-        L
+-            array([[1, 2, 3],
+-                   [4, 5, 6]], dtype=int64)
+-        R
+-            array([1, 2], dtype=int64)
+-        Differing coordinates:
+-        L * x        (x) %cU1 'a' 'b'
+-        R * x        (x) %cU1 'a' 'c'
+-        Coordinates only on the left object:
+-          * y        (y) int64 1 2 3
+-        Coordinates only on the right object:
+-            label    (x) int64 1 2
+-        Differing attributes:
+-        L   units: m
+-        R   units: kg
+-        Attributes only on the left object:
+-            description: desc"""
+-            % (byteorder, byteorder)
+-        )
+-
+-        actual = formatting.diff_array_repr(da_a, da_b, "identical")
+-        try:
+-            assert actual == expected
+-        except AssertionError:
+-            # depending on platform, dtype may not be shown in numpy array repr
+-            assert actual == expected.replace(", dtype=int64", "")
+-
+-        va = xr.Variable(
+-            "x", np.array([1, 2, 3], dtype="int64"), {"title": "test Variable"}
+-        )
+-        vb = xr.Variable(("x", "y"), np.array([[1, 2, 3], [4, 5, 6]], dtype="int64"))
+-
+-        expected = dedent(
+-            """\
+-        Left and right Variable objects are not equal
+-        Differing dimensions:
+-            (x: 3) != (x: 2, y: 3)
+-        Differing values:
+-        L
+-            array([1, 2, 3], dtype=int64)
+-        R
+-            array([[1, 2, 3],
+-                   [4, 5, 6]], dtype=int64)"""
+-        )
+-
+-        actual = formatting.diff_array_repr(va, vb, "equals")
+-        try:
+-            assert actual == expected
+-        except AssertionError:
+-            assert actual == expected.replace(", dtype=int64", "")
+-
+-    @pytest.mark.filterwarnings("error")
+-    def test_diff_attrs_repr_with_array(self):
+-        attrs_a = {"attr": np.array([0, 1])}
+-
+-        attrs_b = {"attr": 1}
+-        expected = dedent(
+-            """\
+-            Differing attributes:
+-            L   attr: [0 1]
+-            R   attr: 1
+-            """
+-        ).strip()
+-        actual = formatting.diff_attrs_repr(attrs_a, attrs_b, "equals")
+-        assert expected == actual
+-
+-        attrs_b = {"attr": np.array([-3, 5])}
+-        expected = dedent(
+-            """\
+-            Differing attributes:
+-            L   attr: [0 1]
+-            R   attr: [-3  5]
+-            """
+-        ).strip()
+-        actual = formatting.diff_attrs_repr(attrs_a, attrs_b, "equals")
+-        assert expected == actual
+-
+-        # should not raise a warning
+-        attrs_b = {"attr": np.array([0, 1, 2])}
+-        expected = dedent(
+-            """\
+-            Differing attributes:
+-            L   attr: [0 1]
+-            R   attr: [0 1 2]
+-            """
+-        ).strip()
+-        actual = formatting.diff_attrs_repr(attrs_a, attrs_b, "equals")
+-        assert expected == actual
+-
+-    def test_diff_dataset_repr(self):
+-        ds_a = xr.Dataset(
+-            data_vars={
+-                "var1": (("x", "y"), np.array([[1, 2, 3], [4, 5, 6]], dtype="int64")),
+-                "var2": ("x", np.array([3, 4], dtype="int64")),
+-            },
+-            coords={
+-                "x": np.array(["a", "b"], dtype="U1"),
+-                "y": np.array([1, 2, 3], dtype="int64"),
+-            },
+-            attrs={"units": "m", "description": "desc"},
+-        )
+-
+-        ds_b = xr.Dataset(
+-            data_vars={"var1": ("x", np.array([1, 2], dtype="int64"))},
+-            coords={
+-                "x": ("x", np.array(["a", "c"], dtype="U1"), {"source": 0}),
+-                "label": ("x", np.array([1, 2], dtype="int64")),
+-            },
+-            attrs={"units": "kg"},
+-        )
+-
+-        byteorder = "<" if sys.byteorder == "little" else ">"
+-        expected = dedent(
+-            """\
+-        Left and right Dataset objects are not identical
+-        Differing dimensions:
+-            (x: 2, y: 3) != (x: 2)
+-        Differing coordinates:
+-        L * x        (x) %cU1 'a' 'b'
+-        R * x        (x) %cU1 'a' 'c'
+-            source: 0
+-        Coordinates only on the left object:
+-          * y        (y) int64 1 2 3
+-        Coordinates only on the right object:
+-            label    (x) int64 1 2
+-        Differing data variables:
+-        L   var1     (x, y) int64 1 2 3 4 5 6
+-        R   var1     (x) int64 1 2
+-        Data variables only on the left object:
+-            var2     (x) int64 3 4
+-        Differing attributes:
+-        L   units: m
+-        R   units: kg
+-        Attributes only on the left object:
+-            description: desc"""
+-            % (byteorder, byteorder)
+-        )
+-
+-        actual = formatting.diff_dataset_repr(ds_a, ds_b, "identical")
+-        assert actual == expected
+-
+-    def test_array_repr(self):
+-        ds = xr.Dataset(coords={"foo": [1, 2, 3], "bar": [1, 2, 3]})
+-        ds[(1, 2)] = xr.DataArray([0], dims="test")
+-        actual = formatting.array_repr(ds[(1, 2)])
+-        expected = dedent(
+-            """\
+-        <xarray.DataArray (1, 2) (test: 1)>
+-        array([0])
+-        Dimensions without coordinates: test"""
+-        )
+-
+-        assert actual == expected
+-
+-
+-def test_set_numpy_options():
+-    original_options = np.get_printoptions()
+-    with formatting.set_numpy_options(threshold=10):
+-        assert len(repr(np.arange(500))) < 200
+-    # original options are restored
+-    assert np.get_printoptions() == original_options
+-
+-
+-def test_short_numpy_repr():
+-    cases = [
+-        np.random.randn(500),
+-        np.random.randn(20, 20),
+-        np.random.randn(5, 10, 15),
+-        np.random.randn(5, 10, 15, 3),
+-    ]
+-    # number of lines:
+-    # for default numpy repr: 167, 140, 254, 248
+-    # for short_numpy_repr: 1, 7, 24, 19
+-    for array in cases:
+-        num_lines = formatting.short_numpy_repr(array).count("\n") + 1
+-        assert num_lines < 30
+Obtaining file:///testbed
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Requirement already satisfied: numpy>=1.15 in /opt/miniconda3/envs/testbed/lib/python3.10/site-packages (from xarray==0.15.2.dev102+g70490792.d20250207) (1.23.0)
+Requirement already satisfied: pandas>=0.25 in /opt/miniconda3/envs/testbed/lib/python3.10/site-packages (from xarray==0.15.2.dev102+g70490792.d20250207) (1.5.3)
+Requirement already satisfied: setuptools>=41.2 in /opt/miniconda3/envs/testbed/lib/python3.10/site-packages (from xarray==0.15.2.dev102+g70490792.d20250207) (68.0.0)
+Requirement already satisfied: python-dateutil>=2.8.1 in /opt/miniconda3/envs/testbed/lib/python3.10/site-packages (from pandas>=0.25->xarray==0.15.2.dev102+g70490792.d20250207) (2.8.2)
+Requirement already satisfied: pytz>=2020.1 in /opt/miniconda3/envs/testbed/lib/python3.10/site-packages (from pandas>=0.25->xarray==0.15.2.dev102+g70490792.d20250207) (2023.3)
+Requirement already satisfied: six>=1.5 in /opt/miniconda3/envs/testbed/lib/python3.10/site-packages (from python-dateutil>=2.8.1->pandas>=0.25->xarray==0.15.2.dev102+g70490792.d20250207) (1.16.0)
+Installing collected packages: xarray
+  Attempting uninstall: xarray
+    Found existing installation: xarray 0.15.2.dev102+g70490792
+    Uninstalling xarray-0.15.2.dev102+g70490792:
+      Successfully uninstalled xarray-0.15.2.dev102+g70490792
+  DEPRECATION: Legacy editable install of xarray==0.15.2.dev102+g70490792.d20250207 from file:///testbed (setup.py develop) is deprecated. pip 25.0 will enforce this behaviour change. A possible replacement is to add a pyproject.toml or enable --use-pep517, and use setuptools >= 64. If the resulting installation is not behaving as expected, try using --config-settings editable_mode=compat. Please consult the setuptools documentation for more information. Discussion can be found at https://github.com/pypa/pip/issues/11457
+  Running setup.py develop for xarray
+Successfully installed xarray
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable.It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+============================= test session starts ==============================
+platform linux -- Python 3.10.14, pytest-7.4.0, pluggy-1.5.0
+rootdir: /testbed
+configfile: setup.cfg
+plugins: env-1.1.3, cov-5.0.0, hypothesis-6.108.5, xdist-3.6.1
+collected 12 items
+
+xarray/tests/test_formatting.py ............                             [100%]
+
+=============================== warnings summary ===============================
+xarray/__init__.py:1
+  /testbed/xarray/__init__.py:1: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+    import pkg_resources
+
+../opt/miniconda3/envs/testbed/lib/python3.10/site-packages/pkg_resources/__init__.py:2871
+  /opt/miniconda3/envs/testbed/lib/python3.10/site-packages/pkg_resources/__init__.py:2871: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('pydap')`.
+  Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
+    declare_namespace(pkg)
+
+../opt/miniconda3/envs/testbed/lib/python3.10/site-packages/pkg_resources/__init__.py:2871
+  /opt/miniconda3/envs/testbed/lib/python3.10/site-packages/pkg_resources/__init__.py:2871: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('pydap.responses')`.
+  Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
+    declare_namespace(pkg)
+
+../opt/miniconda3/envs/testbed/lib/python3.10/site-packages/pkg_resources/__init__.py:2350
+../opt/miniconda3/envs/testbed/lib/python3.10/site-packages/pkg_resources/__init__.py:2350
+../opt/miniconda3/envs/testbed/lib/python3.10/site-packages/pkg_resources/__init__.py:2350
+  /opt/miniconda3/envs/testbed/lib/python3.10/site-packages/pkg_resources/__init__.py:2350: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('pydap')`.
+  Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
+    declare_namespace(parent)
+
+../opt/miniconda3/envs/testbed/lib/python3.10/site-packages/pkg_resources/__init__.py:2871
+  /opt/miniconda3/envs/testbed/lib/python3.10/site-packages/pkg_resources/__init__.py:2871: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('pydap.handlers')`.
+  Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
+    declare_namespace(pkg)
+
+../opt/miniconda3/envs/testbed/lib/python3.10/site-packages/pkg_resources/__init__.py:2871
+  /opt/miniconda3/envs/testbed/lib/python3.10/site-packages/pkg_resources/__init__.py:2871: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('pydap.tests')`.
+  Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
+    declare_namespace(pkg)
+
+xarray/core/dask_array_compat.py:16
+xarray/core/dask_array_compat.py:16
+  /testbed/xarray/core/dask_array_compat.py:16: DeprecationWarning: distutils Version classes are deprecated. Use packaging.version instead.
+    if LooseVersion(dask_version) >= LooseVersion("2.0.0"):
+
+xarray/core/dask_array_compat.py:149
+xarray/core/dask_array_compat.py:149
+  /testbed/xarray/core/dask_array_compat.py:149: DeprecationWarning: distutils Version classes are deprecated. Use packaging.version instead.
+    if LooseVersion(dask_version) >= LooseVersion("2.8.1"):
+
+xarray/core/dask_array_compat.py:186
+xarray/core/dask_array_compat.py:186
+  /testbed/xarray/core/dask_array_compat.py:186: DeprecationWarning: distutils Version classes are deprecated. Use packaging.version instead.
+    if LooseVersion(dask_version) > LooseVersion("2.9.0"):
+
+xarray/core/pdcompat.py:45
+  /testbed/xarray/core/pdcompat.py:45: DeprecationWarning: distutils Version classes are deprecated. Use packaging.version instead.
+    if LooseVersion(pd.__version__) < "0.25.0":
+
+../opt/miniconda3/envs/testbed/lib/python3.10/site-packages/setuptools/_distutils/version.py:345
+  /opt/miniconda3/envs/testbed/lib/python3.10/site-packages/setuptools/_distutils/version.py:345: DeprecationWarning: distutils Version classes are deprecated. Use packaging.version instead.
+    other = LooseVersion(other)
+
+xarray/tests/__init__.py:54
+xarray/tests/__init__.py:54
+  /testbed/xarray/tests/__init__.py:54: DeprecationWarning: distutils Version classes are deprecated. Use packaging.version instead.
+    return version.LooseVersion(vstring)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED xarray/tests/test_formatting.py::test_pretty_print
+PASSED xarray/tests/test_formatting.py::test_maybe_truncate
+PASSED xarray/tests/test_formatting.py::test_wrap_indent
+PASSED xarray/tests/test_formatting.py::test_first_n_items
+PASSED xarray/tests/test_formatting.py::test_last_n_items
+PASSED xarray/tests/test_formatting.py::test_last_item
+PASSED xarray/tests/test_formatting.py::test_format_timestamp
+PASSED xarray/tests/test_formatting.py::test_format_timedelta
+PASSED xarray/tests/test_formatting.py::test_format_item
+PASSED xarray/tests/test_formatting.py::test_format_items
+PASSED xarray/tests/test_formatting.py::test_summarize_attr
+PASSED xarray/tests/test_formatting.py::test_short_numpy_repr
+======================= 12 passed, 18 warnings in 3.55s ========================
+

@@ -3,7 +3,7 @@ import json
 import os
 
 from tqdm import tqdm
-
+import random
 
 def load_preds(preds_fp):
     """
@@ -82,7 +82,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--approach_fp",
         type=str,
-        default="../OpenHands/evaluation/evaluation_outputs/outputs/kjain14__testgeneval-test/CodeActAgent/gpt-4o_maxiter_25_N_v0.20.0-no-hint-run_1/output.testgeneval.jsonl",
+        default="../OpenHands/evaluation/evaluation_outputs/outputs/kjain14__testgeneval-test/CodeActAgent/gpt-4o_maxiter_25_N_v0.20.0-no-hint-run_1/output_approach.testgeneval.jsonl",
         help="Path to approach file (JSON lines, containing test_result with report)",
     )
     # Output directory for TXT files:
@@ -118,6 +118,9 @@ if __name__ == "__main__":
         & set(approach_data.keys())
     )
 
+    common_ids = list(common_ids)
+    random.shuffle(common_ids)
+
     for instance_id in tqdm(common_ids):
         # Baseline 1: Get predicted test suite, coverage, and mutation score.
         b1_pred_entry = baseline1_preds[instance_id]
@@ -146,6 +149,7 @@ if __name__ == "__main__":
         a_mutation = a_report.get("mutation_score", -1)
         # The approach file does not include a separate predictions field, so we mark it as N/A.
         a_pred_suite = a_entry["test_result"]["test_suite"]
+        a_output = a_entry["test_result"]["report"]["test_output"]
 
         # Prepare the output content.
         content = f"Instance ID: {instance_id}\n\n"
@@ -168,6 +172,7 @@ if __name__ == "__main__":
         content += f"Predicted Test Suite: {a_pred_suite}\n"
         content += f"Coverage: {a_coverage}\n"
         content += f"Mutation Score: {a_mutation}\n"
+        content += f"Output: {a_output}\n"
 
         # Write the content to a TXT file for this instance.
         output_fp = os.path.join(args.output_dir, f"{instance_id}.txt")
@@ -175,8 +180,7 @@ if __name__ == "__main__":
             f.write(content)
 
         if (
-            a_coverage - b2_coverage > 10
-            and b1_coverage != -1
+            b1_coverage != -1
             and b2_coverage != -1
             and b3_coverage != -1
         ):
