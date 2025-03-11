@@ -22,16 +22,28 @@ def gen_ablation_iterations(x, y, title):
     # Generate smooth curve for plotting
     x_fit = np.linspace(x[0], x[-1], 200)
     y_fit = exp_growth(x_fit, *popt)
+    
+    SMALL_SIZE = 16
+    MEDIUM_SIZE = 16
+    BIGGER_SIZE = 18
 
-    # Plot data points and best-fit curve
-    plt.figure(figsize=(8, 5))
-    plt.scatter(x, y, color="blue", label="Data points")
+    plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
+    plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
+    plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+    plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+    plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+    plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
+    plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+
+    plt.scatter(x, y, c="#87CEFA", label="Data points")
     plt.plot(x_fit, y_fit, "r-", label="Best fit curve")
     plt.xlabel("# Iterations")
     plt.ylabel(title.capitalize())
     plt.title(f"{title.capitalize()} vs # Iterations")
     plt.legend()
+    plt.savefig(f"{title}_iterations.eps")
     plt.savefig(f"{title}_iterations.png")
+    plt.clf()
 
 
 if __name__ == "__main__":
@@ -58,7 +70,7 @@ if __name__ == "__main__":
 
         MAPPING[key] = {"cov": cov / len(data), "pass": (tests_pass / len(data)) * 100}
 
-    x = [i for i in [0, 1, 5, 10, 15, 25]]
+    x = [i for i in [0, 1, 5, 10, 15, 20, 25]]
     y_cov = [MAPPING[i]["cov"] for i in x]
     y_pass = [MAPPING[i]["pass"] for i in x]
 
